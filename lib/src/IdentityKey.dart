@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
+
 import 'ecc/Curve.dart';
 import 'ecc/ECPublicKey.dart';
 
@@ -23,7 +25,7 @@ class IdentityKey {
   }
 
   String getFingerprint() {
-//   return Hex.toString(publicKey.serialize());
+    return hex.encode(_publicKey.serialize());
   }
 }
 
