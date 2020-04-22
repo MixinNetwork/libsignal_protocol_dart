@@ -12,15 +12,14 @@ class Curve {
 
   static ECKeyPair generateKeyPair() {
     final keyPair = x25519.newKeyPairSync();
-    return new ECKeyPair(
-        new DjbECPublicKey(Uint8List.fromList(keyPair.publicKey.bytes)),
-        new DjbECPrivateKey(
-            Uint8List.fromList(keyPair.privateKey.extractSync())));
+    return ECKeyPair(
+        DjbECPublicKey(Uint8List.fromList(keyPair.publicKey.bytes)),
+        DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey.extractSync())));
   }
 
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
     if (bytes == null || bytes.length - offset < 1) {
-      throw new Exception("No key type identifier");
+      throw Exception("No key type identifier");
     }
 
     int type = bytes[offset] & 0xFF;
@@ -28,32 +27,32 @@ class Curve {
     switch (type) {
       case Curve.djbType:
         if (bytes.length - offset < 33) {
-          throw new Exception("Bad key length: " + bytes.length.toString());
+          throw Exception("Bad key length: " + bytes.length.toString());
         }
 
         Uint8List keyBytes = new Uint8List(32);
         keyBytes.insertAll(0, bytes.sublist(offset + 1));
-        return new DjbECPublicKey(keyBytes);
+        return DjbECPublicKey(keyBytes);
       default:
-        throw new Exception("Bad key type: " + type.toString());
+        throw Exception("Bad key type: " + type.toString());
     }
   }
 
   static ECPrivateKey decodePrivatePoint(Uint8List bytes) {
-    return new DjbECPrivateKey(bytes);
+    return DjbECPrivateKey(bytes);
   }
 
   static Uint8List calculateAgreement(
       ECPublicKey publicKey, ECPrivateKey privateKey) {
     if (publicKey == null) {
-      throw new Exception("publicKey value is null");
+      throw Exception("publicKey value is null");
     }
 
     if (privateKey == null) {
-      throw new Exception("privateKey value is null");
+      throw Exception("privateKey value is null");
     }
     if (publicKey.getType() != privateKey.getType()) {
-      throw new Exception("Public and private keys must be of the same type!");
+      throw Exception("Public and private keys must be of the same type!");
     }
 
     if (publicKey.getType() == djbType) {
@@ -65,7 +64,7 @@ class Curve {
       );
       return Uint8List.fromList(secretKey.extractSync());
     } else {
-      throw new Exception("Unknown type: " + publicKey.getType().toString());
+      throw Exception("Unknown type: " + publicKey.getType().toString());
     }
   }
 
