@@ -13,6 +13,8 @@ dependencies:
   cryptography: ^0.3.0
   protobuf: ^1.0.1
   convert: ^2.1.1
+  pointycastle:
+    git: git@github.com:bcgit/pc-dart.git
 
 dev_dependencies:
   flutter_test:
