@@ -3,6 +3,22 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 
 class ByteUtil {
+
+  static Uint8List combine(List<Uint8List> elements) {
+    var results = List<int>();
+    elements.forEach((Uint8List e) {
+      results.addAll(e);
+    });
+    return Uint8List.fromList(results);
+  }
+
+  static Uint8List shortToByteArray(int value, [int offset = 0]) {
+    Uint8List bytes = Uint8List(2);
+    bytes[offset + 1] = value;
+    bytes[offset] = value >> 8;
+    return bytes;
+  }
+
   static Uint8List trim(Uint8List input, int length) {
     var result = [length];
     result.addAll(input);
