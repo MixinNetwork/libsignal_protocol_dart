@@ -1,5 +1,6 @@
 import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
 import 'package:libsignalprotocoldart/src/protocol/PreKeySignalMessage.dart';
+import 'package:libsignalprotocoldart/src/ratchet/BobSignalProtocolParameters.dart';
 import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
 import 'package:libsignalprotocoldart/src/state/PreKeyStore.dart';
 import 'package:libsignalprotocoldart/src/state/SessionRecord.dart';
@@ -58,26 +59,30 @@ class SessionBuilder {
   Optional<int> processV3(
       SessionRecord sessionRecord, PreKeySignalMessage message)
   // throws UntrustedIdentityException, InvalidKeyIdException, InvalidKeyException
-  {}
-
-/*
-    if (sessionRecord.hasSessionState(message.getMessageVersion(), message.getBaseKey().serialize())) {
-      Log.w(TAG, "We've already setup a session for this V3 message, letting bundled message fall through...");
-      return Optional.absent();
+  {
+    if (sessionRecord.hasSessionState(
+        message.getMessageVersion(), message.getBaseKey().serialize())) {
+      print(
+          "We've already setup a session for this V3 message, letting bundled message fall through...");
+      return Optional.empty();
     }
 
-    ECKeyPair ourSignedPreKey = signedPreKeyStore.loadSignedPreKey(message.getSignedPreKeyId()).getKeyPair();
+    var ourSignedPreKey = _signedPreKeyStore
+        .loadSignedPreKey(message.getSignedPreKeyId())
+        .getKeyPair();
 
-    BobSignalProtocolParameters.Builder parameters = BobSignalProtocolParameters.newBuilder();
+    var parameters = BobSignalProtocolParameters.newBuilder();
 
-    parameters.setTheirBaseKey(message.getBaseKey())
-              .setTheirIdentityKey(message.getIdentityKey())
-              .setOurIdentityKey(identityKeyStore.getIdentityKeyPair())
-              .setOurSignedPreKey(ourSignedPreKey)
-              .setOurRatchetKey(ourSignedPreKey);
+    parameters
+        .setTheirBaseKey(message.getBaseKey())
+        .setTheirIdentityKey(message.getIdentityKey())
+        .setOurIdentityKey(_identityKeyStore.getIdentityKeyPair())
+        .setOurSignedPreKey(ourSignedPreKey)
+        .setOurRatchetKey(ourSignedPreKey);
 
+/*
     if (message.getPreKeyId().isPresent()) {
-      parameters.setOurOneTimePreKey(Optional.of(preKeyStore.loadPreKey(message.getPreKeyId().get()).getKeyPair()));
+      parameters.setOurOneTimePreKey(Optional.of(_preKeyStore.loadPreKey(message.getPreKeyId().get()).getKeyPair()));
     } else {
       parameters.setOurOneTimePreKey(Optional.<ECKeyPair>absent());
     }
@@ -95,19 +100,10 @@ class SessionBuilder {
     } else {
       return Optional.absent();
     }
+    */
   }
 
-  /**
-   * Build a new session from a {@link org.whispersystems.libsignal.state.PreKeyBundle} retrieved from
-   * a server.
-   *
-   * @param preKey A PreKey for the destination recipient, retrieved from a server.
-   * @throws InvalidKeyException when the {@link org.whispersystems.libsignal.state.PreKeyBundle} is
-   *                             badly formatted.
-   * @throws org.whispersystems.libsignal.UntrustedIdentityException when the sender's
-   *                                                                  {@link IdentityKey} is not
-   *                                                                  trusted.
-   */
+/*
   public void process(PreKeyBundle preKey) throws InvalidKeyException, UntrustedIdentityException {
     synchronized (SessionCipher.SESSION_LOCK) {
       if (!identityKeyStore.isTrustedIdentity(remoteAddress, preKey.getIdentityKey(), IdentityKeyStore.Direction.SENDING)) {

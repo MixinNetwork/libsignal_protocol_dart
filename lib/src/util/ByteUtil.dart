@@ -9,6 +9,13 @@ class ByteUtil {
     return result;
   }
 
+  static List<Uint8List> splitTwo(
+      Uint8List input, int firstLength, int secondLength) {
+    var first = input.sublist(0, firstLength);
+    var second = input.sublist(firstLength, firstLength + secondLength);
+    return [first, second];
+  }
+
   static List<Uint8List> split(
       Uint8List input, int firstLength, int secondLength, int thirdLength) {
     if (input == null ||

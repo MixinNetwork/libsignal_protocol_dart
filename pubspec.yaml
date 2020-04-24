@@ -8,12 +8,13 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  cryptography: ^0.3.0
+  cryptography: ^0.3.4
   protobuf: ^1.0.1
   convert: ^2.1.1
   optional: ^4.1.0
-  # pointycastle:
-  #   git: git@github.com:bcgit/pc-dart.git
+  crypto: ^2.1.4
+  pointycastle:
+    git: git@github.com:bcgit/pc-dart.git
 
 dev_dependencies:
   test: ^1.14.2

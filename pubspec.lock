@@ -65,7 +65,7 @@ packages:
     source: hosted
     version: "0.13.9"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       url: "https://pub.dartlang.org"
@@ -77,7 +77,7 @@ packages:
       name: cryptography
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.4"
   csslib:
     dependency: transitive
     description:
@@ -226,11 +226,13 @@ packages:
     source: hosted
     version: "1.9.0"
   pointycastle:
-    dependency: transitive
+    dependency: "direct main"
     description:
-      name: pointycastle
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "663e99357d6bdcd93cebf7abfe08fd09b6c2a647"
+      url: "git@github.com:bcgit/pc-dart.git"
+    source: git
     version: "1.0.2"
   pool:
     dependency: transitive
