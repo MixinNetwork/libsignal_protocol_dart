@@ -13,7 +13,8 @@ dependencies:
   convert: ^2.1.1
   optional: ^4.1.0
   crypto: ^2.1.4
-  pointycastle: ^1.0.0-rc1
+  pointycastle:
+    git: git@github.com:bcgit/pc-dart.git
 
 dev_dependencies:
   test: ^1.14.2
