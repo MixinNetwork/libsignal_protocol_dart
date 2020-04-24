@@ -20,7 +20,8 @@ class ByteUtil {
     }
     var first = input.sublist(0, firstLength);
     var second = input.sublist(firstLength, firstLength + secondLength);
-    var third = input.sublist(firstLength + secondLength);
+    var third = input.sublist(
+        firstLength + secondLength, firstLength + secondLength + thirdLength);
     return [first, second, third];
   }
 

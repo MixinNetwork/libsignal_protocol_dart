@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('ByteUtil.split() splits the string to three length', () {
-    var input = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    var input = Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     var first = Uint8List.fromList([1]);
     var second = Uint8List.fromList([2, 3]);
     var third = Uint8List.fromList([4, 5, 6, 7, 8, 9]);
