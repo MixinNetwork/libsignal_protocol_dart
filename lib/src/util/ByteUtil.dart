@@ -19,8 +19,8 @@ class ByteUtil {
       throw ("Input too small: " + (input == null ? null : hex.encode(input)));
     }
     var first = input.sublist(0, firstLength);
-    var second = input.sublist(firstLength, secondLength);
-    var third = input.sublist(secondLength + thirdLength);
+    var second = input.sublist(firstLength, firstLength + secondLength);
+    var third = input.sublist(firstLength + secondLength);
     return [first, second, third];
   }
 

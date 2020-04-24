@@ -1,4 +1,5 @@
 import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
+import 'package:libsignalprotocoldart/src/protocol/PreKeySignalMessage.dart';
 import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
 import 'package:libsignalprotocoldart/src/state/PreKeyStore.dart';
 import 'package:libsignalprotocoldart/src/state/SessionRecord.dart';
@@ -7,7 +8,6 @@ import 'package:libsignalprotocoldart/src/state/SignalProtocolStore.dart';
 import 'package:libsignalprotocoldart/src/state/SignedPreKeyStore.dart';
 
 import 'package:optional/optional.dart';
-
 
 class SessionBuilder {
   static final String TAG = "SessionBulder";
@@ -36,26 +36,31 @@ class SessionBuilder {
     SessionBuilder(store, store, store, store, remoteAddress);
   }
 
-  Optional<int> process(SessionRecord sessionRecord, PreKeySignalMessage message)
-      throws InvalidKeyIdException, InvalidKeyException, UntrustedIdentityException
+  Optional<int> process(
+      SessionRecord sessionRecord, PreKeySignalMessage message)
+  //     throws InvalidKeyIdException, InvalidKeyException, UntrustedIdentityException
   {
-    IdentityKey theirIdentityKey = message.getIdentityKey();
+    var theirIdentityKey = message.getIdentityKey();
 
-    if (!identityKeyStore.isTrustedIdentity(remoteAddress, theirIdentityKey, IdentityKeyStore.Direction.RECEIVING)) {
-      throw new UntrustedIdentityException(remoteAddress.getName(), theirIdentityKey);
+    if (!_identityKeyStore.isTrustedIdentity(
+        _remoteAddress, theirIdentityKey, Direction.RECEIVING)) {
+      // throw new UntrustedIdentityException(
+      //     remoteAddress.getName(), theirIdentityKey);
     }
 
-    Optional<Integer> unsignedPreKeyId = processV3(sessionRecord, message);
+    Optional<int> unsignedPreKeyId = processV3(sessionRecord, message);
 
-    identityKeyStore.saveIdentity(remoteAddress, theirIdentityKey);
+    _identityKeyStore.saveIdentity(_remoteAddress, theirIdentityKey);
 
     return unsignedPreKeyId;
   }
-/*
-  private Optional<Integer> processV3(SessionRecord sessionRecord, PreKeySignalMessage message)
-      throws UntrustedIdentityException, InvalidKeyIdException, InvalidKeyException
-  {
 
+  Optional<int> processV3(
+      SessionRecord sessionRecord, PreKeySignalMessage message)
+  // throws UntrustedIdentityException, InvalidKeyIdException, InvalidKeyException
+  {}
+
+/*
     if (sessionRecord.hasSessionState(message.getMessageVersion(), message.getBaseKey().serialize())) {
       Log.w(TAG, "We've already setup a session for this V3 message, letting bundled message fall through...");
       return Optional.absent();

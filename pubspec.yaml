@@ -2,7 +2,7 @@ name: libsignalprotocoldart
 description: signal protocol
 version: 0.0.1
 author:
-homepage:
+homepage: https://github.com/crossle/libsignal_protocol_dart
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -14,3 +14,6 @@ dependencies:
   optional: ^4.1.0
   # pointycastle:
   #   git: git@github.com:bcgit/pc-dart.git
+
+dev_dependencies:
+  test: ^1.14.2
