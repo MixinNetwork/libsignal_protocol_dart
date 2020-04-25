@@ -99,7 +99,7 @@ class Builder {
   }
 
   AliceSignalProtocolParameters create() {
-    return new AliceSignalProtocolParameters(
+    return AliceSignalProtocolParameters(
         ourIdentityKey,
         ourBaseKey,
         theirIdentityKey,

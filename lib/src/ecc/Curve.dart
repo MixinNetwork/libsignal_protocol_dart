@@ -75,7 +75,12 @@ class Curve {
     }
 
     if (signingKey.getType() == djbType) {
-      // TODO
+      if (signature.length != 64) {
+        return false;
+      }
+      var sig = Signature(signature,
+          publicKey: PublicKey((signingKey as DjbECPublicKey).getPublicKey()));
+      return ed25519.verifySync(message, sig);
     } else {
       throw new Exception(
           "Unknown Signing Key type" + signingKey.getType().toString());
@@ -90,6 +95,7 @@ class Curve {
 
     if (signingKey.getType() == djbType) {
       // TODO
+      // ed25519.signSync(message, keyPair)
     } else {
       throw new Exception(
           "Unknown Signing Key type" + signingKey.getType().toString());

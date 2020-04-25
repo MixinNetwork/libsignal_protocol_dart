@@ -13,6 +13,7 @@ dependencies:
   convert: ^2.1.1
   optional: ^4.1.0
   crypto: ^2.1.4
+  tuple: ^1.0.3
   pointycastle:
     git: git@github.com:bcgit/pc-dart.git
 
