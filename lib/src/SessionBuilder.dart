@@ -1,4 +1,5 @@
 import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
+import 'package:libsignalprotocoldart/src/UntrustedIdentityException.dart';
 import 'package:libsignalprotocoldart/src/protocol/PreKeySignalMessage.dart';
 import 'package:libsignalprotocoldart/src/ratchet/BobSignalProtocolParameters.dart';
 import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
@@ -38,15 +39,13 @@ class SessionBuilder {
   }
 
   Optional<int> process(
-      SessionRecord sessionRecord, PreKeySignalMessage message)
-  //     throws InvalidKeyIdException, InvalidKeyException, UntrustedIdentityException
-  {
+      SessionRecord sessionRecord, PreKeySignalMessage message) {
     var theirIdentityKey = message.getIdentityKey();
 
     if (!_identityKeyStore.isTrustedIdentity(
         _remoteAddress, theirIdentityKey, Direction.RECEIVING)) {
-      // throw new UntrustedIdentityException(
-      //     remoteAddress.getName(), theirIdentityKey);
+      throw UntrustedIdentityException(
+          _remoteAddress.getName(), theirIdentityKey);
     }
 
     Optional<int> unsignedPreKeyId = processV3(sessionRecord, message);
@@ -57,9 +56,7 @@ class SessionBuilder {
   }
 
   Optional<int> processV3(
-      SessionRecord sessionRecord, PreKeySignalMessage message)
-  // throws UntrustedIdentityException, InvalidKeyIdException, InvalidKeyException
-  {
+      SessionRecord sessionRecord, PreKeySignalMessage message) {
     if (sessionRecord.hasSessionState(
         message.getMessageVersion(), message.getBaseKey().serialize())) {
       print(

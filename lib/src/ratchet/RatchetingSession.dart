@@ -17,29 +17,32 @@ import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
 import 'package:optional/optional.dart';
 
 class RatchetingSession {
-/*
-  static void initializeSession(SessionState sessionState, SymmetricSignalProtocolParameters parameters)
-  {
-    if (isAlice(parameters.getOurBaseKey().getPublicKey(), parameters.getTheirBaseKey())) {
-     var aliceParameters = AliceSignalProtocolParameters.newBuilder();
+  static void initializeSession(
+      SessionState sessionState, SymmetricSignalProtocolParameters parameters) {
+    if (isAlice(parameters.getOurBaseKey().getPublicKey(),
+        parameters.getTheirBaseKey())) {
+      var aliceParameters = AliceSignalProtocolParameters.newBuilder();
 
-      aliceParameters.setOurBaseKey(parameters.getOurBaseKey())
-                     .setOurIdentityKey(parameters.getOurIdentityKey())
-                     .setTheirRatchetKey(parameters.getTheirRatchetKey())
-                     .setTheirIdentityKey(parameters.getTheirIdentityKey())
-                     .setTheirSignedPreKey(parameters.getTheirBaseKey())
-                     .setTheirOneTimePreKey(Optional<ECPublicKey>.empty());
+      aliceParameters
+          .setOurBaseKey(parameters.getOurBaseKey())
+          .setOurIdentityKey(parameters.getOurIdentityKey())
+          .setTheirRatchetKey(parameters.getTheirRatchetKey())
+          .setTheirIdentityKey(parameters.getTheirIdentityKey())
+          .setTheirSignedPreKey(parameters.getTheirBaseKey())
+          .setTheirOneTimePreKey(Optional<ECPublicKey>.empty());
 
-      RatchetingSession.initializeSession(sessionState, aliceParameters.create());
+      RatchetingSession.initializeSession(
+          sessionState, aliceParameters.create());
     } else {
       var bobParameters = BobSignalProtocolParameters.newBuilder();
 
-      bobParameters.setOurIdentityKey(parameters.getOurIdentityKey())
-                   .setOurRatchetKey(parameters.getOurRatchetKey())
-                   .setOurSignedPreKey(parameters.getOurBaseKey())
-                   .setOurOneTimePreKey(Optional<ECKeyPair>.empty())
-                   .setTheirBaseKey(parameters.getTheirBaseKey())
-                   .setTheirIdentityKey(parameters.getTheirIdentityKey());
+      bobParameters
+          .setOurIdentityKey(parameters.getOurIdentityKey())
+          .setOurRatchetKey(parameters.getOurRatchetKey())
+          .setOurSignedPreKey(parameters.getOurBaseKey())
+          .setOurOneTimePreKey(Optional<ECKeyPair>.empty())
+          .setTheirBaseKey(parameters.getTheirBaseKey())
+          .setTheirIdentityKey(parameters.getTheirIdentityKey());
 
       RatchetingSession.initializeSession(sessionState, bobParameters.create());
     }
@@ -131,11 +134,9 @@ class RatchetingSession {
                            new ChainKey(kdf, derivedSecrets[1], 0));
   }
 
-   static bool isAlice(ECPublicKey ourKey, ECPublicKey theirKey) {
+  static bool isAlice(ECPublicKey ourKey, ECPublicKey theirKey) {
     return ourKey.compareTo(theirKey) < 0;
   }
-*/
-
 }
 
 class DerivedKeys {

@@ -23,25 +23,21 @@ class DjbECPublicKey extends ECPublicKey {
   getPublicKey() {
     return _publicKey;
   }
+
+  @override
+  int compareTo(ECPublicKey another) {
+    // return _publicKey == (another as DjbECPublicKey).getPublicKey();
+    // return new BigInteger(publicKey).compareTo(new BigInteger(((DjbECPublicKey)another).publicKey));
+  }
+  @override
+  bool operator ==(other) {
+    if (other == null) return false;
+    if (!(other is DjbECPublicKey)) return false;
+
+    DjbECPublicKey that = other as DjbECPublicKey;
+    return this._publicKey == that._publicKey;
+  }
+
+  @override
+  int get hashCode => _publicKey.hashCode;
 }
-
-//   @Override
-//   public boolean equals(Object other) {
-//     if (other == null)                      return false;
-//     if (!(other instanceof DjbECPublicKey)) return false;
-
-//     DjbECPublicKey that = (DjbECPublicKey)other;
-//     return Arrays.equals(this.publicKey, that.publicKey);
-//   }
-
-//   @Override
-//   public int hashCode() {
-//     return Arrays.hashCode(publicKey);
-//   }
-
-//   @Override
-//   public int compareTo(ECPublicKey another) {
-//     return new BigInteger(publicKey).compareTo(new BigInteger(((DjbECPublicKey)another).publicKey));
-//   }
-
-// }

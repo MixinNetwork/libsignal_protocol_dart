@@ -2,10 +2,7 @@ class SignalProtocolAddress {
   String _name;
   int _deviceId;
 
-  SignalProtocolAddress(String name, int deviceId) {
-    this._name = name;
-    this._deviceId = deviceId;
-  }
+  SignalProtocolAddress(this._name, this._deviceId);
 
   String getName() {
     return _name;
@@ -20,18 +17,15 @@ class SignalProtocolAddress {
     return "$_name:$_deviceId";
   }
 
-  //   @Override
-  // public boolean equals(Object other) {
-  //   if (other == null)                       return false;
-  //   if (!(other instanceof SignalProtocolAddress)) return false;
+  @override
+  bool operator ==(other) {
+    if (other == null) return false;
+    if (!(other is SignalProtocolAddress)) return false;
 
-  //   SignalProtocolAddress that = (SignalProtocolAddress)other;
-  //   return this.name.equals(that.name) && this.deviceId == that.deviceId;
-  // }
+    SignalProtocolAddress that = other as SignalProtocolAddress;
+    return this._name == that._name && this._deviceId == that._deviceId;
+  }
 
-  // @Override
-  // public int hashCode() {
-  //   return this.name.hashCode() ^ this.deviceId;
-  // }
-
+  @override
+  int get hashCode => this._name.hashCode ^ this._deviceId;
 }

@@ -8,9 +8,7 @@ import 'ecc/ECPublicKey.dart';
 class IdentityKey {
   ECPublicKey _publicKey;
 
-  IdentityKey(ECPublicKey publicKey) {
-    this._publicKey = publicKey;
-  }
+  IdentityKey(this._publicKey);
 
   IdentityKey.fromBytes(Uint8List bytes, int offset) {
     this._publicKey = Curve.decodePoint(bytes, offset);
