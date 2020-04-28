@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:libsignalprotocoldart/src/IdentityKey.dart';
+import 'package:libsignalprotocoldart/src/IdentityKeyPair.dart';
 import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
 import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
 import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
@@ -9,8 +10,10 @@ import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
 import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
 import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
 import 'package:libsignalprotocoldart/src/ratchet/ChainKey.dart';
+import 'package:libsignalprotocoldart/src/ratchet/MessageKeys.dart';
 import 'package:libsignalprotocoldart/src/ratchet/RootKey.dart';
 import 'package:libsignalprotocoldart/src/state/LocalStorageProtocol.pb.dart';
+import 'package:optional/optional.dart';
 import 'package:tuple/tuple.dart';
 
 class SessionState extends LinkedListEntry<SessionState> {
@@ -101,38 +104,43 @@ class SessionState extends LinkedListEntry<SessionState> {
     this._sessionStructure.rootKey = rootKey.getKeyBytes();
   }
 
-   ECPublicKey getSenderRatchetKey() {
+  ECPublicKey getSenderRatchetKey() {
     try {
-      return Curve.decodePoint(_sessionStructure.senderChain.senderRatchetKey, 0);
+      return Curve.decodePoint(
+          _sessionStructure.senderChain.senderRatchetKey, 0);
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
   }
 
-   ECKeyPair getSenderRatchetKeyPair() {
-    ECPublicKey  publicKey  = getSenderRatchetKey();
-    ECPrivateKey privateKey = Curve.decodePrivatePoint(_sessionStructure.senderChain.senderRatchetKeyPrivate);
+  ECKeyPair getSenderRatchetKeyPair() {
+    ECPublicKey publicKey = getSenderRatchetKey();
+    ECPrivateKey privateKey = Curve.decodePrivatePoint(
+        _sessionStructure.senderChain.senderRatchetKeyPrivate);
     return ECKeyPair(publicKey, privateKey);
   }
 
-   bool hasReceiverChain(ECPublicKey senderEphemeral) {
+  bool hasReceiverChain(ECPublicKey senderEphemeral) {
     return _getReceiverChain(senderEphemeral) != null;
   }
 
-   bool hasSenderChain() {
+  bool hasSenderChain() {
     return _sessionStructure.hasSenderChain();
   }
 
-   Tuple2<SessionStructure_Chain,int> _getReceiverChain(ECPublicKey senderEphemeral) {
-    List<SessionStructure_Chain> receiverChains = _sessionStructure.receiverChains;
-    int         index          = 0;
+  Tuple2<SessionStructure_Chain, int> _getReceiverChain(
+      ECPublicKey senderEphemeral) {
+    List<SessionStructure_Chain> receiverChains =
+        _sessionStructure.receiverChains;
+    int index = 0;
 
     for (SessionStructure_Chain receiverChain in receiverChains) {
       try {
-        ECPublicKey chainSenderRatchetKey = Curve.decodePoint(receiverChain.senderRatchetKey, 0);
+        ECPublicKey chainSenderRatchetKey =
+            Curve.decodePoint(receiverChain.senderRatchetKey, 0);
 
         if (chainSenderRatchetKey == senderEphemeral) {
-          return Tuple2<SessionStructure_Chain, int>(receiverChain,index);
+          return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
         print(e);
@@ -144,88 +152,286 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   ChainKey getReceiverChainKey(ECPublicKey senderEphemeral) {
-    Tuple2<SessionStructure_Chain,int> receiverChainAndIndex = _getReceiverChain(senderEphemeral);
-    SessionStructure_Chain               receiverChain         = receiverChainAndIndex.item1;
+    Tuple2<SessionStructure_Chain, int> receiverChainAndIndex =
+        _getReceiverChain(senderEphemeral);
+    SessionStructure_Chain receiverChain = receiverChainAndIndex.item1;
 
     if (receiverChain == null) {
       return null;
     } else {
       return ChainKey(HKDF.createFor(getSessionVersion()),
-                          receiverChain.chainKey.key,
-                          receiverChain.chainKey.index);
+          receiverChain.chainKey.key, receiverChain.chainKey.index);
     }
   }
 
   void addReceiverChain(ECPublicKey senderRatchetKey, ChainKey chainKey) {
-    SessionStructure_Chain_ChainKey chainKeyStructure = Chain.ChainKey.newBuilder()
-                                                     .setKey(ByteString.copyFrom(chainKey.getKey()))
-                                                     .setIndex(chainKey.getIndex())
-                                                     .build();
+    var chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+      ..key = chainKey.key;
 
-    SessionStructure_Chain chain = SessionStructure_Chain.newBuilder()
-                       .setChainKey(chainKeyStructure)
-                       .setSenderRatchetKey(ByteString.copyFrom(senderRatchetKey.serialize()))
-                       .build();
+    var chain = SessionStructure_Chain.create()
+      ..chainKey = chainKeyStructure
+      ..senderRatchetKey = senderRatchetKey.serialize();
 
-    this._sessionStructure = this.sessionStructure.toBuilder().addReceiverChains(chain).build();
+    this._sessionStructure.receiverChains.add(chain);
 
-    if (this._sessionStructure.getReceiverChainsList().size() > 5) {
-      this._sessionStructure.removeReceiverChains = this.sessionStructure.toBuilder()
-                                                   .removeReceiverChains(0)
-                                                   .build();
+    if (this._sessionStructure.receiverChains.length > 5) {
+      this._sessionStructure.receiverChains.removeAt(0);
     }
   }
 
   void setSenderChain(ECKeyPair senderRatchetKeyPair, ChainKey chainKey) {
-    SessionStructure_Chain_ChainKey chainKeyStructure = Chain.ChainKey.newBuilder()
-                                                     .setKey(ByteString.copyFrom(chainKey.getKey()))
-                                                     .setIndex(chainKey.getIndex())
-                                                     .build();
+    var chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+      ..key = chainKey.key
+      ..index = chainKey.index;
 
-    SessionStructure_Chain senderChain = Chain.newBuilder()
-                             .setSenderRatchetKey(ByteString.copyFrom(senderRatchetKeyPair.getPublicKey().serialize()))
-                             .setSenderRatchetKeyPrivate(ByteString.copyFrom(senderRatchetKeyPair.getPrivateKey().serialize()))
-                             .setChainKey(chainKeyStructure)
-                             .build();
-
-    this._sessionStructure = this.sessionStructure.toBuilder().setSenderChain(senderChain).build();
+    var senderChain = SessionStructure_Chain.create()
+      ..senderRatchetKey = senderRatchetKeyPair.getPublicKey().serialize()
+      ..senderRatchetKeyPrivate =
+          senderRatchetKeyPair.getPrivateKey().serialize()
+      ..chainKey = chainKeyStructure;
+    this._sessionStructure.senderChain = senderChain;
   }
 
   ChainKey getSenderChainKey() {
-    SessionStructure_Chain_ChainKey chainKeyStructure = _sessionStructure.senderChain.chainKey;
-    return ChainKey(HKDF.createFor(getSessionVersion()),
-                        chainKeyStructure.key, chainKeyStructure.index);
+    SessionStructure_Chain_ChainKey chainKeyStructure =
+        _sessionStructure.senderChain.chainKey;
+    return ChainKey(HKDF.createFor(getSessionVersion()), chainKeyStructure.key,
+        chainKeyStructure.index);
   }
-
 
   void setSenderChainKey(ChainKey nextChainKey) {
-    SessionStructure_Chain_ChainKey chainKey = Chain.ChainKey.newBuilder()
-                                            .setKey(ByteString.copyFrom(nextChainKey.getKey()))
-                                            .setIndex(nextChainKey.getIndex())
-                                            .build();
+    var chainKey = SessionStructure_Chain_ChainKey.create()
+      ..key = nextChainKey.getKey()
+      ..index = nextChainKey.getIndex();
 
-    SessionStructure_Chain chain = _sessionStructure.getSenderChain().toBuilder()
-                                  .setChainKey(chainKey).build();
+    var chain = _sessionStructure.senderChain..chainKey = chainKey;
 
-    this.sessionStructure = this.sessionStructure.toBuilder().setSenderChain(chain).build();
+    this._sessionStructure.senderChain = chain;
   }
 
-   bool hasMessageKeys(ECPublicKey senderEphemeral, int counter) {
-    Tuple2<SessionStructure_Chain,int> chainAndIndex = getReceiverChain(senderEphemeral);
-    SessionStructure_Chain               chain         = chainAndIndex.item1;
+  bool hasMessageKeys(ECPublicKey senderEphemeral, int counter) {
+    Tuple2<SessionStructure_Chain, int> chainAndIndex =
+        _getReceiverChain(senderEphemeral);
+    SessionStructure_Chain chain = chainAndIndex.item1;
 
     if (chain == null) {
       return false;
     }
 
-    List<Chain.MessageKey> messageKeyList = chain.getMessageKeysList();
-
-    for (Chain.MessageKey messageKey : messageKeyList) {
-      if (messageKey.getIndex() == counter) {
+    List<SessionStructure_Chain_MessageKey> messageKeyList = chain.messageKeys;
+    for (SessionStructure_Chain_MessageKey messageKey in messageKeyList) {
+      if (messageKey.index == counter) {
         return true;
       }
     }
-
     return false;
+  }
+
+  MessageKeys removeMessageKeys(ECPublicKey senderEphemeral, int counter) {
+    Tuple2<SessionStructure_Chain, int> chainAndIndex =
+        _getReceiverChain(senderEphemeral);
+    var chain = chainAndIndex.item1;
+    if (chain == null) {
+      return null;
+    }
+
+/*
+    List<SessionStructure_Chain_MessageKey>     messageKeyList     = new LinkedList<>(chain.getMessageKeysList());
+    Iterator<SessionStructure_Chain_MessageKey> messageKeyIterator = messageKeyList.iterator();
+    MessageKeys                result             = null;
+
+    while (messageKeyIterator.hasNext()) {
+      Chain.MessageKey messageKey = messageKeyIterator.next();
+
+      if (messageKey.getIndex() == counter) {
+        result = new MessageKeys(new SecretKeySpec(messageKey.getCipherKey().toByteArray(), "AES"),
+                                 new SecretKeySpec(messageKey.getMacKey().toByteArray(), "HmacSHA256"),
+                                 new IvParameterSpec(messageKey.getIv().toByteArray()),
+                                 messageKey.getIndex());
+
+        messageKeyIterator.remove();
+        break;
+      }
+    }
+
+    var updatedChain = chain.toBuilder().clearMessageKeys()
+                              .addAllMessageKeys(messageKeyList)
+                              .build();
+
+    this.sessionStructure = this.sessionStructure.toBuilder()
+                                                 .setReceiverChains(chainAndIndex.second(), updatedChain)
+                                                 .build();
+                                                 
+    return result;
+    */
+  }
+
+  void setMessageKeys(ECPublicKey senderEphemeral, MessageKeys messageKeys) {
+    Tuple2<SessionStructure_Chain, int> chainAndIndex =
+        _getReceiverChain(senderEphemeral);
+    var chain = chainAndIndex.item1;
+    var messageKeyStructure = SessionStructure_Chain_MessageKey.create()
+      ..cipherKey = messageKeys.getCipherKey()
+      ..macKey = messageKeys.getMacKey()
+      ..index = messageKeys.getCounter()
+      ..iv = messageKeys.getIv();
+
+/*
+    var updatedChain = chain.toBuilder().addMessageKeys(messageKeyStructure);
+
+    if (updatedChain.getMessageKeysCount() > MAX_MESSAGE_KEYS) {
+      updatedChain.removeMessageKeys(0);
+    }
+
+    this.sessionStructure = this
+        .sessionStructure
+        .toBuilder()
+        .setReceiverChains(chainAndIndex.second(), updatedChain.build())
+        .build();
+        */
+  }
+
+  void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
+    Tuple2<SessionStructure_Chain, int> chainAndIndex =
+        _getReceiverChain(senderEphemeral);
+    var chain = chainAndIndex.item1;
+
+    var chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+      ..key = chainKey.key
+      ..index = chainKey.index;
+
+    var updatedChain = chain.chainKey = chainKeyStructure;
+    //TODO this._sessionStructure.receiverChains[chainAndIndex.item2] = updatedChain;
+  }
+
+  void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,
+      ECKeyPair ourRatchetKey, IdentityKeyPair ourIdentityKey) {
+    var structure = SessionStructure_PendingKeyExchange.create()
+      ..sequence = sequence
+      ..localBaseKey = ourBaseKey.getPublicKey().serialize()
+      ..localBaseKeyPrivate = ourBaseKey.getPrivateKey().serialize()
+      ..localRatchetKey = ourRatchetKey.getPublicKey().serialize()
+      ..localRatchetKeyPrivate = ourRatchetKey.getPrivateKey().serialize()
+      ..localIdentityKey = ourIdentityKey.getPublicKey().serialize()
+      ..localIdentityKeyPrivate = ourIdentityKey.getPrivateKey().serialize();
+
+    this._sessionStructure.pendingKeyExchange = structure;
+  }
+
+  int getPendingKeyExchangeSequence() {
+    return _sessionStructure.pendingKeyExchange.sequence;
+  }
+
+  ECKeyPair getPendingKeyExchangeBaseKey() {
+    ECPublicKey publicKey =
+        Curve.decodePoint(_sessionStructure.pendingKeyExchange.localBaseKey, 0);
+
+    ECPrivateKey privateKey = Curve.decodePrivatePoint(
+        _sessionStructure.pendingKeyExchange.localBaseKeyPrivate);
+
+    return ECKeyPair(publicKey, privateKey);
+  }
+
+  ECKeyPair getPendingKeyExchangeRatchetKey() {
+    ECPublicKey publicKey = Curve.decodePoint(
+        _sessionStructure.pendingKeyExchange.localRatchetKey, 0);
+
+    ECPrivateKey privateKey = Curve.decodePrivatePoint(
+        _sessionStructure.pendingKeyExchange.localRatchetKeyPrivate);
+
+    return ECKeyPair(publicKey, privateKey);
+  }
+
+  IdentityKeyPair getPendingKeyExchangeIdentityKey() {
+    IdentityKey publicKey = IdentityKey.fromBytes(
+        _sessionStructure.pendingKeyExchange.localIdentityKey, 0);
+    ECPrivateKey privateKey = Curve.decodePrivatePoint(
+        _sessionStructure.pendingKeyExchange.localIdentityKeyPrivate);
+    return IdentityKeyPair(publicKey, privateKey);
+  }
+
+  bool hasPendingKeyExchange() {
+    return _sessionStructure.hasPendingKeyExchange();
+  }
+
+  void setUnacknowledgedPreKeyMessage(
+      Optional<int> preKeyId, int signedPreKeyId, ECPublicKey baseKey) {
+    var pending = SessionStructure_PendingPreKey.create()
+      ..signedPreKeyId = signedPreKeyId
+      ..baseKey = baseKey.serialize();
+
+    if (preKeyId.isPresent) {
+      pending.preKeyId = preKeyId.value;
+    }
+
+    this._sessionStructure.pendingPreKey = pending;
+  }
+
+  bool hasUnacknowledgedPreKeyMessage() {
+    return this._sessionStructure.hasPendingPreKey();
+  }
+
+  UnacknowledgedPreKeyMessageItems getUnacknowledgedPreKeyMessageItems() {
+    try {
+      Optional<int> preKeyId;
+
+      if (_sessionStructure.pendingPreKey.hasPreKeyId()) {
+        preKeyId = Optional.of(_sessionStructure.pendingPreKey.preKeyId);
+      } else {
+        preKeyId = Optional.empty();
+      }
+
+      return new UnacknowledgedPreKeyMessageItems(
+          preKeyId,
+          _sessionStructure.pendingPreKey.signedPreKeyId,
+          Curve.decodePoint(_sessionStructure.pendingPreKey.baseKey, 0));
+    } on InvalidKeyException catch (e) {
+      throw AssertionError(e);
+    }
+  }
+
+  void clearUnacknowledgedPreKeyMessage() {
+    this._sessionStructure.clearPendingPreKey();
+  }
+
+  void setRemoteRegistrationId(int registrationId) {
+    this._sessionStructure..remoteRegistrationId = registrationId;
+  }
+
+  int getRemoteRegistrationId() {
+    return this._sessionStructure.remoteRegistrationId;
+  }
+
+  void setLocalRegistrationId(int registrationId) {
+    this._sessionStructure.localRegistrationId = registrationId;
+  }
+
+  int getLocalRegistrationId() {
+    return this._sessionStructure.localRegistrationId;
+  }
+
+  Uint8List serialize() {
+    return _sessionStructure.writeToBuffer();
+  }
+}
+
+class UnacknowledgedPreKeyMessageItems {
+  final Optional<int> _preKeyId;
+  final int _signedPreKeyId;
+  final ECPublicKey _baseKey;
+
+  UnacknowledgedPreKeyMessageItems(
+      this._preKeyId, this._signedPreKeyId, this._baseKey);
+
+  Optional<int> getPreKeyId() {
+    return _preKeyId;
+  }
+
+  int getSignedPreKeyId() {
+    return _signedPreKeyId;
+  }
+
+  ECPublicKey getBaseKey() {
+    return _baseKey;
   }
 }
