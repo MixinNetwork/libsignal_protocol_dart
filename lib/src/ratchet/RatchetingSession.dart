@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
@@ -15,6 +16,7 @@ import 'package:libsignalprotocoldart/src/ratchet/SymmetricSignalProtocolParamet
 import 'package:libsignalprotocoldart/src/state/SessionState.dart';
 import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
 import 'package:optional/optional.dart';
+import 'package:tuple/tuple.dart';
 
 class RatchetingSession {
   static void initializeSession(
@@ -31,7 +33,7 @@ class RatchetingSession {
           .setTheirSignedPreKey(parameters.getTheirBaseKey())
           .setTheirOneTimePreKey(Optional<ECPublicKey>.empty());
 
-      RatchetingSession.initializeSession(
+      RatchetingSession.initializeSessionAlice(
           sessionState, aliceParameters.create());
     } else {
       var bobParameters = BobSignalProtocolParameters.newBuilder();
@@ -44,94 +46,104 @@ class RatchetingSession {
           .setTheirBaseKey(parameters.getTheirBaseKey())
           .setTheirIdentityKey(parameters.getTheirIdentityKey());
 
-      RatchetingSession.initializeSession(sessionState, bobParameters.create());
+      RatchetingSession.initializeSessionBob(
+          sessionState, bobParameters.create());
     }
   }
 
-   static void initializeSession(SessionState sessionState, AliceSignalProtocolParameters parameters)
-  {
+  static void initializeSessionAlice(
+      SessionState sessionState, AliceSignalProtocolParameters parameters) {
     try {
       sessionState.setSessionVersion(CiphertextMessage.CURRENT_VERSION);
       sessionState.setRemoteIdentityKey(parameters.getTheirIdentityKey());
-      sessionState.setLocalIdentityKey(parameters.getOurIdentityKey().getPublicKey());
+      sessionState
+          .setLocalIdentityKey(parameters.getOurIdentityKey().getPublicKey());
 
-      ECKeyPair             sendingRatchetKey = Curve.generateKeyPair();
-      ByteArrayOutputStream secrets           = new ByteArrayOutputStream();
+      ECKeyPair sendingRatchetKey = Curve.generateKeyPair();
+      var secrets = Uint8List(0);
 
-      secrets.write(getDiscontinuityBytes());
+      secrets.addAll(getDiscontinuityBytes());
 
-      secrets.write(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
-                                             parameters.getOurIdentityKey().getPrivateKey()));
-      secrets.write(Curve.calculateAgreement(parameters.getTheirIdentityKey().getPublicKey(),
-                                             parameters.getOurBaseKey().getPrivateKey()));
-      secrets.write(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
-                                             parameters.getOurBaseKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
+          parameters.getOurIdentityKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(
+          parameters.getTheirIdentityKey().getPublicKey(),
+          parameters.getOurBaseKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
+          parameters.getOurBaseKey().getPrivateKey()));
 
-      if (parameters.getTheirOneTimePreKey().isPresent()) {
-        secrets.write(Curve.calculateAgreement(parameters.getTheirOneTimePreKey().get(),
-                                               parameters.getOurBaseKey().getPrivateKey()));
+      if (parameters.getTheirOneTimePreKey().isPresent) {
+        secrets.addAll(Curve.calculateAgreement(
+            parameters.getTheirOneTimePreKey().value,
+            parameters.getOurBaseKey().getPrivateKey()));
       }
 
-      DerivedKeys             derivedKeys  = calculateDerivedKeys(secrets.toByteArray());
-      Pair<RootKey, ChainKey> sendingChain = derivedKeys.getRootKey().createChain(parameters.getTheirRatchetKey(), sendingRatchetKey);
+      DerivedKeys derivedKeys = calculateDerivedKeys(secrets);
+      Tuple2<RootKey, ChainKey> sendingChain = derivedKeys
+          .getRootKey()
+          .createChain(parameters.getTheirRatchetKey(), sendingRatchetKey);
 
-      sessionState.addReceiverChain(parameters.getTheirRatchetKey(), derivedKeys.getChainKey());
-      sessionState.setSenderChain(sendingRatchetKey, sendingChain.second());
-      sessionState.setRootKey(sendingChain.first());
-    } catch (IOException e) {
+      sessionState.addReceiverChain(
+          parameters.getTheirRatchetKey(), derivedKeys.getChainKey());
+      sessionState.setSenderChain(sendingRatchetKey, sendingChain.item2);
+      sessionState.setRootKey(sendingChain.item1);
+    } on IOException catch (e) {
       throw AssertionError(e);
     }
   }
 
-   static void initializeSession(SessionState sessionState, BobSignalProtocolParameters parameters)
-  {
-
+  static void initializeSessionBob(
+      SessionState sessionState, BobSignalProtocolParameters parameters) {
     try {
       sessionState.setSessionVersion(CiphertextMessage.CURRENT_VERSION);
       sessionState.setRemoteIdentityKey(parameters.getTheirIdentityKey());
-      sessionState.setLocalIdentityKey(parameters.getOurIdentityKey().getPublicKey());
+      sessionState
+          .setLocalIdentityKey(parameters.getOurIdentityKey().getPublicKey());
 
-      ByteArrayOutputStream secrets = new ByteArrayOutputStream();
+      var secrets = Uint8List(0);
 
-      secrets.write(getDiscontinuityBytes());
+      secrets.addAll(getDiscontinuityBytes());
 
-      secrets.write(Curve.calculateAgreement(parameters.getTheirIdentityKey().getPublicKey(),
-                                             parameters.getOurSignedPreKey().getPrivateKey()));
-      secrets.write(Curve.calculateAgreement(parameters.getTheirBaseKey(),
-                                             parameters.getOurIdentityKey().getPrivateKey()));
-      secrets.write(Curve.calculateAgreement(parameters.getTheirBaseKey(),
-                                             parameters.getOurSignedPreKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(
+          parameters.getTheirIdentityKey().getPublicKey(),
+          parameters.getOurSignedPreKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(parameters.getTheirBaseKey(),
+          parameters.getOurIdentityKey().getPrivateKey()));
+      secrets.addAll(Curve.calculateAgreement(parameters.getTheirBaseKey(),
+          parameters.getOurSignedPreKey().getPrivateKey()));
 
-      if (parameters.getOurOneTimePreKey().isPresent()) {
-        secrets.write(Curve.calculateAgreement(parameters.getTheirBaseKey(),
-                                               parameters.getOurOneTimePreKey().get().getPrivateKey()));
+      if (parameters.getOurOneTimePreKey().isPresent) {
+        secrets.addAll(Curve.calculateAgreement(parameters.getTheirBaseKey(),
+            parameters.getOurOneTimePreKey().value.getPrivateKey()));
       }
 
-      DerivedKeys derivedKeys = calculateDerivedKeys(secrets.toByteArray());
+      DerivedKeys derivedKeys = calculateDerivedKeys(secrets);
 
-      sessionState.setSenderChain(parameters.getOurRatchetKey(), derivedKeys.getChainKey());
+      sessionState.setSenderChain(
+          parameters.getOurRatchetKey(), derivedKeys.getChainKey());
       sessionState.setRootKey(derivedKeys.getRootKey());
-    } catch (IOException e) {
+    } on IOException catch (e) {
       throw new AssertionError(e);
     }
   }
 
   static Uint8List getDiscontinuityBytes() {
     Uint8List discontinuity = Uint8List(32);
-            for (int i = 0, len = discontinuity.length; i < len; i++) {
-              discontinuity[i] = 0xFF; 
-            }
+    for (int i = 0, len = discontinuity.length; i < len; i++) {
+      discontinuity[i] = 0xFF;
+    }
     return discontinuity;
   }
 
   static DerivedKeys calculateDerivedKeys(Uint8List masterSecret) {
-    HKDF     kdf                = new HKDFv3();
+    HKDF kdf = new HKDFv3();
     List<int> bytes = utf8.encode("WhisperText");
-    Uint8List   derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
-    List<Uint8List> derivedSecrets     = ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
+    Uint8List derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
+    List<Uint8List> derivedSecrets =
+        ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
 
     return new DerivedKeys(new RootKey(kdf, derivedSecrets[0]),
-                           new ChainKey(kdf, derivedSecrets[1], 0));
+        new ChainKey(kdf, derivedSecrets[1], 0));
   }
 
   static bool isAlice(ECPublicKey ourKey, ECPublicKey theirKey) {
