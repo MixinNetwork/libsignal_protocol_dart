@@ -1,8 +1,15 @@
+import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
 import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
 import 'package:libsignalprotocoldart/src/UntrustedIdentityException.dart';
+import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
+import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
+import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
 import 'package:libsignalprotocoldart/src/protocol/PreKeySignalMessage.dart';
+import 'package:libsignalprotocoldart/src/ratchet/AliceSignalProtocolParameters.dart';
 import 'package:libsignalprotocoldart/src/ratchet/BobSignalProtocolParameters.dart';
+import 'package:libsignalprotocoldart/src/ratchet/RatchetingSession.dart';
 import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
+import 'package:libsignalprotocoldart/src/state/PreKeyBundle.dart';
 import 'package:libsignalprotocoldart/src/state/PreKeyStore.dart';
 import 'package:libsignalprotocoldart/src/state/SessionRecord.dart';
 import 'package:libsignalprotocoldart/src/state/SessionStore.dart';
@@ -77,77 +84,95 @@ class SessionBuilder {
         .setOurSignedPreKey(ourSignedPreKey)
         .setOurRatchetKey(ourSignedPreKey);
 
-/*
-    if (message.getPreKeyId().isPresent()) {
-      parameters.setOurOneTimePreKey(Optional.of(_preKeyStore.loadPreKey(message.getPreKeyId().get()).getKeyPair()));
+    if (message.getPreKeyId().isPresent) {
+      parameters.setOurOneTimePreKey(Optional.of(
+          _preKeyStore.loadPreKey(message.getPreKeyId().value).getKeyPair()));
     } else {
-      parameters.setOurOneTimePreKey(Optional.<ECKeyPair>absent());
+      parameters.setOurOneTimePreKey(Optional<ECKeyPair>.empty());
     }
 
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
-    RatchetingSession.initializeSession(sessionRecord.getSessionState(), parameters.create());
+    RatchetingSession.initializeSessionBob(
+        sessionRecord.getSessionState(), parameters.create());
 
-    sessionRecord.getSessionState().setLocalRegistrationId(identityKeyStore.getLocalRegistrationId());
-    sessionRecord.getSessionState().setRemoteRegistrationId(message.getRegistrationId());
-    sessionRecord.getSessionState().setAliceBaseKey(message.getBaseKey().serialize());
+    sessionRecord
+        .getSessionState()
+        .setLocalRegistrationId(_identityKeyStore.getLocalRegistrationId());
+    sessionRecord
+        .getSessionState()
+        .setRemoteRegistrationId(message.getRegistrationId());
+    sessionRecord
+        .getSessionState()
+        .setAliceBaseKey(message.getBaseKey().serialize());
 
-    if (message.getPreKeyId().isPresent()) {
+    if (message.getPreKeyId().isPresent) {
       return message.getPreKeyId();
     } else {
-      return Optional.absent();
-    }
-    */
-  }
-
-/*
-  public void process(PreKeyBundle preKey) throws InvalidKeyException, UntrustedIdentityException {
-    synchronized (SessionCipher.SESSION_LOCK) {
-      if (!identityKeyStore.isTrustedIdentity(remoteAddress, preKey.getIdentityKey(), IdentityKeyStore.Direction.SENDING)) {
-        throw new UntrustedIdentityException(remoteAddress.getName(), preKey.getIdentityKey());
-      }
-
-      if (preKey.getSignedPreKey() != null &&
-          !Curve.verifySignature(preKey.getIdentityKey().getPublicKey(),
-                                 preKey.getSignedPreKey().serialize(),
-                                 preKey.getSignedPreKeySignature()))
-      {
-        throw new InvalidKeyException("Invalid signature on device key!");
-      }
-
-      if (preKey.getSignedPreKey() == null) {
-        throw new InvalidKeyException("No signed prekey!");
-      }
-
-      SessionRecord         sessionRecord        = sessionStore.loadSession(remoteAddress);
-      ECKeyPair             ourBaseKey           = Curve.generateKeyPair();
-      ECPublicKey           theirSignedPreKey    = preKey.getSignedPreKey();
-      Optional<ECPublicKey> theirOneTimePreKey   = Optional.fromNullable(preKey.getPreKey());
-      Optional<Integer>     theirOneTimePreKeyId = theirOneTimePreKey.isPresent() ? Optional.of(preKey.getPreKeyId()) :
-                                                                                    Optional.<Integer>absent();
-
-      AliceSignalProtocolParameters.Builder parameters = AliceSignalProtocolParameters.newBuilder();
-
-      parameters.setOurBaseKey(ourBaseKey)
-                .setOurIdentityKey(identityKeyStore.getIdentityKeyPair())
-                .setTheirIdentityKey(preKey.getIdentityKey())
-                .setTheirSignedPreKey(theirSignedPreKey)
-                .setTheirRatchetKey(theirSignedPreKey)
-                .setTheirOneTimePreKey(theirOneTimePreKey);
-
-      if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
-
-      RatchetingSession.initializeSession(sessionRecord.getSessionState(), parameters.create());
-
-      sessionRecord.getSessionState().setUnacknowledgedPreKeyMessage(theirOneTimePreKeyId, preKey.getSignedPreKeyId(), ourBaseKey.getPublicKey());
-      sessionRecord.getSessionState().setLocalRegistrationId(identityKeyStore.getLocalRegistrationId());
-      sessionRecord.getSessionState().setRemoteRegistrationId(preKey.getRegistrationId());
-      sessionRecord.getSessionState().setAliceBaseKey(ourBaseKey.getPublicKey().serialize());
-
-      identityKeyStore.saveIdentity(remoteAddress, preKey.getIdentityKey());
-      sessionStore.storeSession(remoteAddress, sessionRecord);
+      return Optional.empty();
     }
   }
-  */
 
+  void processPreKeyBundle(PreKeyBundle preKey) {
+    // synchronized (SessionCipher.SESSION_LOCK) {
+    if (!_identityKeyStore.isTrustedIdentity(
+        _remoteAddress, preKey.getIdentityKey(), Direction.SENDING)) {
+      throw UntrustedIdentityException(
+          _remoteAddress.getName(), preKey.getIdentityKey());
+    }
+
+    if (preKey.getSignedPreKey() != null &&
+        !Curve.verifySignature(
+            preKey.getIdentityKey().getPublicKey(),
+            preKey.getSignedPreKey().serialize(),
+            preKey.getSignedPreKeySignature())) {
+      throw InvalidKeyException("Invalid signature on device key!");
+    }
+
+    if (preKey.getSignedPreKey() == null) {
+      throw InvalidKeyException("No signed prekey!");
+    }
+
+    SessionRecord sessionRecord = _sessionStore.loadSession(_remoteAddress);
+    ECKeyPair ourBaseKey = Curve.generateKeyPair();
+    ECPublicKey theirSignedPreKey = preKey.getSignedPreKey();
+    Optional<ECPublicKey> theirOneTimePreKey =
+        Optional.ofNullable(preKey.getPreKey());
+    Optional<int> theirOneTimePreKeyId = theirOneTimePreKey.isPresent
+        ? Optional.of(preKey.getPreKeyId())
+        : Optional<int>.empty();
+
+    var parameters = AliceSignalProtocolParameters.newBuilder();
+
+    parameters
+        .setOurBaseKey(ourBaseKey)
+        .setOurIdentityKey(_identityKeyStore.getIdentityKeyPair())
+        .setTheirIdentityKey(preKey.getIdentityKey())
+        .setTheirSignedPreKey(theirSignedPreKey)
+        .setTheirRatchetKey(theirSignedPreKey)
+        .setTheirOneTimePreKey(theirOneTimePreKey);
+
+    if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
+
+    RatchetingSession.initializeSessionAlice(
+        sessionRecord.getSessionState(), parameters.create());
+
+    sessionRecord.getSessionState().setUnacknowledgedPreKeyMessage(
+        theirOneTimePreKeyId,
+        preKey.getSignedPreKeyId(),
+        ourBaseKey.getPublicKey());
+    sessionRecord
+        .getSessionState()
+        .setLocalRegistrationId(_identityKeyStore.getLocalRegistrationId());
+    sessionRecord
+        .getSessionState()
+        .setRemoteRegistrationId(preKey.getRegistrationId());
+    sessionRecord
+        .getSessionState()
+        .setAliceBaseKey(ourBaseKey.getPublicKey().serialize());
+
+    _identityKeyStore.saveIdentity(_remoteAddress, preKey.getIdentityKey());
+    _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    // }
+  }
 }

@@ -51,7 +51,7 @@ abstract class HKDF {
         i < iterations + getIterationStartOffset();
         i++) {
       var mac = Hmac(sha256, prk);
-      var output = new AccumulatorSink<Digest>();
+      var output = AccumulatorSink<Digest>();
       var input = mac.startChunkedConversion(output);
       input.add(mix);
       if (info != null) {

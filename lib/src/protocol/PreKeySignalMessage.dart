@@ -51,7 +51,7 @@ class PreKeySignalMessage extends CiphertextMessage {
       this.baseKey = Curve.decodePoint(preKeyWhisperMessage.baseKey, 0);
       this.identityKey = new IdentityKey(
           Curve.decodePoint(preKeyWhisperMessage.identityKey, 0));
-      this.message = new SignalMessage(preKeyWhisperMessage.message);
+      this.message = SignalMessage.fromSerialized(preKeyWhisperMessage.message);
     } on InvalidKeyException catch (e) {
       throw InvalidMessageException(e.detailMessage);
     } on LegacyMessageException catch (e) {

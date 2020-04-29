@@ -1,5 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
+import 'package:libsignalprotocoldart/src/IdentityKey.dart';
 import 'package:libsignalprotocoldart/src/InvalidMessageException.dart';
 import 'package:libsignalprotocoldart/src/LegacyMessageException.dart';
 import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
@@ -19,7 +22,7 @@ class SignalMessage extends CiphertextMessage {
   Uint8List _ciphertext;
   Uint8List _serialized;
 
-  SignalMessage(Uint8List serialized) {
+  SignalMessage.fromSerialized(Uint8List serialized) {
     // try {
     var messageParts = ByteUtil.split(
         serialized, 1, serialized.length - 1 - MAC_LENGTH, MAC_LENGTH);
@@ -57,15 +60,88 @@ class SignalMessage extends CiphertextMessage {
     // }
   }
 
+  SignalMessage(
+      int messageVersion,
+      Uint8List macKey,
+      ECPublicKey senderRatchetKey,
+      int counter,
+      int previousCounter,
+      Uint8List ciphertext,
+      IdentityKey senderIdentityKey,
+      IdentityKey receiverIdentityKey) {
+    Uint8List version = Uint8List.fromList([
+      ByteUtil.intsToByteHighAndLow(
+          messageVersion, CiphertextMessage.CURRENT_VERSION)
+    ]);
+
+    var m = SignalProtos.SignalMessage.create()
+      ..ratchetKey = senderRatchetKey.serialize()
+      ..counter = counter
+      ..previousCounter = previousCounter
+      ..ciphertext = ciphertext;
+    Uint8List message = m.writeToBuffer();
+
+    Uint8List mac = _getMac(senderIdentityKey, receiverIdentityKey, macKey,
+        ByteUtil.combine([version, message]));
+
+    this._serialized = ByteUtil.combine([version, message, mac]);
+    this._senderRatchetKey = senderRatchetKey;
+    this._counter = counter;
+    this._previousCounter = previousCounter;
+    this._ciphertext = ciphertext;
+    this._messageVersion = messageVersion;
+  }
+
+  ECPublicKey getSenderRatchetKey() {
+    return _senderRatchetKey;
+  }
+
+  int getMessageVersion() {
+    return _messageVersion;
+  }
+
+  int getCounter() {
+    return _counter;
+  }
+
+  Uint8List getBody() {
+    return _ciphertext;
+  }
+
+  void verifyMac(IdentityKey senderIdentityKey, IdentityKey receiverIdentityKey,
+      Uint8List macKey) {
+    List<Uint8List> parts = ByteUtil.splitTwo(
+        _serialized, _serialized.length - MAC_LENGTH, MAC_LENGTH);
+    Uint8List ourMac =
+        _getMac(senderIdentityKey, receiverIdentityKey, macKey, parts[0]);
+    Uint8List theirMac = parts[1];
+
+    if (Digest(ourMac) != Digest(theirMac)) {
+      throw new InvalidMessageException("Bad Mac!");
+    }
+  }
+
+  Uint8List _getMac(IdentityKey senderIdentityKey,
+      IdentityKey receiverIdentityKey, Uint8List macKey, Uint8List serialized) {
+    var mac = Hmac(sha256, macKey); // HMAC-SHA256
+
+    var output = AccumulatorSink<Digest>();
+    var input = mac.startChunkedConversion(output);
+    input.add(senderIdentityKey.getPublicKey().serialize());
+    input.add(receiverIdentityKey.getPublicKey().serialize());
+    input.add(serialized);
+    input.close();
+    Uint8List fullMac = output.events.single.bytes;
+    return ByteUtil.trim(fullMac, MAC_LENGTH);
+  }
+
   @override
   int getType() {
-    // TODO: implement getType
-    throw UnimplementedError();
+    return CiphertextMessage.WHISPER_TYPE;
   }
 
   @override
   Uint8List serialize() {
-    // TODO: implement serialize
-    throw UnimplementedError();
+    return _serialized;
   }
 }
