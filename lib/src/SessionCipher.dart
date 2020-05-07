@@ -11,6 +11,7 @@ import 'package:libsignalprotocoldart/src/NoSessionException.dart';
 import 'package:libsignalprotocoldart/src/SessionBuilder.dart';
 import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
 import 'package:libsignalprotocoldart/src/UntrustedIdentityException.dart';
+import 'package:libsignalprotocoldart/src/cbc.dart';
 import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
 import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
 import 'package:libsignalprotocoldart/src/protocol/CiphertextMessage.dart';
@@ -293,36 +294,14 @@ class SessionCipher {
   }
 
   Uint8List getCiphertext(MessageKeys messageKeys, Uint8List plaintext) {
-    // try {
-    //   Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, messageKeys.getCipherKey(), messageKeys.getIv());
-    //   return cipher.doFinal(plaintext);
-    // } catch (IllegalBlockSizeException | BadPaddingException e) {
-    //   throw new AssertionError(e);
-    // }
+    return aesCbcEncrypt(
+        messageKeys.getCipherKey(), messageKeys.getIv(), plaintext);
   }
 
   Uint8List _getPlaintext(MessageKeys messageKeys, Uint8List cipherText) {
-    // try {
-    //   Cipher cipher = getCipher(Cipher.DECRYPT_MODE, messageKeys.getCipherKey(), messageKeys.getIv());
-    //   return cipher.doFinal(cipherText);
-    // } catch (IllegalBlockSizeException | BadPaddingException e) {
-    //   throw new InvalidMessageException(e);
-    // }
+    return aesCbcDecrypt(
+        messageKeys.getCipherKey(), messageKeys.getIv(), cipherText);
   }
-
-  /*
-   Cipher _getCipher(int mode, SecretKeySpec key, IvParameterSpec iv) {
-    try {
-      Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-      cipher.init(mode, key, iv);
-      return cipher;
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException | java.security.InvalidKeyException |
-             InvalidAlgorithmParameterException e)
-    {
-      throw new AssertionError(e);
-    }
-    */
-
 }
 
 class NullDecryptionCallback implements DecryptionCallback {
