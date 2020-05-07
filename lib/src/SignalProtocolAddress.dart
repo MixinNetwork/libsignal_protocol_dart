@@ -1,6 +1,6 @@
 class SignalProtocolAddress {
-  String _name;
-  int _deviceId;
+  final String _name;
+  final int _deviceId;
 
   SignalProtocolAddress(this._name, this._deviceId);
 
@@ -14,18 +14,20 @@ class SignalProtocolAddress {
 
   @override
   String toString() {
-    return "$_name:$_deviceId";
+    return '$_name:$_deviceId';
   }
 
   @override
   bool operator ==(other) {
-    if (other == null) return false;
+    if (other == null) {
+      return false;
+    }
     if (!(other is SignalProtocolAddress)) return false;
 
-    SignalProtocolAddress that = other as SignalProtocolAddress;
-    return this._name == that._name && this._deviceId == that._deviceId;
+    var that = other as SignalProtocolAddress;
+    return _name == that._name && _deviceId == that._deviceId;
   }
 
   @override
-  int get hashCode => this._name.hashCode ^ this._deviceId;
+  int get hashCode => _name.hashCode ^ _deviceId;
 }

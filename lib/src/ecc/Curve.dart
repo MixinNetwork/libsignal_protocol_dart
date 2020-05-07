@@ -52,7 +52,7 @@ class Curve {
       throw Exception("privateKey value is null");
     }
     if (publicKey.getType() != privateKey.getType()) {
-      throw Exception("Public and private keys must be of the same type!");
+      throw Exception('Public and private keys must be of the same type!');
     }
 
     if (publicKey.getType() == djbType) {

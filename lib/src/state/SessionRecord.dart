@@ -8,22 +8,22 @@ import 'LocalStorageProtocol.pb.dart';
 class SessionRecord {
   static final int ARCHIVED_STATES_MAX_LENGTH = 40;
   var _sessionState = SessionState();
-  var _previousStates = LinkedList<SessionState>();
+  final _previousStates = LinkedList<SessionState>();
   bool _fresh = false;
 
   SessionRecord() {
-    this._fresh = true;
+    _fresh = true;
   }
 
   SessionRecord.fromSessionState(SessionState sessionState) {
-    this._sessionState = sessionState;
-    this._fresh = false;
+    _sessionState = sessionState;
+    _fresh = false;
   }
 
   SessionRecord.fromSerialized(Uint8List serialized) {
     var record = RecordStructure.fromBuffer(serialized);
-    this._sessionState = SessionState.fromStructure(record.currentSession);
-    this._fresh = false;
+    _sessionState = SessionState.fromStructure(record.currentSession);
+    _fresh = false;
 
     for (var previousStructure in record.previousSessions) {
       _previousStates.add(SessionState.fromStructure(previousStructure));
@@ -36,7 +36,7 @@ class SessionRecord {
       return true;
     }
 
-    for (SessionState state in _previousStates) {
+    for (var state in _previousStates) {
       if (state.getSessionVersion() == version &&
           aliceBaseKey == _sessionState.getAliceBaseKey()) {
         return true;
@@ -62,7 +62,7 @@ class SessionRecord {
   }
 
   void archiveCurrentState() {
-    promoteState(new SessionState());
+    promoteState(SessionState());
   }
 
   void promoteState(SessionState promotedState) {

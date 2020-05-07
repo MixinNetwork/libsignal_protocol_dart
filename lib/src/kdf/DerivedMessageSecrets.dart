@@ -13,12 +13,12 @@ class DerivedMessageSecrets {
   Uint8List _iv;
 
   DerivedMessageSecrets(Uint8List okm) {
-    List<Uint8List> keys =
+    var keys =
         ByteUtil.split(okm, _CIPHER_KEY_LENGTH, _MAC_KEY_LENGTH, _IV_LENGTH);
 
-    this._cipherKey = keys[0];
-    this._macKey = keys[1];
-    this._iv = keys[2];
+    _cipherKey = keys[0];
+    _macKey = keys[1];
+    _iv = keys[2];
   }
 
   Uint8List getCipherKey() {

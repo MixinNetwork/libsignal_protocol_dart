@@ -19,7 +19,7 @@ import 'package:libsignalprotocoldart/src/state/SignedPreKeyStore.dart';
 import 'package:optional/optional.dart';
 
 class SessionBuilder {
-  static final String TAG = "SessionBulder";
+  static final String TAG = 'SessionBulder';
 
   SessionStore _sessionStore;
   PreKeyStore _preKeyStore;
