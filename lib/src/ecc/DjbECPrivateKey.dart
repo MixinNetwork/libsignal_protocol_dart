@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
+import 'Curve.dart';
+import 'ECPrivateKey.dart';
 
 class DjbECPrivateKey extends ECPrivateKey {
   Uint8List privateKey;

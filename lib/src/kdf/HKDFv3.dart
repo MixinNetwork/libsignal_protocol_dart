@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
+import 'HKDF.dart';
 
 class HKDFv3 extends HKDF {
   @override

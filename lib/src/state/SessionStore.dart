@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
+import '../SignalProtocolAddress.dart';
 
 import 'SessionRecord.dart';
 

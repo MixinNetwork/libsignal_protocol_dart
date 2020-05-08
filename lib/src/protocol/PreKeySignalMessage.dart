@@ -1,15 +1,15 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
-import 'package:libsignalprotocoldart/src/InvalidMessageException.dart';
-import 'package:libsignalprotocoldart/src/LegacyMessageException.dart';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/protocol/CiphertextMessage.dart';
-import 'package:libsignalprotocoldart/src/protocol/SignalMessage.dart';
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
-import 'package:libsignalprotocoldart/src/state/WhisperTextProtocol.pb.dart'
+import '../IdentityKey.dart';
+import '../InvalidKeyException.dart';
+import '../InvalidMessageException.dart';
+import '../LegacyMessageException.dart';
+import '../ecc/Curve.dart';
+import '../ecc/ECPublicKey.dart';
+import '../protocol/CiphertextMessage.dart';
+import '../protocol/SignalMessage.dart';
+import '../util/ByteUtil.dart';
+import '../state/WhisperTextProtocol.pb.dart'
     as SignalProtos;
 
 import 'package:optional/optional.dart';

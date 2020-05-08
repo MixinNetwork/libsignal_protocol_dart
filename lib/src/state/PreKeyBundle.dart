@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
+import '../IdentityKey.dart';
+import '../ecc/ECPublicKey.dart';
 
 class PreKeyBundle {
   int _registrationId;

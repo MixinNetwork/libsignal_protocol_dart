@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/state/PreKeyRecord.dart';
+import 'PreKeyRecord.dart';
 
 abstract class PreKeyStore {
   PreKeyRecord loadPreKey(int preKeyId); //  throws InvalidKeyIdException;

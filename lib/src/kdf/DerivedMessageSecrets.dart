@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
+import '../util/ByteUtil.dart';
 
 class DerivedMessageSecrets {
   static final int SIZE = 80;

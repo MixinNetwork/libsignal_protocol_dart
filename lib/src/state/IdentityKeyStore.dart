@@ -1,6 +1,6 @@
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/IdentityKeyPair.dart';
-import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
+import '../IdentityKey.dart';
+import '../IdentityKeyPair.dart';
+import '../SignalProtocolAddress.dart';
 
 enum Direction { SENDING, RECEIVING }
 

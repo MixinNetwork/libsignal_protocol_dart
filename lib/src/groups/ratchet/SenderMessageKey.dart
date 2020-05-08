@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/kdf/HKDFv3.dart';
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
+import '../../kdf/HKDFv3.dart';
+import '../../util/ByteUtil.dart';
 
 class SenderMessageKey {
   int _iteration;

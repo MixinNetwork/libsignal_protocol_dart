@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:fixnum/fixnum.dart';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
+import '../ecc/Curve.dart';
 
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/state/LocalStorageProtocol.pb.dart';
+import '../ecc/ECKeyPair.dart';
+import 'LocalStorageProtocol.pb.dart';
 
 class SignedPreKeyRecord {
   SignedPreKeyRecordStructure _structure;

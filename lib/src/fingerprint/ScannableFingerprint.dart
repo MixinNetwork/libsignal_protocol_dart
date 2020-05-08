@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/fingerprint/FingerprintParsingException.dart';
-import 'package:libsignalprotocoldart/src/fingerprint/FingerprintVersionMismatchException.dart';
-import 'package:libsignalprotocoldart/src/state/FingerprintProtocol.pb.dart';
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
+import 'FingerprintParsingException.dart';
+import 'FingerprintVersionMismatchException.dart';
+import '../state/FingerprintProtocol.pb.dart';
+import '../util/ByteUtil.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:crypto/crypto.dart';
 

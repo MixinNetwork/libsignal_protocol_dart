@@ -3,9 +3,9 @@ import 'dart:core';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
-import 'package:libsignalprotocoldart/src/kdf/DerivedMessageSecrets.dart';
-import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
-import 'package:libsignalprotocoldart/src/ratchet/MessageKeys.dart';
+import '../kdf/DerivedMessageSecrets.dart';
+import '../kdf/HKDF.dart';
+import '../ratchet/MessageKeys.dart';
 
 class ChainKey {
   static final Uint8List MESSAGE_KEY_SEED = Uint8List.fromList([0x01]);

@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:convert/convert.dart';
-import 'package:libsignalprotocoldart/src/kdf/HKDFv2.dart';
-import 'package:libsignalprotocoldart/src/kdf/HKDFv3.dart';
+import 'HKDFv2.dart';
+import 'HKDFv3.dart';
 
 abstract class HKDF {
   static final int HASH_OUTPUT_SIZE = 32;

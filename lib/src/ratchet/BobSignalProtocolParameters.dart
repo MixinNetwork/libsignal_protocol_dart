@@ -1,7 +1,7 @@
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/IdentityKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
+import '../IdentityKey.dart';
+import '../IdentityKeyPair.dart';
+import '../ecc/ECKeyPair.dart';
+import '../ecc/ECPublicKey.dart';
 import 'package:optional/optional.dart';
 
 class BobSignalProtocolParameters {

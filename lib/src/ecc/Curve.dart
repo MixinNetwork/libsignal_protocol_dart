@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:libsignalprotocoldart/src/ecc/DjbECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/DjbECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
+import 'DjbECPrivateKey.dart';
+import 'DjbECPublicKey.dart';
+import 'ECKeyPair.dart';
+import 'ECPrivateKey.dart';
+import 'ECPublicKey.dart';
 
 class Curve {
   static const int djbType = 0x05;

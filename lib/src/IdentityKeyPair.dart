@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
+import 'IdentityKey.dart';
+import 'ecc/ECPrivateKey.dart';
 
 import 'ecc/Curve.dart';
 import 'state/LocalStorageProtocol.pb.dart';

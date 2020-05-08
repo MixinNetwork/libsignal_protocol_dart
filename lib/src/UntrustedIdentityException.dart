@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
+import 'IdentityKey.dart';
 
 class UntrustedIdentityException implements Exception {
   final String name;

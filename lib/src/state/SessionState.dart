@@ -1,18 +1,18 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/IdentityKeyPair.dart';
-import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
-import 'package:libsignalprotocoldart/src/ratchet/ChainKey.dart';
-import 'package:libsignalprotocoldart/src/ratchet/MessageKeys.dart';
-import 'package:libsignalprotocoldart/src/ratchet/RootKey.dart';
-import 'package:libsignalprotocoldart/src/state/LocalStorageProtocol.pb.dart';
+import '../IdentityKey.dart';
+import '../IdentityKeyPair.dart';
+import '../InvalidKeyException.dart';
+import '../ecc/Curve.dart';
+import '../ecc/ECKeyPair.dart';
+import '../ecc/ECPrivateKey.dart';
+import '../ecc/ECPublicKey.dart';
+import '../kdf/HKDF.dart';
+import '../ratchet/ChainKey.dart';
+import '../ratchet/MessageKeys.dart';
+import '../ratchet/RootKey.dart';
+import 'LocalStorageProtocol.pb.dart';
 import 'package:optional/optional.dart';
 import 'package:tuple/tuple.dart';
 

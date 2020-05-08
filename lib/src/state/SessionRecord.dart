@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/state/SessionState.dart';
+import 'SessionState.dart';
 
 import 'LocalStorageProtocol.pb.dart';
 

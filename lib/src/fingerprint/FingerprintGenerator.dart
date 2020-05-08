@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/fingerprint/Fingerprint.dart';
+import 'Fingerprint.dart';
 
 import '../IdentityKey.dart';
 

@@ -1,6 +1,6 @@
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/IdentityKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
+import '../IdentityKey.dart';
+import '../IdentityKeyPair.dart';
+import '../ecc/Curve.dart';
 import "package:pointycastle/pointycastle.dart";
 
 class KeyHelper {

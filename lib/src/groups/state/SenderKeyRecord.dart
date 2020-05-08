@@ -1,11 +1,10 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/groups/state/SenderKeyState.dart';
-import 'package:libsignalprotocoldart/src/state/LocalStorageProtocol.pb.dart';
-
+import '../../ecc/ECKeyPair.dart';
+import '../../ecc/ECPublicKey.dart';
+import 'SenderKeyState.dart';
+import '../../state/LocalStorageProtocol.pb.dart';
 import '../../InvalidKeyIdException.dart';
 
 class SenderKeyRecord {

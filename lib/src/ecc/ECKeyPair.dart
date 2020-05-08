@@ -1,5 +1,5 @@
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
+import 'ECPrivateKey.dart';
+import 'ECPublicKey.dart';
 
 class ECKeyPair {
   ECPublicKey _publicKey;

@@ -1,5 +1,5 @@
 class FingerprintParsingException implements Exception {
-  final message;
+  final _message;
 
-  FingerprintParsingException(this.message);
+  FingerprintParsingException(this._message);
 }

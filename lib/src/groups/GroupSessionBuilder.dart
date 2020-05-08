@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/state/WhisperTextProtocol.pb.dart';
+import '../state/WhisperTextProtocol.pb.dart';
 
 import 'SenderKeyName.dart';
 import 'state/SenderKeyStore.dart';

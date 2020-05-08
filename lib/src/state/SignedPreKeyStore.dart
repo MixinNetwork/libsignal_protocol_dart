@@ -1,4 +1,4 @@
-import 'package:libsignalprotocoldart/src/state/SignedPreKeyRecord.dart';
+import 'SignedPreKeyRecord.dart';
 
 abstract class SignedPreKeyStore {
   SignedPreKeyRecord loadSignedPreKey(

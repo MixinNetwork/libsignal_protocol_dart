@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/kdf/DerivedRootSecrets.dart';
-import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
-import 'package:libsignalprotocoldart/src/ratchet/ChainKey.dart';
+import '../ecc/Curve.dart';
+import '../ecc/ECKeyPair.dart';
+import '../ecc/ECPublicKey.dart';
+import '../kdf/DerivedRootSecrets.dart';
+import '../kdf/HKDF.dart';
+import '../ratchet/ChainKey.dart';
 import 'package:tuple/tuple.dart';
 
 class RootKey {

@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/IdentityKey.dart';
-import 'package:libsignalprotocoldart/src/fingerprint/DisplayableFingerprint.dart';
-import 'package:libsignalprotocoldart/src/fingerprint/Fingerprint.dart';
-import 'package:libsignalprotocoldart/src/fingerprint/FingerprintGenerator.dart';
+import '../IdentityKey.dart';
+import 'DisplayableFingerprint.dart';
+import 'Fingerprint.dart';
+import 'FingerprintGenerator.dart';
 import 'package:crypto/crypto.dart';
-import 'package:libsignalprotocoldart/src/fingerprint/ScannableFingerprint.dart';
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
-import 'package:libsignalprotocoldart/src/util/IdentityKeyComparator.dart';
+import 'ScannableFingerprint.dart';
+import '../util/ByteUtil.dart';
+import '../util/IdentityKeyComparator.dart';
 
 class NumericFingerprintGenerator implements FingerprintGenerator {
 

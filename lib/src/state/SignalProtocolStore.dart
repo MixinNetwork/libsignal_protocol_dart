@@ -1,7 +1,7 @@
-import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
-import 'package:libsignalprotocoldart/src/state/PreKeyStore.dart';
-import 'package:libsignalprotocoldart/src/state/SessionStore.dart';
-import 'package:libsignalprotocoldart/src/state/SignedPreKeyStore.dart';
+import 'IdentityKeyStore.dart';
+import 'PreKeyStore.dart';
+import 'SessionStore.dart';
+import 'SignedPreKeyStore.dart';
 
 abstract class SignalProtocolStore extends IdentityKeyStore
     with PreKeyStore, SessionStore, SignedPreKeyStore {}

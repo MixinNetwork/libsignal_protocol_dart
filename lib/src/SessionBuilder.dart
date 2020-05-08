@@ -1,20 +1,20 @@
-import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
-import 'package:libsignalprotocoldart/src/SignalProtocolAddress.dart';
-import 'package:libsignalprotocoldart/src/UntrustedIdentityException.dart';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/protocol/PreKeySignalMessage.dart';
-import 'package:libsignalprotocoldart/src/ratchet/AliceSignalProtocolParameters.dart';
-import 'package:libsignalprotocoldart/src/ratchet/BobSignalProtocolParameters.dart';
-import 'package:libsignalprotocoldart/src/ratchet/RatchetingSession.dart';
-import 'package:libsignalprotocoldart/src/state/IdentityKeyStore.dart';
-import 'package:libsignalprotocoldart/src/state/PreKeyBundle.dart';
-import 'package:libsignalprotocoldart/src/state/PreKeyStore.dart';
-import 'package:libsignalprotocoldart/src/state/SessionRecord.dart';
-import 'package:libsignalprotocoldart/src/state/SessionStore.dart';
-import 'package:libsignalprotocoldart/src/state/SignalProtocolStore.dart';
-import 'package:libsignalprotocoldart/src/state/SignedPreKeyStore.dart';
+import 'InvalidKeyException.dart';
+import 'SignalProtocolAddress.dart';
+import 'UntrustedIdentityException.dart';
+import 'ecc/Curve.dart';
+import 'ecc/ECKeyPair.dart';
+import 'ecc/ECPublicKey.dart';
+import 'protocol/PreKeySignalMessage.dart';
+import 'ratchet/AliceSignalProtocolParameters.dart';
+import 'ratchet/BobSignalProtocolParameters.dart';
+import 'ratchet/RatchetingSession.dart';
+import 'state/IdentityKeyStore.dart';
+import 'state/PreKeyBundle.dart';
+import 'state/PreKeyStore.dart';
+import 'state/SessionRecord.dart';
+import 'state/SessionStore.dart';
+import 'state/SignalProtocolStore.dart';
+import 'state/SignedPreKeyStore.dart';
 
 import 'package:optional/optional.dart';
 

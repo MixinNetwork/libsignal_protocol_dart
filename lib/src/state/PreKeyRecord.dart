@@ -1,8 +1,8 @@
 import 'dart:typed_data';
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
+import '../ecc/Curve.dart';
+import '../ecc/ECKeyPair.dart';
+import '../ecc/ECPrivateKey.dart';
+import '../ecc/ECPublicKey.dart';
 import 'LocalStorageProtocol.pb.dart';
 
 class PreKeyRecord {
