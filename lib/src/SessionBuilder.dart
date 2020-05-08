@@ -3,7 +3,6 @@ import 'SignalProtocolAddress.dart';
 import 'UntrustedIdentityException.dart';
 import 'ecc/Curve.dart';
 import 'ecc/ECKeyPair.dart';
-import 'ecc/ECPublicKey.dart';
 import 'protocol/PreKeySignalMessage.dart';
 import 'ratchet/AliceSignalProtocolParameters.dart';
 import 'ratchet/BobSignalProtocolParameters.dart';
@@ -33,11 +32,11 @@ class SessionBuilder {
       SignedPreKeyStore signedPreKeyStore,
       IdentityKeyStore identityKeyStore,
       SignalProtocolAddress remoteAddress) {
-    this._sessionStore = sessionStore;
-    this._preKeyStore = preKeyStore;
-    this._signedPreKeyStore = signedPreKeyStore;
-    this._identityKeyStore = identityKeyStore;
-    this._remoteAddress = remoteAddress;
+    _sessionStore = sessionStore;
+    _preKeyStore = preKeyStore;
+    _signedPreKeyStore = signedPreKeyStore;
+    _identityKeyStore = identityKeyStore;
+    _remoteAddress = remoteAddress;
   }
 
   SessionBuilder.fromSignalStore(
@@ -55,7 +54,7 @@ class SessionBuilder {
           _remoteAddress.getName(), theirIdentityKey);
     }
 
-    Optional<int> unsignedPreKeyId = processV3(sessionRecord, message);
+    var unsignedPreKeyId = processV3(sessionRecord, message);
 
     _identityKeyStore.saveIdentity(_remoteAddress, theirIdentityKey);
 
@@ -126,19 +125,18 @@ class SessionBuilder {
             preKey.getIdentityKey().getPublicKey(),
             preKey.getSignedPreKey().serialize(),
             preKey.getSignedPreKeySignature())) {
-      throw InvalidKeyException("Invalid signature on device key!");
+      throw InvalidKeyException('Invalid signature on device key!');
     }
 
     if (preKey.getSignedPreKey() == null) {
-      throw InvalidKeyException("No signed prekey!");
+      throw InvalidKeyException('No signed prekey!');
     }
 
-    SessionRecord sessionRecord = _sessionStore.loadSession(_remoteAddress);
-    ECKeyPair ourBaseKey = Curve.generateKeyPair();
-    ECPublicKey theirSignedPreKey = preKey.getSignedPreKey();
-    Optional<ECPublicKey> theirOneTimePreKey =
-        Optional.ofNullable(preKey.getPreKey());
-    Optional<int> theirOneTimePreKeyId = theirOneTimePreKey.isPresent
+    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+    var ourBaseKey = Curve.generateKeyPair();
+    var theirSignedPreKey = preKey.getSignedPreKey();
+    var theirOneTimePreKey = Optional.ofNullable(preKey.getPreKey());
+    var theirOneTimePreKeyId = theirOneTimePreKey.isPresent
         ? Optional.of(preKey.getPreKeyId())
         : Optional<int>.empty();
 

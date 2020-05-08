@@ -1,6 +1,6 @@
 class FingerprintVersionMismatchException implements Exception {
-  int _theirVersion;
-  int _ourVersion;
+  final int _theirVersion;
+  final int _ourVersion;
 
   FingerprintVersionMismatchException(this._theirVersion, this._ourVersion);
 }

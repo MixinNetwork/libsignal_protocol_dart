@@ -2,8 +2,8 @@ import 'DisplayableFingerprint.dart';
 import 'ScannableFingerprint.dart';
 
 class Fingerprint {
-  DisplayableFingerprint _displayableFingerprint;
-  ScannableFingerprint _scannableFingerprint;
+  final DisplayableFingerprint _displayableFingerprint;
+  final ScannableFingerprint _scannableFingerprint;
 
   Fingerprint(this._displayableFingerprint, this._scannableFingerprint);
 

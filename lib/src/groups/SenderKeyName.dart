@@ -1,8 +1,8 @@
 import '../SignalProtocolAddress.dart';
 
 class SenderKeyName {
-  String _groupId;
-  SignalProtocolAddress _sender;
+  final String _groupId;
+  final SignalProtocolAddress _sender;
 
   SenderKeyName(this._groupId, this._sender);
 
@@ -11,15 +11,14 @@ class SenderKeyName {
   SignalProtocolAddress get sender => _sender;
 
   String serialize() {
-    return "$_groupId::${_sender.getName()}::${_sender.getDeviceId()}";
+    return '$_groupId::${_sender.getName()}::${_sender.getDeviceId()}';
   }
 
   @override
   bool operator ==(other) {
-    if (other == null) return false;
     if (!(other is SenderKeyName)) return false;
 
-    SenderKeyName that = other as SenderKeyName;
+    var that = other as SenderKeyName;
     return _groupId == that.groupId && _sender == that.sender;
   }
 

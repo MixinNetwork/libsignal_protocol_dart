@@ -11,7 +11,7 @@ class IdentityKey {
   IdentityKey(this._publicKey);
 
   IdentityKey.fromBytes(Uint8List bytes, int offset) {
-    this._publicKey = Curve.decodePoint(bytes, offset);
+    _publicKey = Curve.decodePoint(bytes, offset);
   }
 
   ECPublicKey getPublicKey() {

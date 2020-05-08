@@ -1,21 +1,23 @@
 import 'dart:typed_data';
 
+import 'package:protobuf/protobuf.dart';
+import 'package:crypto/crypto.dart';
+
 import 'FingerprintParsingException.dart';
 import 'FingerprintVersionMismatchException.dart';
 import '../state/FingerprintProtocol.pb.dart';
 import '../util/ByteUtil.dart';
-import 'package:protobuf/protobuf.dart';
-import 'package:crypto/crypto.dart';
 
 class ScannableFingerprint {
   int _version;
   CombinedFingerprints _fingerprints;
 
-  ScannableFingerprint(int version, Uint8List localFingerprintData, Uint8List remoteFingerprintData) {
-    LogicalFingerprint localFingerprint = LogicalFingerprint.create()
+  ScannableFingerprint(int version, Uint8List localFingerprintData,
+      Uint8List remoteFingerprintData) {
+    var localFingerprint = LogicalFingerprint.create()
       ..content = ByteUtil.trim(localFingerprintData, 32);
 
-    LogicalFingerprint remoteFingerprint = LogicalFingerprint.create()
+    var remoteFingerprint = LogicalFingerprint.create()
       ..content = ByteUtil.trim(remoteFingerprintData, 32);
 
     _version = version;
@@ -27,13 +29,18 @@ class ScannableFingerprint {
 
   bool compareTo(Uint8List scannedFingerprintData) {
     try {
-      CombinedFingerprints scanned = CombinedFingerprints.fromBuffer(scannedFingerprintData);
-      if (scanned.hasRemoteFingerprint() || scanned.hasLocalFingerprint() ||
-        scanned.hasVersion() || scanned.version != _version) {
+      var scanned =
+          CombinedFingerprints.fromBuffer(scannedFingerprintData);
+      if (scanned.hasRemoteFingerprint() ||
+          scanned.hasLocalFingerprint() ||
+          scanned.hasVersion() ||
+          scanned.version != _version) {
         throw FingerprintVersionMismatchException(scanned.version, _version);
       }
-      return Digest(_fingerprints.localFingerprint.content) == Digest(scanned.remoteFingerprint.content) &&
-          Digest(_fingerprints.remoteFingerprint.content) == Digest(scanned.localFingerprint.content);
+      return Digest(_fingerprints.localFingerprint.content) ==
+              Digest(scanned.remoteFingerprint.content) &&
+          Digest(_fingerprints.remoteFingerprint.content) ==
+              Digest(scanned.localFingerprint.content);
     } on InvalidProtocolBufferException catch (e) {
       throw FingerprintParsingException(e);
     }

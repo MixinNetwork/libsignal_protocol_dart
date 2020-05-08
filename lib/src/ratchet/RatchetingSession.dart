@@ -16,7 +16,6 @@ import '../ratchet/SymmetricSignalProtocolParameters.dart';
 import '../state/SessionState.dart';
 import '../util/ByteUtil.dart';
 import 'package:optional/optional.dart';
-import 'package:tuple/tuple.dart';
 
 class RatchetingSession {
   static void initializeSession(
@@ -59,7 +58,7 @@ class RatchetingSession {
       sessionState
           .setLocalIdentityKey(parameters.getOurIdentityKey().getPublicKey());
 
-      ECKeyPair sendingRatchetKey = Curve.generateKeyPair();
+      var sendingRatchetKey = Curve.generateKeyPair();
       var secrets = Uint8List(0);
 
       secrets.addAll(getDiscontinuityBytes());
@@ -78,8 +77,8 @@ class RatchetingSession {
             parameters.getOurBaseKey().getPrivateKey()));
       }
 
-      DerivedKeys derivedKeys = calculateDerivedKeys(secrets);
-      Tuple2<RootKey, ChainKey> sendingChain = derivedKeys
+      var derivedKeys = calculateDerivedKeys(secrets);
+      var sendingChain = derivedKeys
           .getRootKey()
           .createChain(parameters.getTheirRatchetKey(), sendingRatchetKey);
 
@@ -117,33 +116,33 @@ class RatchetingSession {
             parameters.getOurOneTimePreKey().value.getPrivateKey()));
       }
 
-      DerivedKeys derivedKeys = calculateDerivedKeys(secrets);
+      var derivedKeys = calculateDerivedKeys(secrets);
 
       sessionState.setSenderChain(
           parameters.getOurRatchetKey(), derivedKeys.getChainKey());
       sessionState.setRootKey(derivedKeys.getRootKey());
     } on IOException catch (e) {
-      throw new AssertionError(e);
+      throw AssertionError(e);
     }
   }
 
   static Uint8List getDiscontinuityBytes() {
-    Uint8List discontinuity = Uint8List(32);
-    for (int i = 0, len = discontinuity.length; i < len; i++) {
+    var discontinuity = Uint8List(32);
+    for (var i = 0, len = discontinuity.length; i < len; i++) {
       discontinuity[i] = 0xFF;
     }
     return discontinuity;
   }
 
   static DerivedKeys calculateDerivedKeys(Uint8List masterSecret) {
-    HKDF kdf = new HKDFv3();
-    List<int> bytes = utf8.encode("WhisperText");
-    Uint8List derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
-    List<Uint8List> derivedSecrets =
+    HKDF kdf = HKDFv3();
+    var bytes = utf8.encode('WhisperText');
+    var derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
+    var derivedSecrets =
         ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
 
-    return new DerivedKeys(new RootKey(kdf, derivedSecrets[0]),
-        new ChainKey(kdf, derivedSecrets[1], 0));
+    return DerivedKeys(RootKey(kdf, derivedSecrets[0]),
+        ChainKey(kdf, derivedSecrets[1], 0));
   }
 
   static bool isAlice(ECPublicKey ourKey, ECPublicKey theirKey) {
@@ -155,7 +154,7 @@ class DerivedKeys {
   final RootKey _rootKey;
   final ChainKey _chainKey;
 
-  DerivedKeys(this._rootKey, this._chainKey) {}
+  DerivedKeys(this._rootKey, this._chainKey);
 
   RootKey getRootKey() {
     return _rootKey;

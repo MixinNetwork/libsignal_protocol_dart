@@ -10,14 +10,12 @@ abstract class FingerprintGenerator {
       Uint8List localStableIdentifier,
       IdentityKey localIdentityKey,
       Uint8List remoteStableIdentifier,
-      IdentityKey remoteIdentityKey
-  );
+      IdentityKey remoteIdentityKey);
 
   Fingerprint createListFor(
       int version,
       Uint8List localStableIdentifier,
       List<IdentityKey> localIdentityKey,
       Uint8List remoteStableIdentifier,
-      List<IdentityKey> remoteIdentityKey
-  );
+      List<IdentityKey> remoteIdentityKey);
 }

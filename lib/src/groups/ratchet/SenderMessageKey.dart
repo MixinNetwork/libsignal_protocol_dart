@@ -10,8 +10,9 @@ class SenderMessageKey {
   Uint8List _seed;
 
   SenderMessageKey(int iteration, Uint8List seed) {
-    Uint8List derivative = HKDFv3().deriveSecrets(seed, Uint8List.fromList("WhisperGroup".codeUnits), 48);
-    List<Uint8List> parts = ByteUtil.splitTwo(derivative, 16, 32);
+    var derivative = HKDFv3()
+        .deriveSecrets(seed, Uint8List.fromList('WhisperGroup'.codeUnits), 48);
+    var parts = ByteUtil.splitTwo(derivative, 16, 32);
 
     _iteration = iteration;
     _seed = seed;

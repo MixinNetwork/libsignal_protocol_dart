@@ -10,21 +10,24 @@ import '../../InvalidKeyIdException.dart';
 class SenderKeyRecord {
   static const int _MAX_STATES = 5;
 
-  LinkedList<Entry<SenderKeyState>> _senderKeyStates = LinkedList<Entry<SenderKeyState>>();
+  final LinkedList<Entry<SenderKeyState>> _senderKeyStates =
+      LinkedList<Entry<SenderKeyState>>();
 
   SenderKeyRecord._();
 
   SenderKeyRecord.fromSerialized(Uint8List serialized) {
-    SenderKeyRecordStructure senderKeyRecordStructure = SenderKeyRecordStructure.fromBuffer(serialized);
+    var senderKeyRecordStructure =
+        SenderKeyRecordStructure.fromBuffer(serialized);
     for (var structure in senderKeyRecordStructure.senderKeyStates) {
-      _senderKeyStates.add(Entry(SenderKeyState.fromSenderKeyStateStructure(structure)));
+      _senderKeyStates
+          .add(Entry(SenderKeyState.fromSenderKeyStateStructure(structure)));
     }
   }
 
   bool get isEmpty => _senderKeyStates.isEmpty;
 
   SenderKeyState getSenderKeyState() {
-    if(_senderKeyStates.isNotEmpty) {
+    if (_senderKeyStates.isNotEmpty) {
       return _senderKeyStates.first.value;
     } else {
       throw InvalidKeyIdException('No key state in record!');
@@ -40,16 +43,20 @@ class SenderKeyRecord {
     throw InvalidKeyIdException('No key for: $keyId');
   }
 
-  addSenderKeyState(int id, int iteration, Uint8List chainKey, ECPublicKey signatureKey) {
-    _senderKeyStates.addFirst(Entry(SenderKeyState.fromPublicKey(id, iteration, chainKey, signatureKey)));
+  void addSenderKeyState(
+      int id, int iteration, Uint8List chainKey, ECPublicKey signatureKey) {
+    _senderKeyStates.addFirst(Entry(
+        SenderKeyState.fromPublicKey(id, iteration, chainKey, signatureKey)));
     if (_senderKeyStates.length > _MAX_STATES) {
       _senderKeyStates.remove(_senderKeyStates.last);
     }
   }
 
-  setSenderKeyState(int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
+  void setSenderKeyState(
+      int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
     _senderKeyStates.clear();
-    _senderKeyStates.add(Entry(SenderKeyState.fromKeyPair(id, iteration, chainKey, signatureKey)));
+    _senderKeyStates.add(Entry(
+        SenderKeyState.fromKeyPair(id, iteration, chainKey, signatureKey)));
   }
 
 //  Uint8List serialize() {

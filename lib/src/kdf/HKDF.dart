@@ -16,7 +16,7 @@ abstract class HKDF {
       case 3:
         return HKDFv3();
       default:
-        throw new AssertionError("Unknown version: $messageVersion");
+        throw AssertionError('Unknown version: $messageVersion');
     }
   }
 
@@ -39,15 +39,15 @@ abstract class HKDF {
   }
 
   Uint8List expand(Uint8List prk, Uint8List info, int outputSize) {
-    int iterations =
+    var iterations =
         (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
 
     var mix = const <int>[];
 
-    Uint8List results = Uint8List(0);
-    int remainingBytes = outputSize;
+    var results = Uint8List(0);
+    var remainingBytes = outputSize;
 
-    for (int i = getIterationStartOffset();
+    for (var i = getIterationStartOffset();
         i < iterations + getIterationStartOffset();
         i++) {
       var mac = Hmac(sha256, prk);
@@ -60,7 +60,7 @@ abstract class HKDF {
       input.add([i]);
       input.close();
       var stepResult = output.events.single.bytes;
-      int stepSize = min(remainingBytes, stepResult.length);
+      var stepSize = min(remainingBytes, stepResult.length);
 
       results.addAll(stepResult);
       // results.write(stepResult, 0, stepSize);

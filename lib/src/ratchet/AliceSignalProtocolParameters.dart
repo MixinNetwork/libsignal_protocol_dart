@@ -26,7 +26,7 @@ class AliceSignalProtocolParameters {
         theirSignedPreKey == null ||
         theirRatchetKey == null ||
         theirOneTimePreKey == null) {
-      throw ("Null values!");
+      throw ('Null values!');
     }
   }
 
@@ -51,7 +51,7 @@ class AliceSignalProtocolParameters {
   }
 
   static Builder newBuilder() {
-    return new Builder();
+    return Builder();
   }
 
   ECPublicKey getTheirRatchetKey() {

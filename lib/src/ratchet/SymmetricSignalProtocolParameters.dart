@@ -25,7 +25,7 @@ class SymmetricSignalProtocolParameters {
         theirBaseKey == null ||
         theirRatchetKey == null ||
         theirIdentityKey == null) {
-      throw ("Null values!");
+      throw ('Null values!');
     }
   }
 
@@ -54,7 +54,7 @@ class SymmetricSignalProtocolParameters {
   }
 
   static Builder newBuilder() {
-    return new Builder();
+    return Builder();
   }
 }
 
@@ -98,7 +98,7 @@ class Builder {
   }
 
   SymmetricSignalProtocolParameters create() {
-    return new SymmetricSignalProtocolParameters(ourBaseKey, ourRatchetKey,
+    return SymmetricSignalProtocolParameters(ourBaseKey, ourRatchetKey,
         ourIdentityKey, theirBaseKey, theirRatchetKey, theirIdentityKey);
   }
 }

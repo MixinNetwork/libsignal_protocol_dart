@@ -1,50 +1,42 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECKeyPair.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPrivateKey.dart';
-import 'package:libsignalprotocoldart/src/ecc/ECPublicKey.dart';
-import 'package:libsignalprotocoldart/src/groups/ratchet/SenderChainKey.dart';
-import 'package:libsignalprotocoldart/src/groups/ratchet/SenderMessageKey.dart';
-import 'package:libsignalprotocoldart/src/state/LocalStorageProtocol.pb.dart';
 import 'package:optional/optional.dart';
+
+import '../../ecc/Curve.dart';
+import '../../ecc/ECKeyPair.dart';
+import '../../ecc/ECPrivateKey.dart';
+import '../../ecc/ECPublicKey.dart';
+import '../ratchet/SenderChainKey.dart';
+import '../ratchet/SenderMessageKey.dart';
+import '../../state/LocalStorageProtocol.pb.dart';
 
 class SenderKeyState {
   static const int _MAX_MESSAGE_KEYS = 2000;
 
   SenderKeyStateStructure _senderKeyStateStructure;
 
-  SenderKeyState.fromPublicKey(
-      int id,
-      int iteration,
-      Uint8List chainKey,
+  SenderKeyState.fromPublicKey(int id, int iteration, Uint8List chainKey,
       ECPublicKey signatureKeyPublic) {
-    SenderKeyState(id, iteration, chainKey, signatureKeyPublic,
-        Optional.empty());
+    SenderKeyState(
+        id, iteration, chainKey, signatureKeyPublic, Optional.empty());
   }
 
   SenderKeyState.fromKeyPair(
-      int id,
-      int iteration,
-      Uint8List chainKey,
-      ECKeyPair signatureKey) {
+      int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
     SenderKeyState(id, iteration, chainKey, signatureKey.getPublicKey(),
         Optional.of(signatureKey.getPrivateKey()));
   }
 
   SenderKeyState(
-      int id,
-      int iteration,
-      Uint8List chainKey,
-      ECPublicKey signatureKeyPublic,
+      int id, int iteration, Uint8List chainKey, ECPublicKey signatureKeyPublic,
       [Optional<ECPrivateKey> signatureKeyPrivate]) {
     var seed = Uint8List.fromList(chainKey);
     seed.addAll(chainKey);
-    SenderKeyStateStructure_SenderChainKey senderChainKeyStructure =
+    var senderChainKeyStructure =
         SenderKeyStateStructure_SenderChainKey.create()
           ..iteration = iteration
           ..seed = seed;
-    SenderKeyStateStructure_SenderSigningKey signingKeyStructure =
+    var signingKeyStructure =
         SenderKeyStateStructure_SenderSigningKey.create()
           ..public = signatureKeyPublic.serialize();
     if (signatureKeyPrivate.isPresent) {
@@ -89,8 +81,8 @@ class SenderKeyState {
     return false;
   }
 
-  addSenderMessageKey(SenderMessageKey senderMessageKey) {
-    SenderKeyStateStructure_SenderMessageKey senderMessageKeyStructure =
+  void addSenderMessageKey(SenderMessageKey senderMessageKey) {
+    var senderMessageKeyStructure =
         SenderKeyStateStructure_SenderMessageKey.create()
           ..iteration = senderMessageKey.iteration
           ..seed = senderMessageKey.seed;
@@ -106,7 +98,8 @@ class SenderKeyState {
     var index = _senderKeyStateStructure.senderMessageKeys
         .indexWhere((item) => item.iteration == iteration);
     if (index == -1) return null;
-    var senderMessageKey = _senderKeyStateStructure.senderMessageKeys.removeAt(index);
+    var senderMessageKey =
+        _senderKeyStateStructure.senderMessageKeys.removeAt(index);
     return SenderMessageKey(senderMessageKey.iteration, senderMessageKey.seed);
   }
 

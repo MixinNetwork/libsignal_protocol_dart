@@ -26,7 +26,7 @@ class BobSignalProtocolParameters {
         ourOneTimePreKey == null ||
         theirIdentityKey == null ||
         theirBaseKey == null) {
-      throw ("Null value!");
+      throw ('Null value!');
     }
   }
 
@@ -99,7 +99,7 @@ class Builder {
   }
 
   BobSignalProtocolParameters create() {
-    return new BobSignalProtocolParameters(ourIdentityKey, ourSignedPreKey,
+    return BobSignalProtocolParameters(ourIdentityKey, ourSignedPreKey,
         ourRatchetKey, ourOneTimePreKey, theirIdentityKey, theirBaseKey);
   }
 }

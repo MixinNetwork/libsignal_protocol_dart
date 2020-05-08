@@ -9,8 +9,7 @@ import '../ecc/ECPublicKey.dart';
 import '../protocol/CiphertextMessage.dart';
 import '../protocol/SignalMessage.dart';
 import '../util/ByteUtil.dart';
-import '../state/WhisperTextProtocol.pb.dart'
-    as SignalProtos;
+import '../state/WhisperTextProtocol.pb.dart' as SignalProtos;
 
 import 'package:optional/optional.dart';
 
@@ -28,7 +27,7 @@ class PreKeySignalMessage extends CiphertextMessage {
   // throws InvalidMessageException, InvalidVersionException
   {
     try {
-      this._version = ByteUtil.highBitsToInt(serialized[0]);
+      _version = ByteUtil.highBitsToInt(serialized[0]);
 
       var preKeyWhisperMessage =
           SignalProtos.PreKeySignalMessage.fromBuffer(serialized.sublist(1));
@@ -37,21 +36,21 @@ class PreKeySignalMessage extends CiphertextMessage {
           !preKeyWhisperMessage.hasBaseKey() ||
           !preKeyWhisperMessage.hasIdentityKey() ||
           !preKeyWhisperMessage.hasMessage()) {
-        throw InvalidMessageException("Incomplete message.");
+        throw InvalidMessageException('Incomplete message.');
       }
 
       this.serialized = serialized;
-      this.registrationId = preKeyWhisperMessage.registrationId;
-      this.preKeyId = preKeyWhisperMessage.hasPreKeyId()
+      registrationId = preKeyWhisperMessage.registrationId;
+      preKeyId = preKeyWhisperMessage.hasPreKeyId()
           ? Optional.of(preKeyWhisperMessage.preKeyId)
           : Optional.empty();
-      this.signedPreKeyId = preKeyWhisperMessage.hasSignedPreKeyId()
+      signedPreKeyId = preKeyWhisperMessage.hasSignedPreKeyId()
           ? preKeyWhisperMessage.signedPreKeyId
           : -1;
-      this.baseKey = Curve.decodePoint(preKeyWhisperMessage.baseKey, 0);
-      this.identityKey = new IdentityKey(
+      baseKey = Curve.decodePoint(preKeyWhisperMessage.baseKey, 0);
+      identityKey = IdentityKey(
           Curve.decodePoint(preKeyWhisperMessage.identityKey, 0));
-      this.message = SignalMessage.fromSerialized(preKeyWhisperMessage.message);
+      message = SignalMessage.fromSerialized(preKeyWhisperMessage.message);
     } on InvalidKeyException catch (e) {
       throw InvalidMessageException(e.detailMessage);
     } on LegacyMessageException catch (e) {
@@ -67,7 +66,7 @@ class PreKeySignalMessage extends CiphertextMessage {
       ECPublicKey baseKey,
       IdentityKey identityKey,
       SignalMessage message) {
-    this._version = messageVersion;
+    _version = messageVersion;
     this.registrationId = registrationId;
     this.preKeyId = preKeyId;
     this.signedPreKeyId = signedPreKeyId;

@@ -9,9 +9,9 @@ class DerivedRootSecrets {
   Uint8List _chainKey;
 
   DerivedRootSecrets(Uint8List okm) {
-    List<Uint8List> keys = ByteUtil.splitTwo(okm, 32, 32);
-    this._rootKey = keys[0];
-    this._chainKey = keys[1];
+    var keys = ByteUtil.splitTwo(okm, 32, 32);
+    _rootKey = keys[0];
+    _chainKey = keys[1];
   }
 
   Uint8List getRootKey() {

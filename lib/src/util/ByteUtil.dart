@@ -3,9 +3,8 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 
 class ByteUtil {
-
   static Uint8List combine(List<Uint8List> elements) {
-    var results = List<int>();
+    var results = <int>[];
     elements.forEach((Uint8List e) {
       results.addAll(e);
     });
@@ -13,7 +12,7 @@ class ByteUtil {
   }
 
   static Uint8List shortToByteArray(int value, [int offset = 0]) {
-    Uint8List bytes = Uint8List(2);
+    var bytes = Uint8List(2);
     bytes[offset + 1] = value;
     bytes[offset] = value >> 8;
     return bytes;
@@ -39,7 +38,7 @@ class ByteUtil {
         secondLength < 0 ||
         thirdLength < 0 ||
         input.length < firstLength + secondLength + thirdLength) {
-      throw ("Input too small: " + (input == null ? null : hex.encode(input)));
+      throw ('Input too small: ' + (input == null ? null : hex.encode(input)));
     }
     var first = input.sublist(0, firstLength);
     var second = input.sublist(firstLength, firstLength + secondLength);

@@ -2,13 +2,10 @@ import 'ECPrivateKey.dart';
 import 'ECPublicKey.dart';
 
 class ECKeyPair {
-  ECPublicKey _publicKey;
-  ECPrivateKey _privateKey;
+  final ECPublicKey _publicKey;
+  final ECPrivateKey _privateKey;
 
-  ECKeyPair(ECPublicKey publicKey, ECPrivateKey privateKey) {
-    this._publicKey = publicKey;
-    this._privateKey = privateKey;
-  }
+  ECKeyPair(this._publicKey, this._privateKey);
 
   ECPublicKey getPublicKey() {
     return _publicKey;

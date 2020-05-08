@@ -19,9 +19,6 @@ class SignalProtocolAddress {
 
   @override
   bool operator ==(other) {
-    if (other == null) {
-      return false;
-    }
     if (!(other is SignalProtocolAddress)) return false;
 
     var that = other as SignalProtocolAddress;

@@ -9,8 +9,7 @@ import '../ecc/Curve.dart';
 import '../ecc/ECPublicKey.dart';
 import '../protocol/CiphertextMessage.dart';
 import '../util/ByteUtil.dart';
-import '../state/WhisperTextProtocol.pb.dart'
-    as SignalProtos;
+import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 
 class SignalMessage extends CiphertextMessage {
   static final int MAC_LENGTH = 8;
@@ -26,35 +25,34 @@ class SignalMessage extends CiphertextMessage {
     // try {
     var messageParts = ByteUtil.split(
         serialized, 1, serialized.length - 1 - MAC_LENGTH, MAC_LENGTH);
-    int version = messageParts[0].first;
-    Uint8List message = messageParts[1];
-    Uint8List mac = messageParts[2];
+    var version = messageParts[0].first;
+    var message = messageParts[1];
+    var mac = messageParts[2];
 
     if (ByteUtil.highBitsToInt(version) < CiphertextMessage.CURRENT_VERSION) {
       throw LegacyMessageException(
-          "Legacy message: $ByteUtil.highBitsToInt(version)");
+          'Legacy message: $ByteUtil.highBitsToInt(version)');
     }
 
     if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
       throw InvalidMessageException(
-          "Unknown version: $ByteUtil.highBitsToInt(version)");
+          'Unknown version: $ByteUtil.highBitsToInt(version)');
     }
 
-    SignalProtos.SignalMessage whisperMessage =
-        SignalProtos.SignalMessage.fromBuffer(message);
+    var whisperMessage = signal_protos.SignalMessage.fromBuffer(message);
 
     if (!whisperMessage.hasCiphertext() ||
         !whisperMessage.hasCounter() ||
         !whisperMessage.hasRatchetKey()) {
-      throw new InvalidMessageException("Incomplete message.");
+      throw InvalidMessageException('Incomplete message.');
     }
 
-    this._serialized = serialized;
-    this._senderRatchetKey = Curve.decodePoint(whisperMessage.ratchetKey, 0);
-    this._messageVersion = ByteUtil.highBitsToInt(version);
-    this._counter = whisperMessage.counter;
-    this._previousCounter = whisperMessage.previousCounter;
-    this._ciphertext = whisperMessage.ciphertext;
+    _serialized = serialized;
+    _senderRatchetKey = Curve.decodePoint(whisperMessage.ratchetKey, 0);
+    _messageVersion = ByteUtil.highBitsToInt(version);
+    _counter = whisperMessage.counter;
+    _previousCounter = whisperMessage.previousCounter;
+    _ciphertext = whisperMessage.ciphertext;
     // } catch (InvalidProtocolBufferException | InvalidKeyException | ParseException e) {
     //   throw new InvalidMessageException(e);
     // }
@@ -69,27 +67,27 @@ class SignalMessage extends CiphertextMessage {
       Uint8List ciphertext,
       IdentityKey senderIdentityKey,
       IdentityKey receiverIdentityKey) {
-    Uint8List version = Uint8List.fromList([
+    var version = Uint8List.fromList([
       ByteUtil.intsToByteHighAndLow(
           messageVersion, CiphertextMessage.CURRENT_VERSION)
     ]);
 
-    var m = SignalProtos.SignalMessage.create()
+    var m = signal_protos.SignalMessage.create()
       ..ratchetKey = senderRatchetKey.serialize()
       ..counter = counter
       ..previousCounter = previousCounter
       ..ciphertext = ciphertext;
-    Uint8List message = m.writeToBuffer();
+    var message = m.writeToBuffer();
 
-    Uint8List mac = _getMac(senderIdentityKey, receiverIdentityKey, macKey,
+    var mac = _getMac(senderIdentityKey, receiverIdentityKey, macKey,
         ByteUtil.combine([version, message]));
 
-    this._serialized = ByteUtil.combine([version, message, mac]);
-    this._senderRatchetKey = senderRatchetKey;
-    this._counter = counter;
-    this._previousCounter = previousCounter;
-    this._ciphertext = ciphertext;
-    this._messageVersion = messageVersion;
+    _serialized = ByteUtil.combine([version, message, mac]);
+    _senderRatchetKey = senderRatchetKey;
+    _counter = counter;
+    _previousCounter = previousCounter;
+    _ciphertext = ciphertext;
+    _messageVersion = messageVersion;
   }
 
   ECPublicKey getSenderRatchetKey() {
@@ -110,14 +108,14 @@ class SignalMessage extends CiphertextMessage {
 
   void verifyMac(IdentityKey senderIdentityKey, IdentityKey receiverIdentityKey,
       Uint8List macKey) {
-    List<Uint8List> parts = ByteUtil.splitTwo(
+    var parts = ByteUtil.splitTwo(
         _serialized, _serialized.length - MAC_LENGTH, MAC_LENGTH);
-    Uint8List ourMac =
+    var ourMac =
         _getMac(senderIdentityKey, receiverIdentityKey, macKey, parts[0]);
-    Uint8List theirMac = parts[1];
+    var theirMac = parts[1];
 
     if (Digest(ourMac) != Digest(theirMac)) {
-      throw new InvalidMessageException("Bad Mac!");
+      throw InvalidMessageException('Bad Mac!');
     }
   }
 

@@ -4,11 +4,9 @@ import 'Curve.dart';
 import 'ECPrivateKey.dart';
 
 class DjbECPrivateKey extends ECPrivateKey {
-  Uint8List privateKey;
+  final Uint8List _privateKey;
 
-  DjbECPrivateKey(Uint8List privateKey) {
-    this.privateKey = privateKey;
-  }
+  DjbECPrivateKey(this._privateKey);
 
   @override
   int getType() {
@@ -20,7 +18,5 @@ class DjbECPrivateKey extends ECPrivateKey {
     return privateKey;
   }
 
-  Uint8List getPrivateKey() {
-    return privateKey;
-  }
+  Uint8List get privateKey => _privateKey;
 }

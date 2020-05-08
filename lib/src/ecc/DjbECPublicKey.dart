@@ -4,11 +4,10 @@ import 'Curve.dart';
 import 'ECPublicKey.dart';
 
 class DjbECPublicKey extends ECPublicKey {
-  Uint8List _publicKey;
+  final Uint8List _publicKey;
 
-  DjbECPublicKey(Uint8List publicKey) {
-    this._publicKey = publicKey;
-  }
+  DjbECPublicKey(this._publicKey);
+
   @override
   int getType() {
     return Curve.djbType;
@@ -20,9 +19,7 @@ class DjbECPublicKey extends ECPublicKey {
     return _publicKey;
   }
 
-  getPublicKey() {
-    return _publicKey;
-  }
+  Uint8List get publicKey => _publicKey;
 
   @override
   int compareTo(ECPublicKey another) {
@@ -31,11 +28,10 @@ class DjbECPublicKey extends ECPublicKey {
   }
   @override
   bool operator ==(other) {
-    if (other == null) return false;
     if (!(other is DjbECPublicKey)) return false;
 
-    DjbECPublicKey that = other as DjbECPublicKey;
-    return this._publicKey == that._publicKey;
+    var that = other as DjbECPublicKey;
+    return _publicKey == that._publicKey;
   }
 
   @override

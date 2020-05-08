@@ -1,7 +1,8 @@
+import 'package:pointycastle/pointycastle.dart';
+
 import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
 import '../ecc/Curve.dart';
-import "package:pointycastle/pointycastle.dart";
 
 class KeyHelper {
   static IdentityKeyPair generateIdentityKeyPair() {

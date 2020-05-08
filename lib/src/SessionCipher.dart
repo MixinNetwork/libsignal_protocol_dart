@@ -53,15 +53,15 @@ class SessionCipher {
 
   CiphertextMessage encrypt(Uint8List paddedMessage) {
     synchronized(SESSION_LOCK) {
-      SessionRecord sessionRecord = _sessionStore.loadSession(_remoteAddress);
-      SessionState sessionState = sessionRecord.getSessionState();
-      ChainKey chainKey = sessionState.getSenderChainKey();
-      MessageKeys messageKeys = chainKey.getMessageKeys();
-      ECPublicKey senderEphemeral = sessionState.getSenderRatchetKey();
-      int previousCounter = sessionState.getPreviousCounter();
-      int sessionVersion = sessionState.getSessionVersion();
+      var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+      var sessionState = sessionRecord.getSessionState();
+      var chainKey = sessionState.getSenderChainKey();
+      var messageKeys = chainKey.getMessageKeys();
+      var senderEphemeral = sessionState.getSenderRatchetKey();
+      var previousCounter = sessionState.getPreviousCounter();
+      var sessionVersion = sessionState.getSessionVersion();
 
-      Uint8List ciphertextBody = getCiphertext(messageKeys, paddedMessage);
+      var ciphertextBody = getCiphertext(messageKeys, paddedMessage);
       CiphertextMessage ciphertextMessage = SignalMessage(
           sessionVersion,
           messageKeys.getMacKey(),
@@ -73,9 +73,8 @@ class SessionCipher {
           sessionState.getRemoteIdentityKey());
 
       if (sessionState.hasUnacknowledgedPreKeyMessage()) {
-        UnacknowledgedPreKeyMessageItems items =
-            sessionState.getUnacknowledgedPreKeyMessageItems();
-        int localRegistrationId = sessionState.getLocalRegistrationId();
+        var items = sessionState.getUnacknowledgedPreKeyMessageItems();
+        var localRegistrationId = sessionState.getLocalRegistrationId();
 
         ciphertextMessage = PreKeySignalMessage.from(
             sessionVersion,
@@ -136,8 +135,8 @@ class SessionCipher {
         throw NoSessionException('No session for: $_remoteAddress');
       }
 
-      SessionRecord sessionRecord = _sessionStore.loadSession(_remoteAddress);
-      Uint8List plaintext = _decrypt(sessionRecord, ciphertext);
+      var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+      var plaintext = _decrypt(sessionRecord, ciphertext);
 
       if (!_identityKeyStore.isTrustedIdentity(
           _remoteAddress,
@@ -160,12 +159,11 @@ class SessionCipher {
 
   Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage ciphertext) {
     synchronized(SESSION_LOCK) {
-      Iterator<SessionState> previousStates =
-          sessionRecord.getPreviousSessionStates().iterator;
+      var previousStates = sessionRecord.getPreviousSessionStates().iterator;
       var exceptions = [];
 
       try {
-        SessionState sessionState =
+        var sessionState =
             SessionState.fromSessionState(sessionRecord.getSessionState());
         var plaintext = _decryptFromState(sessionState, ciphertext);
 
@@ -190,32 +188,32 @@ class SessionCipher {
         }
       }
 
-      throw InvalidMessageException("No valid sessions. $exceptions[0]");
+      throw InvalidMessageException('No valid sessions. $exceptions[0]');
     }
   }
 
   Uint8List _decryptFromState(
       SessionState sessionState, SignalMessage ciphertextMessage) {
     if (!sessionState.hasSenderChain()) {
-      throw InvalidMessageException("Uninitialized session!");
+      throw InvalidMessageException('Uninitialized session!');
     }
 
     if (ciphertextMessage.getMessageVersion() !=
         sessionState.getSessionVersion()) {
       throw InvalidMessageException(
-          "Message version $ciphertextMessage.getMessageVersion(), but session version $sessionState.getSessionVersion()");
+          'Message version $ciphertextMessage.getMessageVersion(), but session version $sessionState.getSessionVersion()');
     }
 
-    ECPublicKey theirEphemeral = ciphertextMessage.getSenderRatchetKey();
-    int counter = ciphertextMessage.getCounter();
-    ChainKey chainKey = _getOrCreateChainKey(sessionState, theirEphemeral);
-    MessageKeys messageKeys = _getOrCreateMessageKeys(
+    var theirEphemeral = ciphertextMessage.getSenderRatchetKey();
+    var counter = ciphertextMessage.getCounter();
+    var chainKey = _getOrCreateChainKey(sessionState, theirEphemeral);
+    var messageKeys = _getOrCreateMessageKeys(
         sessionState, theirEphemeral, chainKey, counter);
 
     ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey(),
         sessionState.getLocalIdentityKey(), messageKeys.getMacKey());
 
-    Uint8List plaintext =
+    var plaintext =
         _getPlaintext(messageKeys, ciphertextMessage.getBody());
 
     sessionState.clearUnacknowledgedPreKeyMessage();
@@ -225,7 +223,7 @@ class SessionCipher {
 
   int getRemoteRegistrationId() {
     synchronized(SESSION_LOCK) {
-      SessionRecord record = _sessionStore.loadSession(_remoteAddress);
+      var record = _sessionStore.loadSession(_remoteAddress);
       return record.getSessionState().getRemoteRegistrationId();
     }
   }
@@ -262,8 +260,8 @@ class SessionCipher {
 
         return receiverChain.item2;
       }
-    } on InvalidKeyException catch (e) {
-      throw e;
+    } on InvalidKeyException {
+      rethrow;
     }
   }
 

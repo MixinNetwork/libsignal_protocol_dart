@@ -10,17 +10,14 @@ class IdentityKeyPair {
   IdentityKey _publicKey;
   ECPrivateKey _privateKey;
 
-  IdentityKeyPair(IdentityKey publicKey, ECPrivateKey privateKey) {
-    this._publicKey = publicKey;
-    this._privateKey = privateKey;
-  }
+  IdentityKeyPair(this._publicKey, this._privateKey);
 
   IdentityKeyPair.fromSerialized(Uint8List serialized) {
     final structure = IdentityKeyPairStructure.fromBuffer(serialized);
-    this._publicKey =
+    _publicKey =
         IdentityKey.fromBytes(Uint8List.fromList(structure.publicKey), 0);
 
-    this._privateKey =
+    _privateKey =
         Curve.decodePrivatePoint(Uint8List.fromList(structure.privateKey));
   }
 

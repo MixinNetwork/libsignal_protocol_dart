@@ -4,15 +4,12 @@ import 'SenderKeyName.dart';
 import 'state/SenderKeyStore.dart';
 
 class GroupSessionBuilder {
-  SenderKeyStore _senderKeyStore;
+  final SenderKeyStore _senderKeyStore;
 
   GroupSessionBuilder._(this._senderKeyStore);
 
-  process(SenderKeyName senderKeyName, SenderKeyDistributionMessage senderKeyDistributionMessage) {
+  void process(SenderKeyName senderKeyName,
+      SenderKeyDistributionMessage senderKeyDistributionMessage) {}
 
-  }
-
-  SenderKeyDistributionMessage create(SenderKeyName senderKeyName) {
-
-  }
+  SenderKeyDistributionMessage create(SenderKeyName senderKeyName) {}
 }
