@@ -66,7 +66,7 @@ class SenderKeyState {
               ..seed = senderChainKey.seed
       };
 
-  ECPublicKey get SigningKeyPublic =>
+  ECPublicKey get signingKeyPublic =>
       Curve.decodePoint(_senderKeyStateStructure.senderSigningKey.public, 0);
 
   ECPrivateKey get signingKeyPrivate => Curve.decodePrivatePoint(

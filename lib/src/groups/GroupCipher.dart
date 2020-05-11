@@ -4,7 +4,11 @@ import 'package:pointycastle/api.dart';
 
 import '../DecryptionCallback.dart';
 import '../DuplicateMessageException.dart';
+import '../InvalidKeyIdException.dart';
 import '../InvalidMessageException.dart';
+import '../InvalidKeyException.dart';
+import '../NoSessionException.dart';
+import '../protocol/SenderKeyMessage.dart';
 import 'SenderKeyName.dart';
 import 'ratchet/SenderMessageKey.dart';
 import 'state/SenderKeyState.dart';
@@ -16,12 +20,55 @@ class GroupCipher {
 
   GroupCipher(this._senderKeyStore, this._senderKeyId);
 
-  Uint8List encrypt(Uint8List paddedPlaintext) {}
+  Uint8List encrypt(Uint8List paddedPlaintext) {
+    // TODO wrap in synchronized
+    try {
+      var record = _senderKeyStore.loadSenderKey(_senderKeyId);
+      var senderKeyState = record.getSenderKeyState();
+      var senderKey = senderKeyState.senderChainKey.senderMessageKey;
+      var ciphertext =
+          getCipherText(senderKey.iv, senderKey.cipherKey, paddedPlaintext);
+      var senderKeyMessage = SenderKeyMessage(senderKeyState.keyId,
+          senderKey.iteration, ciphertext, senderKeyState.signingKeyPrivate);
+      senderKeyState.senderChainKey = senderKeyState.senderChainKey.next;
+      _senderKeyStore.storeSenderKey(_senderKeyId, record);
+      return senderKeyMessage.serialize();
+    } on InvalidKeyIdException catch (e) {
+      throw NoSessionException(e.detailMessage);
+    }
+  }
 
-  Uint8List decrypt(Uint8List senderKeyMessageBytes) {}
+  Uint8List decrypt(Uint8List senderKeyMessageBytes) {
+    return decryptWithCallback(senderKeyMessageBytes, NullDecryptionCallback());
+  }
 
   Uint8List decryptWithCallback(
-      Uint8List senderKeyMessageBytes, DecryptionCallback callback) {}
+      Uint8List senderKeyMessageBytes, DecryptionCallback callback) {
+    // TODO wrap in synchronized
+    try {
+      var record = _senderKeyStore.loadSenderKey(_senderKeyId);
+      if (record.isEmpty) {
+        throw NoSessionException('No sender key for: $_senderKeyId');
+      }
+
+      var senderKeyMessage =
+          SenderKeyMessage.fromSerialized(senderKeyMessageBytes);
+      var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
+      senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
+      var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);
+      var plaintext = getPlainText(
+          senderKey.iv, senderKey.cipherKey, senderKeyMessage.ciphertext);
+
+      callback.handlePlaintext(plaintext);
+
+      _senderKeyStore.storeSenderKey(_senderKeyId, record);
+      return plaintext;
+    } on InvalidKeyIdException catch (e) {
+      throw InvalidMessageException(e.detailMessage);
+    } on InvalidKeyException catch (e) {
+      throw InvalidMessageException(e.detailMessage);
+    }
+  }
 
   SenderMessageKey getSenderKey(SenderKeyState senderKeyState, int iteration) {
     var senderChainKey = senderKeyState.senderChainKey;
