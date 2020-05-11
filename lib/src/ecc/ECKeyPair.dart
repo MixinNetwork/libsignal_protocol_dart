@@ -7,11 +7,7 @@ class ECKeyPair {
 
   ECKeyPair(this._publicKey, this._privateKey);
 
-  ECPublicKey getPublicKey() {
-    return _publicKey;
-  }
+  ECPublicKey get publicKey => _publicKey;
 
-  ECPrivateKey getPrivateKey() {
-    return _privateKey;
-  }
+  ECPrivateKey get privateKey => _privateKey;
 }

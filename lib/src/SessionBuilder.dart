@@ -93,17 +93,13 @@ class SessionBuilder {
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
     RatchetingSession.initializeSessionBob(
-        sessionRecord.getSessionState(), parameters.create());
+        sessionRecord.sessionState, parameters.create());
 
-    sessionRecord
-        .getSessionState()
-        .setLocalRegistrationId(_identityKeyStore.getLocalRegistrationId());
-    sessionRecord
-        .getSessionState()
-        .setRemoteRegistrationId(message.getRegistrationId());
-    sessionRecord
-        .getSessionState()
-        .setAliceBaseKey(message.getBaseKey().serialize());
+    sessionRecord.sessionState.localRegistrationId =
+        _identityKeyStore.getLocalRegistrationId();
+    sessionRecord.sessionState.remoteRegistrationId =
+        message.getRegistrationId();
+    sessionRecord.sessionState.aliceBaseKey = message.getBaseKey().serialize();
 
     if (message.getPreKeyId().isPresent) {
       return message.getPreKeyId();
@@ -153,21 +149,17 @@ class SessionBuilder {
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
     RatchetingSession.initializeSessionAlice(
-        sessionRecord.getSessionState(), parameters.create());
+        sessionRecord.sessionState, parameters.create());
 
-    sessionRecord.getSessionState().setUnacknowledgedPreKeyMessage(
+    sessionRecord.sessionState.setUnacknowledgedPreKeyMessage(
         theirOneTimePreKeyId,
         preKey.getSignedPreKeyId(),
-        ourBaseKey.getPublicKey());
-    sessionRecord
-        .getSessionState()
-        .setLocalRegistrationId(_identityKeyStore.getLocalRegistrationId());
-    sessionRecord
-        .getSessionState()
-        .setRemoteRegistrationId(preKey.getRegistrationId());
-    sessionRecord
-        .getSessionState()
-        .setAliceBaseKey(ourBaseKey.getPublicKey().serialize());
+        ourBaseKey.publicKey);
+    sessionRecord.sessionState.localRegistrationId =
+        _identityKeyStore.getLocalRegistrationId();
+    sessionRecord.sessionState.remoteRegistrationId =
+        preKey.getRegistrationId();
+    sessionRecord.sessionState.aliceBaseKey = ourBaseKey.publicKey.serialize();
 
     _identityKeyStore.saveIdentity(_remoteAddress, preKey.getIdentityKey());
     _sessionStore.storeSession(_remoteAddress, sessionRecord);

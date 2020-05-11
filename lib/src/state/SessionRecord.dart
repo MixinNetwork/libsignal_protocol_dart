@@ -32,26 +32,22 @@ class SessionRecord {
 
   bool hasSessionState(int version, Uint8List aliceBaseKey) {
     if (_sessionState.getSessionVersion() == version &&
-        aliceBaseKey == _sessionState.getAliceBaseKey()) {
+        aliceBaseKey == _sessionState.aliceBaseKey) {
       return true;
     }
 
     for (var state in _previousStates) {
       if (state.getSessionVersion() == version &&
-          aliceBaseKey == _sessionState.getAliceBaseKey()) {
+          aliceBaseKey == _sessionState.aliceBaseKey) {
         return true;
       }
     }
     return false;
   }
 
-  SessionState getSessionState() {
-    return _sessionState;
-  }
+  SessionState get sessionState => _sessionState;
 
-  LinkedList<SessionState> getPreviousSessionStates() {
-    return _previousStates;
-  }
+  LinkedList<SessionState> get previousSessionStates => _previousStates;
 
   void removePreviousSessionStates() {
     _previousStates.clear();
@@ -66,8 +62,8 @@ class SessionRecord {
   }
 
   void promoteState(SessionState promotedState) {
-    this._previousStates.addFirst(_sessionState);
-    this._sessionState = promotedState;
+    _previousStates.addFirst(_sessionState);
+    _sessionState = promotedState;
 
     if (_previousStates.length > ARCHIVED_STATES_MAX_LENGTH) {
       _previousStates.remove(_previousStates.last);
@@ -75,7 +71,7 @@ class SessionRecord {
   }
 
   void setState(SessionState sessionState) {
-    this._sessionState = sessionState;
+    _sessionState = sessionState;
   }
 
   Uint8List serialize() {
@@ -86,7 +82,7 @@ class SessionRecord {
     // }
 
     var record = RecordStructure.create();
-    record.currentSession = _sessionState.getStructure();
+    record.currentSession = _sessionState.structure;
     // record.previousSession = _;
     // .addAllPreviousSessions(previousStructures)
     // .build();

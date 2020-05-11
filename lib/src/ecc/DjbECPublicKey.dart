@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:pointycastle/src/utils.dart';
+
 import 'Curve.dart';
 import 'ECPublicKey.dart';
 
@@ -23,8 +25,7 @@ class DjbECPublicKey extends ECPublicKey {
 
   @override
   int compareTo(ECPublicKey another) {
-    // return _publicKey == (another as DjbECPublicKey).getPublicKey();
-    // return new BigInteger(publicKey).compareTo(new BigInteger(((DjbECPublicKey)another).publicKey));
+    return decodeBigInt(publicKey).compareTo(decodeBigInt((another as DjbECPublicKey).publicKey));
   }
   @override
   bool operator ==(other) {

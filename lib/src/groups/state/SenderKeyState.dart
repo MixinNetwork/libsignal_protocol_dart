@@ -23,8 +23,8 @@ class SenderKeyState {
 
   SenderKeyState.fromKeyPair(
       int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
-    SenderKeyState(id, iteration, chainKey, signatureKey.getPublicKey(),
-        Optional.of(signatureKey.getPrivateKey()));
+    SenderKeyState(id, iteration, chainKey, signatureKey.publicKey,
+        Optional.of(signatureKey.privateKey));
   }
 
   SenderKeyState(

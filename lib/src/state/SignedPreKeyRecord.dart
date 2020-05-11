@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:fixnum/fixnum.dart';
 import '../ecc/Curve.dart';
-
 import '../ecc/ECKeyPair.dart';
+import '../InvalidKeyException.dart';
 import 'LocalStorageProtocol.pb.dart';
 
 class SignedPreKeyRecord {
@@ -11,42 +11,36 @@ class SignedPreKeyRecord {
 
   SignedPreKeyRecord(
       int id, Int64 timestamp, ECKeyPair keyPair, Uint8List signature) {
-    this._structure = SignedPreKeyRecordStructure.create();
-    this._structure.id = id;
-    this._structure.timestamp = timestamp;
-    this._structure.publicKey = keyPair.getPublicKey().serialize();
-    this._structure.privateKey = keyPair.getPrivateKey().serialize();
-    this._structure.signature = signature;
+    _structure = SignedPreKeyRecordStructure.create();
+    _structure.id = id;
+    _structure.timestamp = timestamp;
+    _structure.publicKey = keyPair.publicKey.serialize();
+    _structure.privateKey = keyPair.privateKey.serialize();
+    _structure.signature = signature;
   }
 
   SignedPreKeyRecord.fromSerialized(Uint8List serialized) {
-    this._structure = SignedPreKeyRecordStructure.fromBuffer(serialized);
+    _structure = SignedPreKeyRecordStructure.fromBuffer(serialized);
   }
 
-  int getId() {
-    return this._structure.id;
-  }
+  int get id => _structure.id;
 
-  Int64 getTimestamp() {
-    return this._structure.timestamp;
-  }
+  Int64 get timestamp =>_structure.timestamp;
 
   ECKeyPair getKeyPair() {
-    // try {
-    var publicKey = Curve.decodePoint(this._structure.publicKey, 0);
-    var privateKey = Curve.decodePrivatePoint(this._structure.privateKey);
+     try {
+      var publicKey = Curve.decodePoint(_structure.publicKey, 0);
+      var privateKey = Curve.decodePrivatePoint(_structure.privateKey);
 
-    return ECKeyPair(publicKey, privateKey);
-    // } catch (InvalidKeyException e) {
-    //   throw new AssertionError(e);
-    // }
+      return ECKeyPair(publicKey, privateKey);
+     } on InvalidKeyException catch(e) {
+       throw AssertionError(e);
+     }
   }
 
-  Uint8List getSignature() {
-    return this._structure.signature;
-  }
+  Uint8List get signature => _structure.signature;
 
   Uint8List serialize() {
-    return this._structure.writeToBuffer();
+    return _structure.writeToBuffer();
   }
 }

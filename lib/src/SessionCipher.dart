@@ -54,11 +54,11 @@ class SessionCipher {
   CiphertextMessage encrypt(Uint8List paddedMessage) {
     synchronized(SESSION_LOCK) {
       var sessionRecord = _sessionStore.loadSession(_remoteAddress);
-      var sessionState = sessionRecord.getSessionState();
+      var sessionState = sessionRecord.sessionState;
       var chainKey = sessionState.getSenderChainKey();
       var messageKeys = chainKey.getMessageKeys();
       var senderEphemeral = sessionState.getSenderRatchetKey();
-      var previousCounter = sessionState.getPreviousCounter();
+      var previousCounter = sessionState.previousCounter;
       var sessionVersion = sessionState.getSessionVersion();
 
       var ciphertextBody = getCiphertext(messageKeys, paddedMessage);
@@ -74,7 +74,7 @@ class SessionCipher {
 
       if (sessionState.hasUnacknowledgedPreKeyMessage()) {
         var items = sessionState.getUnacknowledgedPreKeyMessageItems();
-        var localRegistrationId = sessionState.getLocalRegistrationId();
+        var localRegistrationId = sessionState.localRegistrationId;
 
         ciphertextMessage = PreKeySignalMessage.from(
             sessionVersion,
@@ -124,30 +124,30 @@ class SessionCipher {
     }
   }
 
-  Uint8List decryptFromSignal(SignalMessage ciphertext) {
-    return decryptFromSignalWithCallback(ciphertext, NullDecryptionCallback());
+  Uint8List decryptFromSignal(SignalMessage cipherText) {
+    return decryptFromSignalWithCallback(cipherText, NullDecryptionCallback());
   }
 
   Uint8List decryptFromSignalWithCallback(
-      SignalMessage ciphertext, DecryptionCallback callback) {
+      SignalMessage cipherText, DecryptionCallback callback) {
     synchronized(SESSION_LOCK) {
       if (!_sessionStore.containsSession(_remoteAddress)) {
         throw NoSessionException('No session for: $_remoteAddress');
       }
 
       var sessionRecord = _sessionStore.loadSession(_remoteAddress);
-      var plaintext = _decrypt(sessionRecord, ciphertext);
+      var plaintext = _decrypt(sessionRecord, cipherText);
 
       if (!_identityKeyStore.isTrustedIdentity(
           _remoteAddress,
-          sessionRecord.getSessionState().getRemoteIdentityKey(),
+          sessionRecord.sessionState.getRemoteIdentityKey(),
           Direction.RECEIVING)) {
         throw UntrustedIdentityException(_remoteAddress.getName(),
-            sessionRecord.getSessionState().getRemoteIdentityKey());
+            sessionRecord.sessionState.getRemoteIdentityKey());
       }
 
       _identityKeyStore.saveIdentity(_remoteAddress,
-          sessionRecord.getSessionState().getRemoteIdentityKey());
+          sessionRecord.sessionState.getRemoteIdentityKey());
 
       callback.handlePlaintext(plaintext);
 
@@ -157,15 +157,15 @@ class SessionCipher {
     }
   }
 
-  Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage ciphertext) {
+  Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage cipherText) {
     synchronized(SESSION_LOCK) {
-      var previousStates = sessionRecord.getPreviousSessionStates().iterator;
+      var previousStates = sessionRecord.previousSessionStates.iterator;
       var exceptions = [];
 
       try {
         var sessionState =
-            SessionState.fromSessionState(sessionRecord.getSessionState());
-        var plaintext = _decryptFromState(sessionState, ciphertext);
+            SessionState.fromSessionState(sessionRecord.sessionState);
+        var plaintext = _decryptFromState(sessionState, cipherText);
 
         sessionRecord.setState(sessionState);
         return plaintext;
@@ -177,7 +177,7 @@ class SessionCipher {
         try {
           var promotedState =
               SessionState.fromSessionState(_previousStates.next());
-          var plaintext = _decryptFromState(promotedState, ciphertext);
+          var plaintext = _decryptFromState(promotedState, cipherText);
 
           // _previousStates.remove();
           sessionRecord.promoteState(promotedState);
@@ -224,7 +224,7 @@ class SessionCipher {
   int getRemoteRegistrationId() {
     synchronized(SESSION_LOCK) {
       var record = _sessionStore.loadSession(_remoteAddress);
-      return record.getSessionState().getRemoteRegistrationId();
+      return record.sessionState.remoteRegistrationId;
     }
   }
 
@@ -235,7 +235,7 @@ class SessionCipher {
       }
 
       var record = _sessionStore.loadSession(_remoteAddress);
-      return record.getSessionState().getSessionVersion();
+      return record.sessionState.getSessionVersion();
     }
   }
 
@@ -252,10 +252,10 @@ class SessionCipher {
         var senderChain =
             receiverChain.item1.createChain(theirEphemeral, ourNewEphemeral);
 
-        sessionState.setRootKey(senderChain.item1);
+        sessionState.rootKey = senderChain.item1;
         sessionState.addReceiverChain(theirEphemeral, receiverChain.item2);
-        sessionState.setPreviousCounter(
-            max(sessionState.getSenderChainKey().getIndex() - 1, 0));
+        sessionState.previousCounter =
+            max(sessionState.getSenderChainKey().getIndex() - 1, 0);
         sessionState.setSenderChain(ourNewEphemeral, senderChain.item2);
 
         return receiverChain.item2;

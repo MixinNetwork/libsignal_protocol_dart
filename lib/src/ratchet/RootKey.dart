@@ -22,7 +22,7 @@ class RootKey {
   Tuple2<RootKey, ChainKey> createChain(
       ECPublicKey theirRatchetKey, ECKeyPair ourRatchetKey) {
     var sharedSecret = Curve.calculateAgreement(
-        theirRatchetKey, ourRatchetKey.getPrivateKey());
+        theirRatchetKey, ourRatchetKey.privateKey);
     var bytes = utf8.encode('WhisperRatchet');
     var derivedSecretBytes =
         _kdf.deriveSecrets4(sharedSecret, _key, bytes, DerivedRootSecrets.SIZE);
