@@ -11,17 +11,15 @@ class ByteUtil {
     return Uint8List.fromList(results);
   }
 
-  static Uint8List shortToByteArray(int value, [int offset = 0]) {
+  static Uint8List shortToByteArray(int value) {
     var bytes = Uint8List(2);
-    bytes[offset + 1] = value;
-    bytes[offset] = value >> 8;
+    bytes[0] = value >> 8;
+    bytes[1] = value;
     return bytes;
   }
 
   static Uint8List trim(Uint8List input, int length) {
-    var result = [length];
-    result.addAll(input);
-    return result;
+    return input.sublist(0, length);
   }
 
   static List<Uint8List> splitTwo(
@@ -56,15 +54,15 @@ class ByteUtil {
   }
 
   static int lowBitsToInt(int value) {
-    return (value & 0xF);
+    return value & 0xF;
   }
 
   static int highBitsToMedium(int value) {
-    return (value >> 12);
+    return value >> 12;
   }
 
   static int lowBitsToMedium(int value) {
-    return (value & 0xFFF);
+    return value & 0xFFF;
   }
 
   static int byteArray5ToLong(Uint8List bytes, int offset) {
