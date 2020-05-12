@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:convert/convert.dart';
+import '../InvalidKeyException.dart';
 import 'HKDFv2.dart';
 import 'HKDFv3.dart';
 
@@ -39,36 +40,40 @@ abstract class HKDF {
   }
 
   Uint8List expand(Uint8List prk, Uint8List info, int outputSize) {
-    var iterations =
-        (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
+    try {
+      var iterations =
+      (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
+      var mix = Uint8List(0);
+      var results = Uint8List(outputSize);
+      var remainingBytes = outputSize;
 
-    var mix = const <int>[];
+      for (var i = getIterationStartOffset();
+      i < iterations + getIterationStartOffset();
+      i++) {
+        var mac = Hmac(sha256, prk);
+        var output = AccumulatorSink<Digest>();
+        var input = mac.startChunkedConversion(output);
+        input.add(mix);
+        if (info != null) {
+          input.add(info);
+        }
+        input.add([i]);
+        input.close();
+        var stepResult = output.events.single.bytes;
+        var stepSize = min(remainingBytes, stepResult.length);
 
-    var results = Uint8List(0);
-    var remainingBytes = outputSize;
+        for (var j = 0; j < stepSize; j++) {
+          var offset = (i - getIterationStartOffset()) * HASH_OUTPUT_SIZE + j;
+          results[offset] = stepResult[j];
+        }
 
-    for (var i = getIterationStartOffset();
-        i < iterations + getIterationStartOffset();
-        i++) {
-      var mac = Hmac(sha256, prk);
-      var output = AccumulatorSink<Digest>();
-      var input = mac.startChunkedConversion(output);
-      input.add(mix);
-      if (info != null) {
-        input.add(info);
+        mix = stepResult;
+        remainingBytes -= stepSize;
       }
-      input.add([i]);
-      input.close();
-      var stepResult = output.events.single.bytes;
-      var stepSize = min(remainingBytes, stepResult.length);
-
-      results.addAll(stepResult);
-      // results.write(stepResult, 0, stepSize);
-
-      mix = stepResult;
-      remainingBytes -= stepSize;
+      return results.buffer.asUint8List();
+    } on InvalidKeyException catch(e) {
+      throw AssertionError(e);
     }
-    return results;
   }
 
   int getIterationStartOffset();
