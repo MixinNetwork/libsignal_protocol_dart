@@ -20,7 +20,7 @@ class Curve {
 
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
     if (bytes == null || bytes.length - offset < 1) {
-      throw Exception('No key type identifier');
+      throw InvalidKeyException('No key type identifier');
     }
 
     var type = bytes[offset] & 0xFF;
