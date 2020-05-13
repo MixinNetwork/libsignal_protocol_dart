@@ -42,14 +42,14 @@ abstract class HKDF {
   Uint8List expand(Uint8List prk, Uint8List info, int outputSize) {
     try {
       var iterations =
-      (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
+          (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
       var mix = Uint8List(0);
       var results = Uint8List(outputSize);
       var remainingBytes = outputSize;
 
       for (var i = getIterationStartOffset();
-      i < iterations + getIterationStartOffset();
-      i++) {
+          i < iterations + getIterationStartOffset();
+          i++) {
         var mac = Hmac(sha256, prk);
         var output = AccumulatorSink<Digest>();
         var input = mac.startChunkedConversion(output);
@@ -71,7 +71,7 @@ abstract class HKDF {
         remainingBytes -= stepSize;
       }
       return results.buffer.asUint8List();
-    } on InvalidKeyException catch(e) {
+    } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
   }
