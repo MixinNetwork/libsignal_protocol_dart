@@ -125,8 +125,8 @@ class SignalMessage extends CiphertextMessage {
 
     var output = AccumulatorSink<Digest>();
     var input = mac.startChunkedConversion(output);
-    input.add(senderIdentityKey.getPublicKey().serialize());
-    input.add(receiverIdentityKey.getPublicKey().serialize());
+    input.add(senderIdentityKey.publicKey.serialize());
+    input.add(receiverIdentityKey.publicKey.serialize());
     input.add(serialized);
     input.close();
     Uint8List fullMac = output.events.single.bytes;

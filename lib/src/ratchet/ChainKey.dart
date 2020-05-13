@@ -15,7 +15,7 @@ class ChainKey {
   final Uint8List key;
   final int index;
 
-  ChainKey(this.kdf, this.key, this.index) {}
+  ChainKey(this.kdf, this.key, this.index);
 
   Uint8List getKey() {
     return key;
@@ -26,18 +26,17 @@ class ChainKey {
   }
 
   ChainKey getNextChainKey() {
-    Uint8List nextKey = _getBaseMaterial(CHAIN_KEY_SEED);
-    return new ChainKey(kdf, nextKey, index + 1);
+    var nextKey = _getBaseMaterial(CHAIN_KEY_SEED);
+    return ChainKey(kdf, nextKey, index + 1);
   }
 
   MessageKeys getMessageKeys() {
-    List<int> bytes = utf8.encode("WhisperMessageKeys");
+    var bytes = utf8.encode('WhisperMessageKeys');
 
-    Uint8List inputKeyMaterial = _getBaseMaterial(MESSAGE_KEY_SEED);
-    Uint8List keyMaterialBytes =
+    var inputKeyMaterial = _getBaseMaterial(MESSAGE_KEY_SEED);
+    var keyMaterialBytes =
         kdf.deriveSecrets(inputKeyMaterial, bytes, DerivedMessageSecrets.SIZE);
-    DerivedMessageSecrets keyMaterial =
-        new DerivedMessageSecrets(keyMaterialBytes);
+    var keyMaterial = DerivedMessageSecrets(keyMaterialBytes);
 
     return MessageKeys(keyMaterial.getCipherKey(), keyMaterial.getMacKey(),
         keyMaterial.getIv(), index);

@@ -66,7 +66,7 @@ class RatchetingSession {
       secrets.addAll(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
           parameters.getOurIdentityKey().getPrivateKey()));
       secrets.addAll(Curve.calculateAgreement(
-          parameters.getTheirIdentityKey().getPublicKey(),
+          parameters.getTheirIdentityKey().publicKey,
           parameters.getOurBaseKey().privateKey));
       secrets.addAll(Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
           parameters.getOurBaseKey().privateKey));
@@ -99,12 +99,12 @@ class RatchetingSession {
       sessionState.localIdentityKey =
           parameters.getOurIdentityKey().getPublicKey();
 
-      var secrets = Uint8List(0);
+      var secrets = <int>[];
 
       secrets.addAll(getDiscontinuityBytes());
 
       secrets.addAll(Curve.calculateAgreement(
-          parameters.getTheirIdentityKey().getPublicKey(),
+          parameters.getTheirIdentityKey().publicKey,
           parameters.getOurSignedPreKey().privateKey));
       secrets.addAll(Curve.calculateAgreement(parameters.getTheirBaseKey(),
           parameters.getOurIdentityKey().getPrivateKey()));
@@ -116,7 +116,7 @@ class RatchetingSession {
             parameters.getOurOneTimePreKey().value.privateKey));
       }
 
-      var derivedKeys = calculateDerivedKeys(secrets);
+      var derivedKeys = calculateDerivedKeys(Uint8List.fromList(secrets));
 
       sessionState.setSenderChain(
           parameters.getOurRatchetKey(), derivedKeys.getChainKey());

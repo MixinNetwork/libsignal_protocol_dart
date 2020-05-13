@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import '../util/ByteUtil.dart';
 import 'package:pointycastle/src/utils.dart';
 
 import 'Curve.dart';
@@ -17,8 +18,10 @@ class DjbECPublicKey extends ECPublicKey {
 
   @override
   Uint8List serialize() {
-    _publicKey[0] = Curve.djbType;
-    return _publicKey;
+    return ByteUtil.combine([
+      Uint8List.fromList([Curve.djbType]),
+      _publicKey
+    ]);
   }
 
   Uint8List get publicKey => _publicKey;

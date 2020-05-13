@@ -235,7 +235,7 @@ void main() {
           serializedPublic, 0, badKeyType, 0, serializedPublic.length);
       badKeyType[0] = 0x01;
       Curve.decodePoint(badKeyType, 0);
-      throw AssertionError("Should be bad key type");
+      throw AssertionError('Should be bad key type');
     } on InvalidKeyException catch (e) {
       // good
     }

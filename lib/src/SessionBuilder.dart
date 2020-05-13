@@ -118,7 +118,7 @@ class SessionBuilder {
 
     if (preKey.getSignedPreKey() != null &&
         !Curve.verifySignature(
-            preKey.getIdentityKey().getPublicKey(),
+            preKey.getIdentityKey().publicKey,
             preKey.getSignedPreKey().serialize(),
             preKey.getSignedPreKeySignature())) {
       throw InvalidKeyException('Invalid signature on device key!');
@@ -152,9 +152,7 @@ class SessionBuilder {
         sessionRecord.sessionState, parameters.create());
 
     sessionRecord.sessionState.setUnacknowledgedPreKeyMessage(
-        theirOneTimePreKeyId,
-        preKey.getSignedPreKeyId(),
-        ourBaseKey.publicKey);
+        theirOneTimePreKeyId, preKey.getSignedPreKeyId(), ourBaseKey.publicKey);
     sessionRecord.sessionState.localRegistrationId =
         _identityKeyStore.getLocalRegistrationId();
     sessionRecord.sessionState.remoteRegistrationId =

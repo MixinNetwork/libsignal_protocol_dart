@@ -67,7 +67,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
 
     var keys = [];
     sortedIdentityKeys.forEach((IdentityKey key) {
-      var publicKeyBytes = key.getPublicKey().serialize();
+      var publicKeyBytes = key.publicKey.serialize();
       keys.addAll(publicKeyBytes.toList());
     });
     return Uint8List.fromList(keys);

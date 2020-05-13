@@ -6,7 +6,7 @@ class MessageKeys {
   final Uint8List iv;
   final int counter;
 
-  MessageKeys(this.cipherKey, this.macKey, this.iv, this.counter) {}
+  MessageKeys(this.cipherKey, this.macKey, this.iv, this.counter);
 
   Uint8List getCipherKey() {
     return cipherKey;

@@ -14,9 +14,7 @@ class IdentityKey {
     _publicKey = Curve.decodePoint(bytes, offset);
   }
 
-  ECPublicKey getPublicKey() {
-    return _publicKey;
-  }
+  ECPublicKey get publicKey => _publicKey;
 
   Uint8List serialize() {
     return _publicKey.serialize();
@@ -25,17 +23,15 @@ class IdentityKey {
   String getFingerprint() {
     return hex.encode(_publicKey.serialize());
   }
+
+  @override
+  bool operator ==(other) {
+    if (!(other is IdentityKey)) return false;
+
+    var that = other as IdentityKey;
+    return _publicKey == that._publicKey;
+  }
+
+  @override
+  int get hashCode => _publicKey.hashCode;
 }
-
-// @Override
-// public boolean equals(Object other) {
-//   if (other == null)                   return false;
-//   if (!(other instanceof IdentityKey)) return false;
-
-//   return publicKey.equals(((IdentityKey) other).getPublicKey());
-// }
-
-// @Override
-// public int hashCode() {
-//   return publicKey.hashCode();
-// }
