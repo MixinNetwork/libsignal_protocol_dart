@@ -31,11 +31,19 @@ class Curve {
         }
 
         var keyBytes = Uint8List(32);
-        keyBytes.insertAll(0, bytes.sublist(offset + 1));
+        keyBytes = arrayCopy(bytes, offset + 1, keyBytes, 0, keyBytes.length);
         return DjbECPublicKey(keyBytes);
       default:
         throw Exception('Bad key type: ' + type.toString());
     }
+  }
+
+  static List<int> arrayCopy(
+      bytes, srcOffset, result, destOffset, bytesLength) {
+    for (var i = srcOffset; i < bytesLength; i++) {
+      result[destOffset + i] = bytes[i];
+    }
+    return result;
   }
 
   static ECPrivateKey decodePrivatePoint(Uint8List bytes) {
@@ -57,10 +65,8 @@ class Curve {
 
     if (publicKey.getType() == djbType) {
       var secretKey = x25519.sharedSecretSync(
-        localPrivateKey:
-            PrivateKey((privateKey as DjbECPrivateKey).privateKey),
-        remotePublicKey:
-            PublicKey((publicKey as DjbECPublicKey).publicKey),
+        localPrivateKey: PrivateKey((privateKey as DjbECPrivateKey).privateKey),
+        remotePublicKey: PublicKey((publicKey as DjbECPublicKey).publicKey),
       );
       return Uint8List.fromList(secretKey.extractSync());
     } else {
