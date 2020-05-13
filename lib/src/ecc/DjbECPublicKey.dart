@@ -17,7 +17,7 @@ class DjbECPublicKey extends ECPublicKey {
 
   @override
   Uint8List serialize() {
-    _publicKey.insert(0, Curve.djbType);
+    _publicKey[0] = Curve.djbType;
     return _publicKey;
   }
 
@@ -25,8 +25,10 @@ class DjbECPublicKey extends ECPublicKey {
 
   @override
   int compareTo(ECPublicKey another) {
-    return decodeBigInt(publicKey).compareTo(decodeBigInt((another as DjbECPublicKey).publicKey));
+    return decodeBigInt(publicKey)
+        .compareTo(decodeBigInt((another as DjbECPublicKey).publicKey));
   }
+
   @override
   bool operator ==(other) {
     if (!(other is DjbECPublicKey)) return false;

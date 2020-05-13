@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
+import 'package:libsignal_protocol_dart/src/InvalidKeyException.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -193,5 +194,64 @@ void main() {
 
     expect(sharedOne, shared);
     expect(sharedTwo, shared);
+  });
+
+  test('testRandomAgreements', () {
+    for (int i = 0; i < 50; i++) {
+      var alice = Curve.generateKeyPair();
+      var bob = Curve.generateKeyPair();
+
+      var sharedAlice =
+          Curve.calculateAgreement(bob.publicKey, alice.privateKey);
+      var sharedBob = Curve.calculateAgreement(alice.publicKey, bob.privateKey);
+
+      expect(sharedAlice, sharedBob);
+    }
+  });
+
+  test('testDecodeSize', () {
+    var keyPair = Curve.generateKeyPair();
+    var serializedPublic = keyPair.publicKey.serialize();
+
+    var justRight = Curve.decodePoint(serializedPublic, 0);
+
+    try {
+      var tooSmall = Curve.decodePoint(serializedPublic, 1);
+      throw AssertionError("Shouldn't decode");
+    } on InvalidKeyException catch (e) {
+      // good
+    }
+
+    try {
+      var empty = Curve.decodePoint(Uint8List(0), 0);
+      throw AssertionError("Shouldn't parse");
+    } on InvalidKeyException catch (e) {
+      // good
+    }
+
+    try {
+      var badKeyType = Uint8List(33);
+      Curve.arraycopy(
+          serializedPublic, 0, badKeyType, 0, serializedPublic.length);
+      badKeyType[0] = 0x01;
+      Curve.decodePoint(badKeyType, 0);
+      throw AssertionError("Should be bad key type");
+    } on InvalidKeyException catch (e) {
+      // good
+    }
+
+    var extraSpace = Uint8List(serializedPublic.length + 1);
+    Curve.arraycopy(
+        serializedPublic, 0, extraSpace, 0, serializedPublic.length);
+    var extra = Curve.decodePoint(extraSpace, 0);
+
+    var offsetSpace = Uint8List(serializedPublic.length + 1);
+    Curve.arraycopy(
+        serializedPublic, 0, offsetSpace, 1, serializedPublic.length);
+    var offset = Curve.decodePoint(offsetSpace, 1);
+
+    expect(serializedPublic, justRight.serialize());
+    expect(extra.serialize(), serializedPublic);
+    expect(offset.serialize(), serializedPublic);
   });
 }

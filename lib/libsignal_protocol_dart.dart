@@ -1,4 +1,4 @@
-library libsignalprotocoldart;
+library libsignal_protocol_dart;
 
 /// A Calculator.
 class Calculator {
