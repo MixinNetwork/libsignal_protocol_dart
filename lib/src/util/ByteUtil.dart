@@ -18,6 +18,15 @@ class ByteUtil {
     return bytes;
   }
 
+  static Uint8List intToByteArray(int value) {
+    var bytes = Uint8List(4);
+    bytes[0] = value >> 24;
+    bytes[1] = value >> 16;
+    bytes[2] = value >> 8;
+    bytes[3] = value;
+    return bytes;
+  }
+
   static Uint8List trim(Uint8List input, int length) {
     return input.sublist(0, length);
   }
@@ -71,5 +80,18 @@ class ByteUtil {
         ((bytes[offset + 2] & 0xff) << 16) |
         ((bytes[offset + 3] & 0xff) << 8) |
         ((bytes[offset + 4] & 0xff));
+  }
+
+  static int compare(Uint8List left, Uint8List right) {
+    for (var i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
+      var a = (left[i] & 0xff);
+      var b = (right[j] & 0xff);
+
+      if (a != b) {
+        return a - b;
+      }
+    }
+
+    return left.length - right.length;
   }
 }

@@ -19,6 +19,13 @@ void main() {
     expect(ByteUtil.shortToByteArray(value2), Uint8List.fromList([4, 1024]));
   });
 
+  test('ByteUtil.intToByteArray() convert int to UintList8', () {
+    var value1 = 100;
+    expect(ByteUtil.intToByteArray(value1), Uint8List.fromList([0, 0, 0, 100]));
+    var value2 = 1024;
+    expect(ByteUtil.intToByteArray(value2), Uint8List.fromList([0, 0, 4, 0]));
+  });
+
   test('ByteUtil.trim() sublist Uint8List from 0 to specification length', () {
     var input = Uint8List.fromList([1, 2, 3, 4, 5]);
     expect(ByteUtil.trim(input, 3), Uint8List.fromList([1, 2, 3]));
