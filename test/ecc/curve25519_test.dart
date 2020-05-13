@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/ecc/Curve.dart';
+import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
 import 'package:test/test.dart';
 
 void main() {

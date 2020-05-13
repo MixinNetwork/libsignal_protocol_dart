@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/util/ByteUtil.dart';
+import 'package:libsignal_protocol_dart/src/util/ByteUtil.dart';
 import 'package:test/test.dart';
 
 void main() {

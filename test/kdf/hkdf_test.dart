@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/kdf/HKDF.dart';
+import 'package:libsignal_protocol_dart/src/kdf/HKDF.dart';
 import 'package:test/test.dart';
 
 void main() {

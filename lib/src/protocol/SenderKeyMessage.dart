@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:libsignalprotocoldart/src/InvalidKeyException.dart';
+import '../InvalidKeyException.dart';
 
 import '../ecc/Curve.dart';
 import '../ecc/ECPublicKey.dart';

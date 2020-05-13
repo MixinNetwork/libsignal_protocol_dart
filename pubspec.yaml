@@ -1,8 +1,8 @@
-name: libsignalprotocoldart
+name: libsignal_protocol_dart
 description: signal protocol
 version: 0.0.1
 author:
-homepage: https://github.com/crossle/libsignal_protocol_dart
+homepage: https://github.com/MixinNetwork/libsignal_protocol_dart
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
