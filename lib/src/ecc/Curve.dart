@@ -76,7 +76,7 @@ class Curve {
   static bool verifySignature(
       ECPublicKey signingKey, Uint8List message, Uint8List signature) {
     if (signingKey == null || message == null || signature == null) {
-      throw Exception('Values must not be null');
+      throw InvalidKeyException('Values must not be null');
     }
 
     if (signingKey.getType() == djbType) {
@@ -87,7 +87,7 @@ class Curve {
           publicKey: PublicKey((signingKey as DjbECPublicKey).publicKey));
       return ed25519.verifySync(message, sig);
     } else {
-      throw Exception(
+      throw InvalidKeyException(
           'Unknown Signing Key type' + signingKey.getType().toString());
     }
   }
