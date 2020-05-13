@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
 import 'DjbECPublicKey.dart';
 import 'ECKeyPair.dart';
@@ -27,23 +28,21 @@ class Curve {
     switch (type) {
       case Curve.djbType:
         if (bytes.length - offset < 33) {
-          throw Exception('Bad key length: ' + bytes.length.toString());
+          throw InvalidKeyException(
+              'Bad key length: ' + bytes.length.toString());
         }
 
         var keyBytes = Uint8List(32);
-        keyBytes = arrayCopy(bytes, offset + 1, keyBytes, 0, keyBytes.length);
+        arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length);
         return DjbECPublicKey(keyBytes);
       default:
-        throw Exception('Bad key type: ' + type.toString());
+        throw InvalidKeyException('Bad key type: ' + type.toString());
     }
   }
 
-  static List<int> arrayCopy(
-      bytes, srcOffset, result, destOffset, bytesLength) {
-    for (var i = srcOffset; i < bytesLength; i++) {
-      result[destOffset + i] = bytes[i];
-    }
-    return result;
+  static void arraycopy(
+      List src, int srcPos, List dest, int destPos, int length) {
+    dest.setRange(destPos, length + destPos, src, srcPos);
   }
 
   static ECPrivateKey decodePrivatePoint(Uint8List bytes) {
