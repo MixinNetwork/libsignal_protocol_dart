@@ -26,18 +26,12 @@ class SessionBuilder {
   IdentityKeyStore _identityKeyStore;
   SignalProtocolAddress _remoteAddress;
 
-  SessionBuilder(
-      SessionStore sessionStore,
-      PreKeyStore preKeyStore,
-      SignedPreKeyStore signedPreKeyStore,
-      IdentityKeyStore identityKeyStore,
-      SignalProtocolAddress remoteAddress) {
-    _sessionStore = sessionStore;
-    _preKeyStore = preKeyStore;
-    _signedPreKeyStore = signedPreKeyStore;
-    _identityKeyStore = identityKeyStore;
-    _remoteAddress = remoteAddress;
+  SignalProtocolAddress hello() {
+    return _remoteAddress;
   }
+
+  SessionBuilder(this._sessionStore, this._preKeyStore, this._signedPreKeyStore,
+      this._identityKeyStore, this._remoteAddress);
 
   SessionBuilder.fromSignalStore(
       SignalProtocolStore store, SignalProtocolAddress remoteAddress) {
@@ -109,7 +103,7 @@ class SessionBuilder {
   }
 
   void processPreKeyBundle(PreKeyBundle preKey) {
-    // synchronized (SessionCipher.SESSION_LOCK) {
+    //synchronized (SessionCipher.SESSION_LOCK) {
     if (!_identityKeyStore.isTrustedIdentity(
         _remoteAddress, preKey.getIdentityKey(), Direction.SENDING)) {
       throw UntrustedIdentityException(
@@ -161,6 +155,6 @@ class SessionBuilder {
 
     _identityKeyStore.saveIdentity(_remoteAddress, preKey.getIdentityKey());
     _sessionStore.storeSession(_remoteAddress, sessionRecord);
-    // }
+    //}
   }
 }

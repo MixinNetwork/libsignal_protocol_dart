@@ -146,8 +146,8 @@ class SessionCipher {
             sessionRecord.sessionState.getRemoteIdentityKey());
       }
 
-      _identityKeyStore.saveIdentity(_remoteAddress,
-          sessionRecord.sessionState.getRemoteIdentityKey());
+      _identityKeyStore.saveIdentity(
+          _remoteAddress, sessionRecord.sessionState.getRemoteIdentityKey());
 
       callback.handlePlaintext(plaintext);
 
@@ -213,8 +213,7 @@ class SessionCipher {
     ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey(),
         sessionState.getLocalIdentityKey(), messageKeys.getMacKey());
 
-    var plaintext =
-        _getPlaintext(messageKeys, ciphertextMessage.getBody());
+    var plaintext = _getPlaintext(messageKeys, ciphertextMessage.getBody());
 
     sessionState.clearUnacknowledgedPreKeyMessage();
 
