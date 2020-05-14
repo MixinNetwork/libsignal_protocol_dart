@@ -26,16 +26,16 @@ class SessionBuilder {
   IdentityKeyStore _identityKeyStore;
   SignalProtocolAddress _remoteAddress;
 
-  SignalProtocolAddress hello() {
-    return _remoteAddress;
-  }
-
   SessionBuilder(this._sessionStore, this._preKeyStore, this._signedPreKeyStore,
       this._identityKeyStore, this._remoteAddress);
 
   SessionBuilder.fromSignalStore(
       SignalProtocolStore store, SignalProtocolAddress remoteAddress) {
-    SessionBuilder(store, store, store, store, remoteAddress);
+    _sessionStore = store;
+    _preKeyStore = store;
+    _signedPreKeyStore = store;
+    _identityKeyStore = store;
+    _remoteAddress = remoteAddress;
   }
 
   Optional<int> process(
