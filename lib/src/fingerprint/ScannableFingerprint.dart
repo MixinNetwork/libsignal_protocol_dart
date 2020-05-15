@@ -29,11 +29,10 @@ class ScannableFingerprint {
 
   bool compareTo(Uint8List scannedFingerprintData) {
     try {
-      var scanned =
-          CombinedFingerprints.fromBuffer(scannedFingerprintData);
-      if (scanned.hasRemoteFingerprint() ||
-          scanned.hasLocalFingerprint() ||
-          scanned.hasVersion() ||
+      var scanned = CombinedFingerprints.fromBuffer(scannedFingerprintData);
+      if (!scanned.hasRemoteFingerprint() ||
+          !scanned.hasLocalFingerprint() ||
+          !scanned.hasVersion() ||
           scanned.version != _version) {
         throw FingerprintVersionMismatchException(scanned.version, _version);
       }
@@ -45,4 +44,6 @@ class ScannableFingerprint {
       throw FingerprintParsingException(e);
     }
   }
+
+  Uint8List get fingerprints => _fingerprints.writeToBuffer();
 }

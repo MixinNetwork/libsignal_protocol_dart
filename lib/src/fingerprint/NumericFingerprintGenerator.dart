@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
+
 import '../IdentityKey.dart';
 import 'DisplayableFingerprint.dart';
 import 'Fingerprint.dart';
@@ -56,8 +58,14 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
       stableIdentifier
     ]);
     for (var i = 0; i < iterations; i++) {
-      hash = sha512.convert(hash).bytes;
+      var output = AccumulatorSink<Digest>();
+      var input = sha512.startChunkedConversion(output);
+      input.add(hash);
+      input.add(publicKey);
+      input.close();
+      hash = output.events.single.bytes;
     }
+
     return hash;
   }
 
@@ -65,7 +73,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
     var sortedIdentityKeys = [...identityKeys];
     sortedIdentityKeys.sort(IdentityKeyComparator);
 
-    var keys = [];
+    var keys = <int>[];
     sortedIdentityKeys.forEach((IdentityKey key) {
       var publicKeyBytes = key.publicKey.serialize();
       keys.addAll(publicKeyBytes.toList());
