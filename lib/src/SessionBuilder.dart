@@ -30,13 +30,8 @@ class SessionBuilder {
       this._identityKeyStore, this._remoteAddress);
 
   SessionBuilder.fromSignalStore(
-      SignalProtocolStore store, SignalProtocolAddress remoteAddress) {
-    _sessionStore = store;
-    _preKeyStore = store;
-    _signedPreKeyStore = store;
-    _identityKeyStore = store;
-    _remoteAddress = remoteAddress;
-  }
+      SignalProtocolStore store, SignalProtocolAddress remoteAddress)
+      : this(store, store, store, store, remoteAddress);
 
   Optional<int> process(
       SessionRecord sessionRecord, PreKeySignalMessage message) {
