@@ -9,7 +9,7 @@ import '../ecc/ECPublicKey.dart';
 import '../protocol/CiphertextMessage.dart';
 import '../protocol/SignalMessage.dart';
 import '../util/ByteUtil.dart';
-import '../state/WhisperTextProtocol.pb.dart' as SignalProtos;
+import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 
 import 'package:optional/optional.dart';
 
@@ -23,14 +23,12 @@ class PreKeySignalMessage extends CiphertextMessage {
   SignalMessage message;
   Uint8List serialized;
 
-  PreKeySignalMessage(Uint8List serialized)
-  // throws InvalidMessageException, InvalidVersionException
-  {
+  PreKeySignalMessage(Uint8List serialized) {
     try {
       _version = ByteUtil.highBitsToInt(serialized[0]);
 
       var preKeyWhisperMessage =
-          SignalProtos.PreKeySignalMessage.fromBuffer(serialized.sublist(1));
+          signal_protos.PreKeySignalMessage.fromBuffer(serialized.sublist(1));
 
       if (!preKeyWhisperMessage.hasSignedPreKeyId() ||
           !preKeyWhisperMessage.hasBaseKey() ||
@@ -48,8 +46,8 @@ class PreKeySignalMessage extends CiphertextMessage {
           ? preKeyWhisperMessage.signedPreKeyId
           : -1;
       baseKey = Curve.decodePoint(preKeyWhisperMessage.baseKey, 0);
-      identityKey = IdentityKey(
-          Curve.decodePoint(preKeyWhisperMessage.identityKey, 0));
+      identityKey =
+          IdentityKey(Curve.decodePoint(preKeyWhisperMessage.identityKey, 0));
       message = SignalMessage.fromSerialized(preKeyWhisperMessage.message);
     } on InvalidKeyException catch (e) {
       throw InvalidMessageException(e.detailMessage);
@@ -74,22 +72,23 @@ class PreKeySignalMessage extends CiphertextMessage {
     this.identityKey = identityKey;
     this.message = message;
 
-    // SignalProtos.PreKeySignalMessage.Builder builder =
-    //     SignalProtos.PreKeySignalMessage.newBuilder()
-    //                                     .setSignedPreKeyId(signedPreKeyId)
-    //                                     .setBaseKey(ByteString.copyFrom(baseKey.serialize()))
-    //                                     .setIdentityKey(ByteString.copyFrom(identityKey.serialize()))
-    //                                     .setMessage(ByteString.copyFrom(message.serialize()))
-    //                                     .setRegistrationId(registrationId);
+    var builder = signal_protos.PreKeySignalMessage.create()
+      ..signedPreKeyId = signedPreKeyId
+      ..baseKey = baseKey.serialize()
+      ..identityKey = identityKey.serialize()
+      ..message = message.serialize()
+      ..registrationId = registrationId;
 
-    // if (preKeyId.isPresent()) {
-    //   builder.setPreKeyId(preKeyId.get());
-    // }
+    if (preKeyId.isPresent) {
+      builder.preKeyId = preKeyId.value;
+    }
 
-    // byte[] versionBytes = {ByteUtil.intsToByteHighAndLow(this.version, CURRENT_VERSION)};
-    // byte[] messageBytes = builder.build().toByteArray();
+    var versionBytes = [
+      ByteUtil.intsToByteHighAndLow(_version, CiphertextMessage.CURRENT_VERSION)
+    ];
 
-    // this.serialized = ByteUtil.combine(versionBytes, messageBytes);
+    var messageBytes = builder.toBuilder().writeToBuffer();
+    serialized = ByteUtil.combine([versionBytes, messageBytes]);
   }
 
   int getMessageVersion() {

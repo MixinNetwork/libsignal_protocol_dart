@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:protobuf/protobuf.dart';
 import '../IdentityKey.dart';
+import '../InvalidKeyException.dart';
 import '../InvalidMessageException.dart';
 import '../LegacyMessageException.dart';
 import '../ecc/Curve.dart';
@@ -22,40 +24,42 @@ class SignalMessage extends CiphertextMessage {
   Uint8List _serialized;
 
   SignalMessage.fromSerialized(Uint8List serialized) {
-    // try {
-    var messageParts = ByteUtil.split(
-        serialized, 1, serialized.length - 1 - MAC_LENGTH, MAC_LENGTH);
-    var version = messageParts[0].first;
-    var message = messageParts[1];
-    var mac = messageParts[2];
+    try {
+      var messageParts = ByteUtil.split(
+          serialized, 1, serialized.length - 1 - MAC_LENGTH, MAC_LENGTH);
+      var version = messageParts[0].first;
+      var message = messageParts[1];
+      var mac = messageParts[2];
 
-    if (ByteUtil.highBitsToInt(version) < CiphertextMessage.CURRENT_VERSION) {
-      throw LegacyMessageException(
-          'Legacy message: $ByteUtil.highBitsToInt(version)');
+      if (ByteUtil.highBitsToInt(version) < CiphertextMessage.CURRENT_VERSION) {
+        throw LegacyMessageException(
+            'Legacy message: $ByteUtil.highBitsToInt(version)');
+      }
+
+      if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
+        throw InvalidMessageException(
+            'Unknown version: $ByteUtil.highBitsToInt(version)');
+      }
+
+      var whisperMessage = signal_protos.SignalMessage.fromBuffer(message);
+
+      if (!whisperMessage.hasCiphertext() ||
+          !whisperMessage.hasCounter() ||
+          !whisperMessage.hasRatchetKey()) {
+        throw InvalidMessageException('Incomplete message.');
+      }
+
+      _serialized = serialized;
+      _senderRatchetKey = Curve.decodePoint(whisperMessage.ratchetKey, 0);
+      _messageVersion = ByteUtil.highBitsToInt(version);
+      _counter = whisperMessage.counter;
+      _previousCounter = whisperMessage.previousCounter;
+      _ciphertext = whisperMessage.ciphertext;
+    } on InvalidProtocolBufferException catch (e) {
+      throw InvalidMessageException('');
+    } on InvalidKeyException catch (e) {
+      throw InvalidMessageException(e.detailMessage);
     }
-
-    if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
-      throw InvalidMessageException(
-          'Unknown version: $ByteUtil.highBitsToInt(version)');
-    }
-
-    var whisperMessage = signal_protos.SignalMessage.fromBuffer(message);
-
-    if (!whisperMessage.hasCiphertext() ||
-        !whisperMessage.hasCounter() ||
-        !whisperMessage.hasRatchetKey()) {
-      throw InvalidMessageException('Incomplete message.');
-    }
-
-    _serialized = serialized;
-    _senderRatchetKey = Curve.decodePoint(whisperMessage.ratchetKey, 0);
-    _messageVersion = ByteUtil.highBitsToInt(version);
-    _counter = whisperMessage.counter;
-    _previousCounter = whisperMessage.previousCounter;
-    _ciphertext = whisperMessage.ciphertext;
-    // } catch (InvalidProtocolBufferException | InvalidKeyException | ParseException e) {
-    //   throw new InvalidMessageException(e);
-    // }
   }
 
   SignalMessage(
