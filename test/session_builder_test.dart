@@ -73,11 +73,11 @@ void main() {
         SignalMessage.fromSerialized(bobMessage.serialize()));
     assert(String.fromCharCodes(plaintext) == originalMessage);
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       var loopingMessage =
-          'What do we mean by saying that existence precedes essence? ' +
-              'We mean that man first of all exists, encounters himself, ' +
-              'surges up in the world--and defines himself aftward. $i';
+          '''What do we mean by saying that existence precedes essence?
+              We mean that man first of all exists, encounters himself,
+              surges up in the world--and defines himself aftward. $i''';
       var aliceLoopingMessage =
           aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
 
@@ -86,11 +86,11 @@ void main() {
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       var loopingMessage =
-          ("What do we mean by saying that existence precedes essence? " +
-              "We mean that man first of all exists, encounters himself, " +
-              "surges up in the world--and defines himself aftward. $i");
+      ('''What do we mean by saying that existence precedes essence?
+          We mean that man first of all exists, encounters himself,
+          surges up in the world--and defines himself aftward. $i''');
       var bobLoopingMessage =
           bobSessionCipher.encrypt(utf8.encode(loopingMessage));
 
@@ -102,11 +102,11 @@ void main() {
     Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages =
         HashSet<Tuple2<String, CiphertextMessage>>();
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       var loopingMessage =
-          ("What do we mean by saying that existence precedes essence? " +
-              "We mean that man first of all exists, encounters himself, " +
-              "surges up in the world--and defines himself aftward. $i");
+          ('''What do we mean by saying that existence precedes essence?
+              We mean that man first of all exists, encounters himself,
+              surges up in the world--and defines himself aftward. $i''');
       var aliceLoopingMessage =
           aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
 
@@ -114,11 +114,11 @@ void main() {
           loopingMessage, aliceLoopingMessage));
     }
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       var loopingMessage =
-          ("What do we mean by saying that existence precedes essence? " +
-              "We mean that man first of all exists, encounters himself, " +
-              "surges up in the world--and defines himself aftward. $i");
+          ('''What do we mean by saying that existence precedes essence?
+              We mean that man first of all exists, encounters himself,
+              surges up in the world--and defines himself aftward. $i''');
       var aliceLoopingMessage =
           aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
 
@@ -127,7 +127,7 @@ void main() {
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       var loopingMessage = 'You can only desire based on what you know: $i';
       var bobLoopingMessage =
           bobSessionCipher.encrypt(utf8.encode(loopingMessage));
@@ -155,10 +155,10 @@ void main() {
     var bobPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeySignature = Curve.calculateSignature(
-        bobStore.getIdentityKeyPair().getPrivateKey(),
+        bobStore.getIdentityKeyPair(),
         bobSignedPreKeyPair.publicKey.serialize());
 
-    PreKeyBundle bobPreKey = new PreKeyBundle(
+    var bobPreKey = PreKeyBundle(
         bobStore.getLocalRegistrationId(),
         1,
         31337,
@@ -223,7 +223,7 @@ void main() {
     bobPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeySignature = Curve.calculateSignature(
-        bobStore.getIdentityKeyPair().getPrivateKey(),
+        bobStore.getIdentityKeyPair(),
         bobSignedPreKeyPair.publicKey.serialize());
     bobPreKey = PreKeyBundle(
         bobStore.getLocalRegistrationId(),
@@ -286,17 +286,17 @@ void main() {
     var bobPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeySignature = Curve.calculateSignature(
-        bobIdentityKeyStore.getIdentityKeyPair().getPrivateKey(),
+        bobIdentityKeyStore.getIdentityKeyPair(),
         bobSignedPreKeyPair.publicKey.serialize());
 
-    for (int i = 0; i < bobSignedPreKeySignature.length * 8; i++) {
+    for (var i = 0; i < bobSignedPreKeySignature.length * 8; i++) {
       var modifiedSignature = Uint8List(bobSignedPreKeySignature.length);
       Curve.arraycopy(bobSignedPreKeySignature, 0, modifiedSignature, 0,
           modifiedSignature.length);
 
       modifiedSignature[i ~/ 8] ^= (0x01 << (i % 8));
 
-      PreKeyBundle bobPreKey = new PreKeyBundle(
+      var bobPreKey = PreKeyBundle(
           bobIdentityKeyStore.getLocalRegistrationId(),
           1,
           31337,
@@ -308,7 +308,7 @@ void main() {
 
       try {
         aliceSessionBuilder.processPreKeyBundle(bobPreKey);
-        throw AssertionError("Accepted modified device key signature!");
+        throw AssertionError('Accepted modified device key signature!');
       } on InvalidKeyException catch (ike) {
         // good
       }
