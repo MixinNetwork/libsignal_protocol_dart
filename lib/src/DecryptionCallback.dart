@@ -1,5 +1,3 @@
 import 'dart:typed_data';
 
-abstract class DecryptionCallback {
-  void handlePlaintext(Uint8List plaintext);
-}
+typedef DecryptionCallback = void Function(Uint8List plaintext);

@@ -50,91 +50,127 @@ void main() {
     }
   });
 
-  test('testBasicPreKeyV3', (){
-    var aliceStore          = TestInMemorySignalProtocolStore();
-    var aliceSessionBuilder = SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+  test('testBasicPreKeyV3', () {
+    var aliceStore = TestInMemorySignalProtocolStore();
+    var aliceSessionBuilder =
+        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
 
-    final bobStore                 = new TestInMemorySignalProtocolStore();
-          var    bobPreKeyPair            = Curve.generateKeyPair();
-          var    bobSignedPreKeyPair      = Curve.generateKeyPair();
-          var       bobSignedPreKeySignature = Curve.calculateSignature(bobStore.getIdentityKeyPair().getPrivateKey(),
-                                                                           bobSignedPreKeyPair.publicKey.serialize());
+    final bobStore = new TestInMemorySignalProtocolStore();
+    var bobPreKeyPair = Curve.generateKeyPair();
+    var bobSignedPreKeyPair = Curve.generateKeyPair();
+    var bobSignedPreKeySignature = Curve.calculateSignature(
+        bobStore.getIdentityKeyPair().getPrivateKey(),
+        bobSignedPreKeyPair.publicKey.serialize());
 
-    PreKeyBundle bobPreKey = new PreKeyBundle(bobStore.getLocalRegistrationId(), 1,
-                                              31337, bobPreKeyPair.publicKey,
-                                              22, bobSignedPreKeyPair.publicKey,
-                                              bobSignedPreKeySignature,
-                                              bobStore.getIdentityKeyPair().getPublicKey());
+    PreKeyBundle bobPreKey = new PreKeyBundle(
+        bobStore.getLocalRegistrationId(),
+        1,
+        31337,
+        bobPreKeyPair.publicKey,
+        22,
+        bobSignedPreKeyPair.publicKey,
+        bobSignedPreKeySignature,
+        bobStore.getIdentityKeyPair().getPublicKey());
 
     aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
     assert(aliceStore.containsSession(BOB_ADDRESS));
-    assert(aliceStore.loadSession(BOB_ADDRESS).sessionState.getSessionVersion() == 3);
+    assert(
+        aliceStore.loadSession(BOB_ADDRESS).sessionState.getSessionVersion() ==
+            3);
 
-    final originalMessage    = "L'homme est condamné à être libre";
-          var     aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
-          var outgoingMessage    = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
+    final originalMessage = "L'homme est condamné à être libre";
+    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+    var outgoingMessage =
+        aliceSessionCipher.encrypt(utf8.encode(originalMessage));
 
     assert(outgoingMessage.getType() == CiphertextMessage.PREKEY_TYPE);
 
     var incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
-    bobStore.storePreKey(31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
-    bobStore.storeSignedPreKey(22, SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch), bobSignedPreKeyPair, bobSignedPreKeySignature));
+    bobStore.storePreKey(
+        31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+    bobStore.storeSignedPreKey(
+        22,
+        SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
+            bobSignedPreKeyPair, bobSignedPreKeySignature));
 
-    SessionCipher bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
-    var plaintext = bobSessionCipher.decryptWithCallback(incomingMessage, DecryptionCallback() {
-      @override
-      void handlePlaintext(Uint8List plaintext) {
-        assert(originalMessage == String.fromCharCodes(plaintext));
-        assert(!bobStore.containsSession(ALICE_ADDRESS));
-      }
+    var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    var plaintext =
+        bobSessionCipher.decryptWithCallback(incomingMessage, (plaintext) {
+      assert(originalMessage == String.fromCharCodes(plaintext));
+      assert(!bobStore.containsSession(ALICE_ADDRESS));
     });
 
     assert(bobStore.containsSession(ALICE_ADDRESS));
-    assert(bobStore.loadSession(ALICE_ADDRESS).sessionState.getSessionVersion() == 3);
-    assert(bobStore.loadSession(ALICE_ADDRESS).sessionState.aliceBaseKey != null);
+    assert(
+        bobStore.loadSession(ALICE_ADDRESS).sessionState.getSessionVersion() ==
+            3);
+    assert(
+        bobStore.loadSession(ALICE_ADDRESS).sessionState.aliceBaseKey != null);
     assert(originalMessage == String.fromCharCodes(plaintext));
 
-    var bobOutgoingMessage = bobSessionCipher.encrypt(utf8.encode(originalMessage));
+    var bobOutgoingMessage =
+        bobSessionCipher.encrypt(utf8.encode(originalMessage));
     assert(bobOutgoingMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
-    var alicePlaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobOutgoingMessage.serialize()));
+    var alicePlaintext = aliceSessionCipher.decryptFromSignal(
+        SignalMessage.fromSerialized(bobOutgoingMessage.serialize()));
     assert(String.fromCharCodes(alicePlaintext) == originalMessage);
 
     runInteraction(aliceStore, bobStore);
 
-    aliceStore          = TestInMemorySignalProtocolStore();
-    aliceSessionBuilder = SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
-    aliceSessionCipher  = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+    aliceStore = TestInMemorySignalProtocolStore();
+    aliceSessionBuilder =
+        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+    aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
 
-    bobPreKeyPair            = Curve.generateKeyPair();
-    bobSignedPreKeyPair      = Curve.generateKeyPair();
-    bobSignedPreKeySignature = Curve.calculateSignature(bobStore.getIdentityKeyPair().getPrivateKey(), bobSignedPreKeyPair.publicKey.serialize());
-    bobPreKey = PreKeyBundle(bobStore.getLocalRegistrationId(),
-                                 1, 31338, bobPreKeyPair.publicKey,
-                                 23, bobSignedPreKeyPair.publicKey, bobSignedPreKeySignature,
-                                 bobStore.getIdentityKeyPair().getPublicKey());
+    bobPreKeyPair = Curve.generateKeyPair();
+    bobSignedPreKeyPair = Curve.generateKeyPair();
+    bobSignedPreKeySignature = Curve.calculateSignature(
+        bobStore.getIdentityKeyPair().getPrivateKey(),
+        bobSignedPreKeyPair.publicKey.serialize());
+    bobPreKey = PreKeyBundle(
+        bobStore.getLocalRegistrationId(),
+        1,
+        31338,
+        bobPreKeyPair.publicKey,
+        23,
+        bobSignedPreKeyPair.publicKey,
+        bobSignedPreKeySignature,
+        bobStore.getIdentityKeyPair().getPublicKey());
 
-    bobStore.storePreKey(31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
-    bobStore.storeSignedPreKey(23, SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch), bobSignedPreKeyPair, bobSignedPreKeySignature));
+    bobStore.storePreKey(
+        31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+    bobStore.storeSignedPreKey(
+        23,
+        SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch),
+            bobSignedPreKeyPair, bobSignedPreKeySignature));
     aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
     outgoingMessage = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
 
     try {
-      plaintext = bobSessionCipher.decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
+      plaintext = bobSessionCipher
+          .decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
       throw AssertionError("shouldn't be trusted!");
     } on UntrustedIdentityException catch (uie) {
-      bobStore.saveIdentity(ALICE_ADDRESS, PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey());
+      bobStore.saveIdentity(ALICE_ADDRESS,
+          PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey());
     }
 
-    plaintext = bobSessionCipher.decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
-    assert(String.fromCharCodes(plaintext) ==originalMessage);
+    plaintext = bobSessionCipher
+        .decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
+    assert(String.fromCharCodes(plaintext) == originalMessage);
 
-    bobPreKey = PreKeyBundle(bobStore.getLocalRegistrationId(), 1,
-                                 31337, Curve.generateKeyPair().publicKey,
-                                 23, bobSignedPreKeyPair.publicKey, bobSignedPreKeySignature,
-                                 aliceStore.getIdentityKeyPair().getPublicKey());
+    bobPreKey = PreKeyBundle(
+        bobStore.getLocalRegistrationId(),
+        1,
+        31337,
+        Curve.generateKeyPair().publicKey,
+        23,
+        bobSignedPreKeyPair.publicKey,
+        bobSignedPreKeySignature,
+        aliceStore.getIdentityKeyPair().getPublicKey());
 
     try {
       aliceSessionBuilder.processPreKeyBundle(bobPreKey);
@@ -144,80 +180,98 @@ void main() {
     }
   });
 
-  void runInteraction(SignalProtocolStore aliceStore, SignalProtocolStore bobStore)
-  {
+  void runInteraction(
+      SignalProtocolStore aliceStore, SignalProtocolStore bobStore) {
     var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
-    var bobSessionCipher   = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
 
-    var originalMessage = "smert ze smert";
+    var originalMessage = 'smert ze smert';
     var aliceMessage = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
 
     assert(aliceMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
-    var plaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceMessage.serialize()));
+    var plaintext = bobSessionCipher.decryptFromSignal(
+        SignalMessage.fromSerialized(aliceMessage.serialize()));
     assert(String.fromCharCodes(plaintext) == (originalMessage));
 
     var bobMessage = bobSessionCipher.encrypt(utf8.encode(originalMessage));
 
     assert(bobMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
-    plaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobMessage.serialize()));
+    plaintext = aliceSessionCipher.decryptFromSignal(
+        SignalMessage.fromSerialized(bobMessage.serialize()));
     assert(String.fromCharCodes(plaintext) == originalMessage);
 
-    for (int i=0;i<10;i++) {
-      var loopingMessage = 'What do we mean by saying that existence precedes essence? ' +
-                               'We mean that man first of all exists, encounters himself, ' +
-                               'surges up in the world--and defines himself aftward. $i';
-      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+    for (int i = 0; i < 10; i++) {
+      var loopingMessage =
+          'What do we mean by saying that existence precedes essence? ' +
+              'We mean that man first of all exists, encounters himself, ' +
+              'surges up in the world--and defines himself aftward. $i';
+      var aliceLoopingMessage =
+          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
 
-      var loopingPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
+      var loopingPlaintext = bobSessionCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    for (int i=0;i<10;i++) {
-      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
-                               "We mean that man first of all exists, encounters himself, " +
-                               "surges up in the world--and defines himself aftward. $i");
-      var bobLoopingMessage = bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+    for (int i = 0; i < 10; i++) {
+      var loopingMessage =
+          ("What do we mean by saying that existence precedes essence? " +
+              "We mean that man first of all exists, encounters himself, " +
+              "surges up in the world--and defines himself aftward. $i");
+      var bobLoopingMessage =
+          bobSessionCipher.encrypt(utf8.encode(loopingMessage));
 
-      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
-      assert(String.fromCharCodes(loopingPlaintext) ==loopingMessage);
-    }
-
-    Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages = HashSet<Tuple2<String, CiphertextMessage>>();
-
-    for (int i=0;i<10;i++) {
-      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
-                               "We mean that man first of all exists, encounters himself, " +
-                               "surges up in the world--and defines himself aftward. $i");
-      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
-
-      aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(loopingMessage, aliceLoopingMessage));
-    }
-
-    for (int i=0;i<10;i++) {
-      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
-                               "We mean that man first of all exists, encounters himself, " +
-                               "surges up in the world--and defines himself aftward. $i");
-      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
-
-     var loopingPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
+      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    for (int i=0;i<10;i++) {
+    Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages =
+        HashSet<Tuple2<String, CiphertextMessage>>();
+
+    for (int i = 0; i < 10; i++) {
+      var loopingMessage =
+          ("What do we mean by saying that existence precedes essence? " +
+              "We mean that man first of all exists, encounters himself, " +
+              "surges up in the world--and defines himself aftward. $i");
+      var aliceLoopingMessage =
+          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(
+          loopingMessage, aliceLoopingMessage));
+    }
+
+    for (int i = 0; i < 10; i++) {
+      var loopingMessage =
+          ("What do we mean by saying that existence precedes essence? " +
+              "We mean that man first of all exists, encounters himself, " +
+              "surges up in the world--and defines himself aftward. $i");
+      var aliceLoopingMessage =
+          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      var loopingPlaintext = bobSessionCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
+      assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
+    }
+
+    for (int i = 0; i < 10; i++) {
       var loopingMessage = 'You can only desire based on what you know: $i';
-      var bobLoopingMessage = bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var bobLoopingMessage =
+          bobSessionCipher.encrypt(utf8.encode(loopingMessage));
 
-      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
+      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
     for (var aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
-      var outOfOrderPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceOutOfOrderMessage.item2.serialize()));
-      assert(String.fromCharCodes(outOfOrderPlaintext) == (aliceOutOfOrderMessage.item1));
+      var outOfOrderPlaintext = bobSessionCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(
+              aliceOutOfOrderMessage.item2.serialize()));
+      assert(String.fromCharCodes(outOfOrderPlaintext) ==
+          (aliceOutOfOrderMessage.item1));
     }
   }
-
-
 }

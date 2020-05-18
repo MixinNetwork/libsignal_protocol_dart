@@ -102,7 +102,7 @@ class SessionCipher {
   }
 
   Uint8List decrypt(PreKeySignalMessage ciphertext) {
-    return decryptWithCallback(ciphertext, NullDecryptionCallback());
+    return decryptWithCallback(ciphertext, () {}());
   }
 
   Uint8List decryptWithCallback(
@@ -112,7 +112,7 @@ class SessionCipher {
       var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
       var plaintext = _decrypt(sessionRecord, ciphertext.getWhisperMessage());
 
-      callback.handlePlaintext(plaintext);
+      callback(plaintext);
 
       _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
@@ -125,7 +125,7 @@ class SessionCipher {
   }
 
   Uint8List decryptFromSignal(SignalMessage cipherText) {
-    return decryptFromSignalWithCallback(cipherText, NullDecryptionCallback());
+    return decryptFromSignalWithCallback(cipherText, () {}());
   }
 
   Uint8List decryptFromSignalWithCallback(
@@ -149,7 +149,7 @@ class SessionCipher {
       _identityKeyStore.saveIdentity(
           _remoteAddress, sessionRecord.sessionState.getRemoteIdentityKey());
 
-      callback.handlePlaintext(plaintext);
+      callback(plaintext);
 
       _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
@@ -299,9 +299,4 @@ class SessionCipher {
     return aesCbcDecrypt(
         messageKeys.getCipherKey(), messageKeys.getIv(), cipherText);
   }
-}
-
-class NullDecryptionCallback implements DecryptionCallback {
-  @override
-  void handlePlaintext(Uint8List plaintext) {}
 }

@@ -39,7 +39,7 @@ class GroupCipher {
   }
 
   Uint8List decrypt(Uint8List senderKeyMessageBytes) {
-    return decryptWithCallback(senderKeyMessageBytes, NullDecryptionCallback());
+    return decryptWithCallback(senderKeyMessageBytes, () {}());
   }
 
   Uint8List decryptWithCallback(
@@ -59,7 +59,7 @@ class GroupCipher {
       var plaintext = getPlainText(
           senderKey.iv, senderKey.cipherKey, senderKeyMessage.ciphertext);
 
-      callback.handlePlaintext(plaintext);
+      callback(plaintext);
 
       _senderKeyStore.storeSenderKey(_senderKeyId, record);
       return plaintext;
@@ -109,9 +109,4 @@ class GroupCipher {
     cipher.init(true, params);
     return cipher.process(plaintext);
   }
-}
-
-class NullDecryptionCallback extends DecryptionCallback {
-  @override
-  void handlePlaintext(Uint8List plaintext) {}
 }
