@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/InvalidKeyException.dart';
 import 'package:libsignal_protocol_dart/src/SessionBuilder.dart';
@@ -18,6 +19,7 @@ import 'package:test/test.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:tuple/tuple.dart';
 
+import 'test_in_memory_identity_key_store.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 void main() {
@@ -272,5 +274,56 @@ void main() {
     } on UntrustedIdentityException catch (uie) {
       // good
     }
+  });
+
+  test('testBadSignedPreKeySignature', () {
+    var aliceStore = TestInMemorySignalProtocolStore();
+    var aliceSessionBuilder =
+        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+
+    var bobIdentityKeyStore = TestInMemoryIdentityKeyStore();
+
+    var bobPreKeyPair = Curve.generateKeyPair();
+    var bobSignedPreKeyPair = Curve.generateKeyPair();
+    var bobSignedPreKeySignature = Curve.calculateSignature(
+        bobIdentityKeyStore.getIdentityKeyPair().getPrivateKey(),
+        bobSignedPreKeyPair.publicKey.serialize());
+
+    for (int i = 0; i < bobSignedPreKeySignature.length * 8; i++) {
+      var modifiedSignature = Uint8List(bobSignedPreKeySignature.length);
+      Curve.arraycopy(bobSignedPreKeySignature, 0, modifiedSignature, 0,
+          modifiedSignature.length);
+
+      modifiedSignature[i ~/ 8] ^= (0x01 << (i % 8));
+
+      PreKeyBundle bobPreKey = new PreKeyBundle(
+          bobIdentityKeyStore.getLocalRegistrationId(),
+          1,
+          31337,
+          bobPreKeyPair.publicKey,
+          22,
+          bobSignedPreKeyPair.publicKey,
+          modifiedSignature,
+          bobIdentityKeyStore.getIdentityKeyPair().getPublicKey());
+
+      try {
+        aliceSessionBuilder.processPreKeyBundle(bobPreKey);
+        throw AssertionError("Accepted modified device key signature!");
+      } on InvalidKeyException catch (ike) {
+        // good
+      }
+    }
+
+    var bobPreKey = PreKeyBundle(
+        bobIdentityKeyStore.getLocalRegistrationId(),
+        1,
+        31337,
+        bobPreKeyPair.publicKey,
+        22,
+        bobSignedPreKeyPair.publicKey,
+        bobSignedPreKeySignature,
+        bobIdentityKeyStore.getIdentityKeyPair().getPublicKey());
+
+    aliceSessionBuilder.processPreKeyBundle(bobPreKey);
   });
 }
