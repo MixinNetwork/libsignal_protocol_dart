@@ -25,14 +25,14 @@ class PreKeyBundle {
       ECPublicKey signedPreKeyPublic,
       Uint8List signedPreKeySignature,
       IdentityKey identityKey) {
-    this._registrationId = registrationId;
-    this._deviceId = deviceId;
-    this._preKeyId = preKeyId;
-    this._preKeyPublic = preKeyPublic;
-    this._signedPreKeyId = signedPreKeyId;
-    this._signedPreKeyPublic = signedPreKeyPublic;
-    this._signedPreKeySignature = signedPreKeySignature;
-    this._identityKey = identityKey;
+    _registrationId = registrationId;
+    _deviceId = deviceId;
+    _preKeyId = preKeyId;
+    _preKeyPublic = preKeyPublic;
+    _signedPreKeyId = signedPreKeyId;
+    _signedPreKeyPublic = signedPreKeyPublic;
+    _signedPreKeySignature = signedPreKeySignature;
+    _identityKey = identityKey;
   }
 
   int getDeviceId() {

@@ -197,7 +197,7 @@ void main() {
   });
 
   test('testRandomAgreements', () {
-    for (int i = 0; i < 50; i++) {
+    for (var i = 0; i < 50; i++) {
       var alice = Curve.generateKeyPair();
       var bob = Curve.generateKeyPair();
 
@@ -386,14 +386,14 @@ void main() {
 
     var alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate);
     var alicePublicKey = Curve.decodePoint(aliceIdentityPublic, 0);
-    var aliceEphemeral = Curve.decodePoint(aliceEphemeralPublic, 0);
+    var aliceEphemeral  = Curve.decodePoint(aliceEphemeralPublic, 0);
 
     if (!Curve.verifySignature(
         alicePublicKey, aliceEphemeral.serialize(), aliceSignature)) {
       throw AssertionError('Sig verification failed!');
     }
 
-    for (int i = 0; i < aliceSignature.length; i++) {
+    for (var i = 0; i < aliceSignature.length; i++) {
       var modifiedSignature = Uint8List(aliceSignature.length);
       Curve.arraycopy(
           aliceSignature, 0, modifiedSignature, 0, modifiedSignature.length);
@@ -402,7 +402,7 @@ void main() {
 
       if (Curve.verifySignature(
           alicePublicKey, aliceEphemeral.serialize(), modifiedSignature)) {
-        throw AssertionError("Sig verification succeeded!");
+        throw AssertionError('Sig verification succeeded!');
       }
     }
   });

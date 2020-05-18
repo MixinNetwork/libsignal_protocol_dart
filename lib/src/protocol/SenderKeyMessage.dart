@@ -76,7 +76,7 @@ class SenderKeyMessage extends CiphertextMessage {
 
   Uint8List _getSignature(ECPrivateKey signatureKey, Uint8List serialized) {
     try {
-      return Curve.calculateSignature(signatureKey, serialized);
+//      return Curve.calculateSignature(signatureKey, serialized);
     } on InvalidKeyIdException catch (e) {
       throw AssertionError(e);
     }

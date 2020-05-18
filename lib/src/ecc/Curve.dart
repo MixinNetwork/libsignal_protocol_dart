@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import '../IdentityKeyPair.dart';
 import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
 import 'DjbECPublicKey.dart';
@@ -93,14 +94,16 @@ class Curve {
   }
 
   static Uint8List calculateSignature(
-      ECPrivateKey signingKey, Uint8List message) {
+      IdentityKeyPair keyPair, Uint8List message) {
+    var signingKey = keyPair.getPrivateKey();
     if (signingKey == null || message == null) {
       throw Exception('Values must not be null');
     }
 
     if (signingKey.getType() == djbType) {
-      // TODO
-      // ed25519.signSync(message, keyPair)
+       return ed25519.signSync(message,
+           KeyPair(privateKey: PrivateKey(keyPair.getPrivateKey().serialize()),
+               publicKey: PublicKey(keyPair.getPublicKey().serialize()))).bytes;
     } else {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
