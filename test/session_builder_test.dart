@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -12,9 +13,11 @@ import 'package:libsignal_protocol_dart/src/protocol/PreKeySignalMessage.dart';
 import 'package:libsignal_protocol_dart/src/protocol/SignalMessage.dart';
 import 'package:libsignal_protocol_dart/src/state/PreKeyBundle.dart';
 import 'package:libsignal_protocol_dart/src/state/PreKeyRecord.dart';
+import 'package:libsignal_protocol_dart/src/state/SignalProtocolStore.dart';
 import 'package:libsignal_protocol_dart/src/state/SignedPreKeyRecord.dart';
 import 'package:test/test.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:tuple/tuple.dart';
 
 import 'test_in_memory_signal_protocol_store.dart';
 
@@ -140,4 +143,81 @@ void main() {
       // good
     }
   });
+
+  void runInteraction(SignalProtocolStore aliceStore, SignalProtocolStore bobStore)
+  {
+    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+    var bobSessionCipher   = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+
+    var originalMessage = "smert ze smert";
+    var aliceMessage = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
+
+    assert(aliceMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+
+    var plaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceMessage.serialize()));
+    assert(String.fromCharCodes(plaintext) == (originalMessage));
+
+    var bobMessage = bobSessionCipher.encrypt(utf8.encode(originalMessage));
+
+    assert(bobMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+
+    plaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobMessage.serialize()));
+    assert(String.fromCharCodes(plaintext) == originalMessage);
+
+    for (int i=0;i<10;i++) {
+      var loopingMessage = 'What do we mean by saying that existence precedes essence? ' +
+                               'We mean that man first of all exists, encounters himself, ' +
+                               'surges up in the world--and defines himself aftward. $i';
+      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      var loopingPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
+      assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
+    }
+
+    for (int i=0;i<10;i++) {
+      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
+                               "We mean that man first of all exists, encounters himself, " +
+                               "surges up in the world--and defines himself aftward. $i");
+      var bobLoopingMessage = bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
+      assert(String.fromCharCodes(loopingPlaintext) ==loopingMessage);
+    }
+
+    Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages = HashSet<Tuple2<String, CiphertextMessage>>();
+
+    for (int i=0;i<10;i++) {
+      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
+                               "We mean that man first of all exists, encounters himself, " +
+                               "surges up in the world--and defines himself aftward. $i");
+      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(loopingMessage, aliceLoopingMessage));
+    }
+
+    for (int i=0;i<10;i++) {
+      var loopingMessage = ("What do we mean by saying that existence precedes essence? " +
+                               "We mean that man first of all exists, encounters himself, " +
+                               "surges up in the world--and defines himself aftward. $i");
+      var aliceLoopingMessage = aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+     var loopingPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
+      assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
+    }
+
+    for (int i=0;i<10;i++) {
+      var loopingMessage = 'You can only desire based on what you know: $i';
+      var bobLoopingMessage = bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+
+      var loopingPlaintext = aliceSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
+      assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
+    }
+
+    for (var aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
+      var outOfOrderPlaintext = bobSessionCipher.decryptFromSignal(SignalMessage.fromSerialized(aliceOutOfOrderMessage.item2.serialize()));
+      assert(String.fromCharCodes(outOfOrderPlaintext) == (aliceOutOfOrderMessage.item1));
+    }
+  }
+
+
 }
