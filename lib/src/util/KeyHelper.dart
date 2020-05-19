@@ -1,6 +1,4 @@
-import 'dart:typed_data';
-
-import 'package:pointycastle/pointycastle.dart';
+import 'dart:math';
 
 import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
@@ -16,16 +14,11 @@ class KeyHelper {
   static int integerMax = 0x7fffffff;
 
   static int generateRegistrationId(bool extendedRange) {
-    final secureRandom = SecureRandom('AES/CTR/PRNG');
-    final key = Uint8List(16);
-    final keyParam = KeyParameter(key);
-    final params = ParametersWithIV(keyParam, Uint8List(16));
-
-    secureRandom.seed(params);
+    final secureRandom = Random.secure();
     if (extendedRange) {
-      return secureRandom.nextBigInteger(integerMax - 1).toInt() + 1;
+      return secureRandom.nextInt(integerMax - 1) + 1;
     } else {
-      return secureRandom.nextBigInteger(16380).toInt() + 1;
+      return secureRandom.nextInt(16380) + 1;
     }
   }
 }

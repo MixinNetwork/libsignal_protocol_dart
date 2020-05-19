@@ -386,7 +386,7 @@ void main() {
 
     var alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate);
     var alicePublicKey = Curve.decodePoint(aliceIdentityPublic, 0);
-    var aliceEphemeral  = Curve.decodePoint(aliceEphemeralPublic, 0);
+    var aliceEphemeral = Curve.decodePoint(aliceEphemeralPublic, 0);
 
     if (!Curve.verifySignature(
         alicePublicKey, aliceEphemeral.serialize(), aliceSignature)) {
