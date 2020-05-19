@@ -101,9 +101,13 @@ class Curve {
     }
 
     if (signingKey.getType() == djbType) {
-       return ed25519.signSync(message,
-           KeyPair(privateKey: PrivateKey(keyPair.getPrivateKey().serialize()),
-               publicKey: PublicKey(keyPair.getPublicKey().serialize()))).bytes;
+      return ed25519
+          .signSync(
+              message,
+              KeyPair(
+                  privateKey: PrivateKey(keyPair.getPrivateKey().serialize()),
+                  publicKey: PublicKey(keyPair.getPublicKey().serialize())))
+          .bytes;
     } else {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());

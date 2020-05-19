@@ -1,6 +1,7 @@
 # libsignal_protocol_dart
 
-signal protocol
+Libsignal_protocol_dart is a pure Dart implementation of the Signal Protocol.
+
 
 ## Getting Started
 

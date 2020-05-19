@@ -14,6 +14,7 @@ dependencies:
   optional: ^4.1.0
   crypto: ^2.1.4
   tuple: ^1.0.3
+  dartx: ^0.4.1
   pointycastle:
     git: git@github.com:bcgit/pc-dart.git
 
