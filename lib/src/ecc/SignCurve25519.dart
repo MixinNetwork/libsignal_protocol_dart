@@ -1,8 +1,10 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'package:convert/convert.dart';
 import 'GoString.dart';
+import 'dylib_utils.dart';
 
 typedef signSignature = Void Function(
   Pointer<GoString>,
@@ -20,7 +22,8 @@ typedef VerifySignature = int Function(
 Uint8List sign(Uint8List privateKey, Uint8List message) {
   final p = hex.encode(privateKey);
   final m = hex.encode(message);
-  final libsignal = DynamicLibrary.open('./godart.so');
+  final libsignal =
+      dlopenPlatformSpecific('godart', path: Platform.script.resolve('').path);
   final signFunction = libsignal
       .lookup<NativeFunction<signSignature>>('SignSignature')
       .asFunction<SignSignature>();
@@ -40,7 +43,8 @@ bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
   final p = hex.encode(publicKey);
   final m = hex.encode(message);
   final s = hex.encode(signature);
-  final libsignal = DynamicLibrary.open('./godart.so');
+  final libsignal =
+      dlopenPlatformSpecific('godart', path: Platform.script.resolve('').path);
   final verifyFunction = libsignal
       .lookup<NativeFunction<verifySignature>>('VerifySignature')
       .asFunction<VerifySignature>();

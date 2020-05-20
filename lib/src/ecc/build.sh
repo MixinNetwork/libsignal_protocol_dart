@@ -1,1 +1,1 @@
-go build -o godart.so -buildmode=c-shared
+go build -o libgodart.so -buildmode=c-shared
