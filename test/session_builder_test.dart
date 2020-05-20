@@ -88,7 +88,7 @@ void main() {
 
     for (var i = 0; i < 10; i++) {
       var loopingMessage =
-      ('''What do we mean by saying that existence precedes essence?
+          ('''What do we mean by saying that existence precedes essence?
           We mean that man first of all exists, encounters himself,
           surges up in the world--and defines himself aftward. $i''');
       var bobLoopingMessage =
@@ -155,7 +155,7 @@ void main() {
     var bobPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeySignature = Curve.calculateSignature(
-        bobStore.getIdentityKeyPair(),
+        bobStore.getIdentityKeyPair().getPrivateKey(),
         bobSignedPreKeyPair.publicKey.serialize());
 
     var bobPreKey = PreKeyBundle(
@@ -223,7 +223,7 @@ void main() {
     bobPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeySignature = Curve.calculateSignature(
-        bobStore.getIdentityKeyPair(),
+        bobStore.getIdentityKeyPair().getPrivateKey(),
         bobSignedPreKeyPair.publicKey.serialize());
     bobPreKey = PreKeyBundle(
         bobStore.getLocalRegistrationId(),
@@ -286,7 +286,7 @@ void main() {
     var bobPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeyPair = Curve.generateKeyPair();
     var bobSignedPreKeySignature = Curve.calculateSignature(
-        bobIdentityKeyStore.getIdentityKeyPair(),
+        bobIdentityKeyStore.getIdentityKeyPair().getPrivateKey(),
         bobSignedPreKeyPair.publicKey.serialize());
 
     for (var i = 0; i < bobSignedPreKeySignature.length * 8; i++) {
