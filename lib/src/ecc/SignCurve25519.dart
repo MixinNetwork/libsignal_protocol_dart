@@ -19,11 +19,12 @@ typedef verifySignature = Int8 Function(
 typedef VerifySignature = int Function(
     Pointer<GoString>, Pointer<GoString>, Pointer<GoString>);
 
+final libsignal =
+    dlopenPlatformSpecific('godart', path: Platform.script.resolve('').path);
+
 Uint8List sign(Uint8List privateKey, Uint8List message) {
   final p = hex.encode(privateKey);
   final m = hex.encode(message);
-  final libsignal =
-      dlopenPlatformSpecific('godart', path: Platform.script.resolve('').path);
   final signFunction = libsignal
       .lookup<NativeFunction<signSignature>>('SignSignature')
       .asFunction<SignSignature>();
@@ -43,8 +44,6 @@ bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
   final p = hex.encode(publicKey);
   final m = hex.encode(message);
   final s = hex.encode(signature);
-  final libsignal =
-      dlopenPlatformSpecific('godart', path: Platform.script.resolve('').path);
   final verifyFunction = libsignal
       .lookup<NativeFunction<verifySignature>>('VerifySignature')
       .asFunction<VerifySignature>();
