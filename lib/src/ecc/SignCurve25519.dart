@@ -36,19 +36,20 @@ Uint8List sign(Uint8List privateKey, Uint8List message) {
   return hex.decode(sig.toString());
 }
 
-bool verify(Uint8List publicKey, Uint8List message) {
+bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
   final p = hex.encode(publicKey);
   final m = hex.encode(message);
+  final s = hex.encode(signature);
   final libsignal = DynamicLibrary.open('./godart.so');
   final verifyFunction = libsignal
       .lookup<NativeFunction<verifySignature>>('VerifySignature')
       .asFunction<VerifySignature>();
   final public = GoString.fromString(p);
   final msg = GoString.fromString(m);
-  final result = GoString.fromString('');
-  final r = verifyFunction(public, msg, result);
+  final sig = GoString.fromString(s);
+  final r = verifyFunction(public, msg, sig);
   free(public);
   free(msg);
-  free(result);
+  free(sig);
   return r == 1;
 }
