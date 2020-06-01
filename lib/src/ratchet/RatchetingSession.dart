@@ -20,8 +20,8 @@ import 'package:optional/optional.dart';
 class RatchetingSession {
   static void initializeSession(
       SessionState sessionState, SymmetricSignalProtocolParameters parameters) {
-    if (isAlice(parameters.getOurBaseKey().publicKey,
-        parameters.getTheirBaseKey())) {
+    if (isAlice(
+        parameters.getOurBaseKey().publicKey, parameters.getTheirBaseKey())) {
       var aliceParameters = AliceSignalProtocolParameters.newBuilder();
 
       aliceParameters
@@ -59,7 +59,7 @@ class RatchetingSession {
           parameters.getOurIdentityKey().getPublicKey();
 
       var sendingRatchetKey = Curve.generateKeyPair();
-      var secrets = Uint8List(0);
+      var secrets = <int>[];
 
       secrets.addAll(getDiscontinuityBytes());
 
@@ -77,7 +77,7 @@ class RatchetingSession {
             parameters.getOurBaseKey().privateKey));
       }
 
-      var derivedKeys = calculateDerivedKeys(secrets);
+      var derivedKeys = calculateDerivedKeys(Uint8List.fromList(secrets));
       var sendingChain = derivedKeys
           .getRootKey()
           .createChain(parameters.getTheirRatchetKey(), sendingRatchetKey);
@@ -138,11 +138,10 @@ class RatchetingSession {
     HKDF kdf = HKDFv3();
     var bytes = utf8.encode('WhisperText');
     var derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
-    var derivedSecrets =
-        ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
+    var derivedSecrets = ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
 
-    return DerivedKeys(RootKey(kdf, derivedSecrets[0]),
-        ChainKey(kdf, derivedSecrets[1], 0));
+    return DerivedKeys(
+        RootKey(kdf, derivedSecrets[0]), ChainKey(kdf, derivedSecrets[1], 0));
   }
 
   static bool isAlice(ECPublicKey ourKey, ECPublicKey theirKey) {

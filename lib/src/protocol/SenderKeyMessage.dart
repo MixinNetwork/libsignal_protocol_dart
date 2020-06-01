@@ -33,9 +33,9 @@ class SenderKeyMessage extends CiphertextMessage {
       ..iteration = iteration
       ..ciphertext = ciphertext
       ..toBuilder();
-    // TODO convert message to Uint8List
-//    var signature = _getSignature(signatureKey, ByteUtil.combine([version, message]));
-//    _serialized = ByteUtil.combine([version, message, signature]);
+   var messageList = message.writeToBuffer();
+   var signature = _getSignature(signatureKey, ByteUtil.combine([version, messageList]));
+   _serialized = ByteUtil.combine([version, messageList, signature]);
     _messageVersion = CiphertextMessage.CURRENT_VERSION;
     _keyId = keyId;
     _iteration = iteration;
@@ -76,7 +76,7 @@ class SenderKeyMessage extends CiphertextMessage {
 
   Uint8List _getSignature(ECPrivateKey signatureKey, Uint8List serialized) {
     try {
-//      return Curve.calculateSignature(signatureKey, serialized);
+     return Curve.calculateSignature(signatureKey, serialized);
     } on InvalidKeyIdException catch (e) {
       throw AssertionError(e);
     }

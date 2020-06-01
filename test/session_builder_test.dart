@@ -167,7 +167,6 @@ void main() {
         bobSignedPreKeyPair.publicKey,
         bobSignedPreKeySignature,
         bobStore.getIdentityKeyPair().getPublicKey());
-
     aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
     assert(aliceStore.containsSession(BOB_ADDRESS));
