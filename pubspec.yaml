@@ -8,11 +8,11 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  cryptography: ^1.0.0
+  cryptography: ^1.4.0
   protobuf: ^1.0.1
   convert: ^2.1.1
   optional: ^4.1.0
-  crypto: ^2.1.4
+  crypto: ^2.1.5
   tuple: ^1.0.3
   dartx: ^0.4.1
   ffi: ^0.1.3
