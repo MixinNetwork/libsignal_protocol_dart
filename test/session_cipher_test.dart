@@ -1,5 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
 import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
@@ -44,59 +46,68 @@ void main() {
 
     assert(alicePlaintext == bobPlaintext);
 
-/*
-    var            bobReply      = "This is a message from Bob.".getBytes();
-    CiphertextMessage reply         = bobCipher.encrypt(bobReply);
-    byte[]            receivedReply = aliceCipher.decrypt(new SignalMessage(reply.serialize()));
+    var bobReply = utf8.encode("This is a message from Bob.");
+    var reply = bobCipher.encrypt(bobReply);
+    var receivedReply = aliceCipher
+        .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
 
-    assertTrue(Arrays.equals(bobReply, receivedReply));
+    assert(bobReply == receivedReply);
 
-    List<CiphertextMessage> aliceCiphertextMessages = new ArrayList<>();
-    List<byte[]>            alicePlaintextMessages  = new ArrayList<>();
+    List<CiphertextMessage> aliceCiphertextMessages = List<CiphertextMessage>();
+    List<Uint8List> alicePlaintextMessages = List<Uint8List>();
 
-    for (int i=0;i<50;i++) {
-      alicePlaintextMessages.add(("смерть за смерть " + i).getBytes());
-      aliceCiphertextMessages.add(aliceCipher.encrypt(("смерть за смерть " + i).getBytes()));
+    for (int i = 0; i < 50; i++) {
+      alicePlaintextMessages.add(utf8.encode("смерть за смерть $i"));
+      aliceCiphertextMessages
+          .add(aliceCipher.encrypt(utf8.encode("смерть за смерть $i")));
     }
 
-    long seed = System.currentTimeMillis();
+    var seed = DateTime.now().microsecondsSinceEpoch;
 
-    Collections.shuffle(aliceCiphertextMessages, new Random(seed));
-    Collections.shuffle(alicePlaintextMessages, new Random(seed));
+    // Collections.shuffle(aliceCiphertextMessages, Random(seed));
+    // Collections.shuffle(alicePlaintextMessages, Random(seed));
 
-    for (int i=0;i<aliceCiphertextMessages.size() / 2;i++) {
-      byte[] receivedPlaintext = bobCipher.decrypt(new SignalMessage(aliceCiphertextMessages.get(i).serialize()));
-      assertTrue(Arrays.equals(receivedPlaintext, alicePlaintextMessages.get(i)));
+    for (var i = 0; i < aliceCiphertextMessages.length / 2; i++) {
+      var receivedPlaintext = bobCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
+      assert(receivedPlaintext == alicePlaintextMessages[i]);
     }
 
-    List<CiphertextMessage> bobCiphertextMessages = new ArrayList<>();
-    List<byte[]>            bobPlaintextMessages  = new ArrayList<>();
+    List<CiphertextMessage> bobCiphertextMessages = List<CiphertextMessage>();
+    List<Uint8List> bobPlaintextMessages = List<Uint8List>();
 
-    for (int i=0;i<20;i++) {
-      bobPlaintextMessages.add(("смерть за смерть " + i).getBytes());
-      bobCiphertextMessages.add(bobCipher.encrypt(("смерть за смерть " + i).getBytes()));
+    for (int i = 0; i < 20; i++) {
+      bobPlaintextMessages.add(utf8.encode("смерть за смерть $i"));
+      bobCiphertextMessages
+          .add(bobCipher.encrypt(utf8.encode("смерть за смерть $i")));
     }
 
-    seed = System.currentTimeMillis();
+    seed = DateTime.now().millisecondsSinceEpoch;
 
-    Collections.shuffle(bobCiphertextMessages, new Random(seed));
-    Collections.shuffle(bobPlaintextMessages, new Random(seed));
+    // Collections.shuffle(bobCiphertextMessages, new Random(seed));
+    // Collections.shuffle(bobPlaintextMessages, new Random(seed));
 
-    for (int i=0;i<bobCiphertextMessages.size() / 2;i++) {
-      byte[] receivedPlaintext = aliceCipher.decrypt(new SignalMessage(bobCiphertextMessages.get(i).serialize()));
-      assertTrue(Arrays.equals(receivedPlaintext, bobPlaintextMessages.get(i)));
+    for (var i = 0; i < bobCiphertextMessages.length / 2; i++) {
+      var receivedPlaintext = aliceCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
+      assert(receivedPlaintext == bobPlaintextMessages[i]);
     }
 
-    for (int i=aliceCiphertextMessages.size()/2;i<aliceCiphertextMessages.size();i++) {
-      byte[] receivedPlaintext = bobCipher.decrypt(new SignalMessage(aliceCiphertextMessages.get(i).serialize()));
-      assertTrue(Arrays.equals(receivedPlaintext, alicePlaintextMessages.get(i)));
+    for (var i = (aliceCiphertextMessages.length / 2) as int;
+        i < aliceCiphertextMessages.length;
+        i++) {
+      var receivedPlaintext = bobCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
+      assert(receivedPlaintext == alicePlaintextMessages[i]);
     }
 
-    for (int i=bobCiphertextMessages.size() / 2;i<bobCiphertextMessages.size(); i++) {
-      var receivedPlaintext = aliceCipher.decrypt(new SignalMessage(bobCiphertextMessages.get(i).serialize()));
-      assert(Arrays.equals(receivedPlaintext, bobPlaintextMessages.get(i)));
+    for (var i = (bobCiphertextMessages.length / 2) as int;
+        i < bobCiphertextMessages.length;
+        i++) {
+      var receivedPlaintext = aliceCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
+      assert(receivedPlaintext == bobPlaintextMessages[i]);
     }
-    */
   }
 
   void initializeSessionsV3(
