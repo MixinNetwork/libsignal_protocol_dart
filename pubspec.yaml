@@ -16,8 +16,9 @@ dependencies:
   tuple: ^1.0.3
   dartx: ^0.4.1
   ffi: ^0.1.3
-  pointycastle:
-    git: git@github.com:bcgit/pc-dart.git
+  encrypt: 4.0.2
+  #  pointycastle:
+  #  git: git@github.com:bcgit/pc-dart.git
 
 dev_dependencies:
   test: ^1.15.1
