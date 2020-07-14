@@ -105,21 +105,21 @@ class SessionCipher {
 
   Uint8List decryptWithCallback(
       PreKeySignalMessage ciphertext, DecryptionCallback callback) {
-    synchronized(SESSION_LOCK) {
-      var sessionRecord = _sessionStore.loadSession(_remoteAddress);
-      var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
-      var plaintext = _decrypt(sessionRecord, ciphertext.getWhisperMessage());
+    // synchronized(SESSION_LOCK) {
+    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+    var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
+    var plaintext = _decrypt(sessionRecord, ciphertext.getWhisperMessage());
 
-      callback(plaintext);
+    callback(plaintext);
 
-      _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
-      if (unsignedPreKeyId.isPresent) {
-        _preKeyStore.removePreKey(unsignedPreKeyId.value);
-      }
-
-      return plaintext;
+    if (unsignedPreKeyId.isPresent) {
+      _preKeyStore.removePreKey(unsignedPreKeyId.value);
     }
+
+    return plaintext;
+    // }
   }
 
   Uint8List decryptFromSignal(SignalMessage cipherText) {
@@ -219,21 +219,21 @@ class SessionCipher {
   }
 
   int getRemoteRegistrationId() {
-    synchronized(SESSION_LOCK) {
-      var record = _sessionStore.loadSession(_remoteAddress);
-      return record.sessionState.remoteRegistrationId;
-    }
+    // synchronized(SESSION_LOCK) {
+    var record = _sessionStore.loadSession(_remoteAddress);
+    return record.sessionState.remoteRegistrationId;
+    // }
   }
 
   int getSessionVersion() {
-    synchronized(SESSION_LOCK) {
-      if (!_sessionStore.containsSession(_remoteAddress)) {
-        // throw IllegalStateException("No session for ($_remoteAddress)!");
-      }
-
-      var record = _sessionStore.loadSession(_remoteAddress);
-      return record.sessionState.getSessionVersion();
+    // synchronized(SESSION_LOCK) {
+    if (!_sessionStore.containsSession(_remoteAddress)) {
+      // throw IllegalStateException("No session for ($_remoteAddress)!");
     }
+
+    var record = _sessionStore.loadSession(_remoteAddress);
+    return record.sessionState.getSessionVersion();
+    // }
   }
 
   ChainKey _getOrCreateChainKey(
