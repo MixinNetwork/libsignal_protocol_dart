@@ -40,8 +40,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     _sessionStructure.aliceBaseKey = aliceBaseKey;
   }
 
-  set sessionVersion(int version) =>
-    _sessionStructure.sessionVersion = version;
+  set sessionVersion(int version) => _sessionStructure.sessionVersion = version;
 
   int getSessionVersion() {
     var sessionVersion = _sessionStructure.sessionVersion;
@@ -53,18 +52,17 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   set remoteIdentityKey(IdentityKey identityKey) =>
-    _sessionStructure.remoteIdentityPublic = identityKey.serialize();
+      _sessionStructure.remoteIdentityPublic = identityKey.serialize();
 
   set localIdentityKey(IdentityKey identityKey) =>
-    _sessionStructure.localIdentityPublic = identityKey.serialize();
+      _sessionStructure.localIdentityPublic = identityKey.serialize();
 
   IdentityKey getRemoteIdentityKey() {
     try {
       if (!_sessionStructure.hasRemoteIdentityPublic()) {
         return null;
       }
-      return IdentityKey.fromBytes(
-          _sessionStructure.remoteIdentityPublic, 0);
+      return IdentityKey.fromBytes(_sessionStructure.remoteIdentityPublic, 0);
     } on InvalidKeyException catch (e) {
       print(e);
       return null;
@@ -73,8 +71,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   IdentityKey getLocalIdentityKey() {
     try {
-      return IdentityKey.fromBytes(
-          _sessionStructure.localIdentityPublic, 0);
+      return IdentityKey.fromBytes(_sessionStructure.localIdentityPublic, 0);
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
@@ -83,7 +80,7 @@ class SessionState extends LinkedListEntry<SessionState> {
   int get previousCounter => _sessionStructure.previousCounter;
 
   set previousCounter(int previousCounter) =>
-    _sessionStructure.previousCounter = previousCounter;
+      _sessionStructure.previousCounter = previousCounter;
 
   RootKey getRootKey() {
     return RootKey(
@@ -91,7 +88,7 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   set rootKey(RootKey rootKey) =>
-    _sessionStructure.rootKey = rootKey.getKeyBytes();
+      _sessionStructure.rootKey = rootKey.getKeyBytes();
 
   ECPublicKey getSenderRatchetKey() {
     try {
@@ -173,8 +170,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
     var senderChain = SessionStructure_Chain.create()
       ..senderRatchetKey = senderRatchetKeyPair.publicKey.serialize()
-      ..senderRatchetKeyPrivate =
-          senderRatchetKeyPair.privateKey.serialize()
+      ..senderRatchetKeyPrivate = senderRatchetKeyPair.privateKey.serialize()
       ..chainKey = chainKeyStructure;
     _sessionStructure.senderChain = senderChain;
   }
@@ -259,19 +255,17 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..index = messageKeys.getCounter()
       ..iv = messageKeys.getIv();
 
-/*
-    var updatedChain = chain.toBuilder().addMessageKeys(messageKeyStructure);
+    // var updatedChain = chain.addMessageKeys(messageKeyStructure);
 
-    if (updatedChain.getMessageKeysCount() > MAX_MESSAGE_KEYS) {
-      updatedChain.removeMessageKeys(0);
-    }
+    // if (updatedChain.getMessageKeysCount() > MAX_MESSAGE_KEYS) {
+    //   updatedChain.removeMessageKeys(0);
+    // }
 
-    this.sessionStructure = this
-        .sessionStructure
-        .toBuilder()
-        .setReceiverChains(chainAndIndex.second(), updatedChain.build())
-        .build();
-        */
+    // this._sessionStructure = this
+    //     ._sessionStructure
+    //     .toBuilder()
+    //     .setReceiverChains(chainAndIndex.item2, updatedChain.build())
+    //     .build();
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
@@ -283,7 +277,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..index = chainKey.index;
 
     var updatedChain = chain.chainKey = chainKeyStructure;
-    //TODO this._sessionStructure.receiverChains[chainAndIndex.item2] = updatedChain;
+    // this._sessionStructure.receiverChains[chainAndIndex.item2] = updatedChain;
   }
 
   void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,
@@ -377,13 +371,12 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   set remoteRegistrationId(int registrationId) =>
-    _sessionStructure..remoteRegistrationId = registrationId;
+      _sessionStructure..remoteRegistrationId = registrationId;
 
-  int get remoteRegistrationId =>
-    _sessionStructure.remoteRegistrationId;
+  int get remoteRegistrationId => _sessionStructure.remoteRegistrationId;
 
   set localRegistrationId(int registrationId) =>
-    _sessionStructure.localRegistrationId = registrationId;
+      _sessionStructure.localRegistrationId = registrationId;
 
   int get localRegistrationId => _sessionStructure.localRegistrationId;
 
