@@ -25,17 +25,17 @@ class SignedPreKeyRecord {
 
   int get id => _structure.id;
 
-  Int64 get timestamp =>_structure.timestamp;
+  Int64 get timestamp => _structure.timestamp;
 
   ECKeyPair getKeyPair() {
-     try {
+    try {
       var publicKey = Curve.decodePoint(_structure.publicKey, 0);
       var privateKey = Curve.decodePrivatePoint(_structure.privateKey);
 
       return ECKeyPair(publicKey, privateKey);
-     } on InvalidKeyException catch(e) {
-       throw AssertionError(e);
-     }
+    } on InvalidKeyException catch (e) {
+      throw AssertionError(e);
+    }
   }
 
   Uint8List get signature => _structure.signature;

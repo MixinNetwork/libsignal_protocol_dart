@@ -1,8 +1,12 @@
 import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:pointycastle/api.dart';
 
 import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
 import '../ecc/Curve.dart';
+import '../ecc/ECKeyPair.dart';
 
 class KeyHelper {
   static IdentityKeyPair generateIdentityKeyPair() {
@@ -20,5 +24,22 @@ class KeyHelper {
     } else {
       return secureRandom.nextInt(16380) + 1;
     }
+  }
+
+  static ECKeyPair generateSenderSigningKey() {
+    return Curve.generateKeyPair();
+  }
+
+  static Uint8List generateSenderKey() {
+    var secureRandom = SecureRandom("AES/CTR/AUTO-SEED-PRNG");
+    final key = Uint8List(32);
+    final keyParam = KeyParameter(key);
+    secureRandom.seed(keyParam);
+    return secureRandom.nextBytes(32);
+  }
+
+  static int generateSenderKeyId() {
+    final secureRandom = Random.secure();
+    return secureRandom.nextInt(integerMax);
   }
 }

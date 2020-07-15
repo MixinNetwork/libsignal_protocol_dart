@@ -17,28 +17,26 @@ class SenderKeyState {
 
   SenderKeyState.fromPublicKey(int id, int iteration, Uint8List chainKey,
       ECPublicKey signatureKeyPublic) {
-    SenderKeyState(
-        id, iteration, chainKey, signatureKeyPublic, Optional.empty());
+    init(id, iteration, chainKey, signatureKeyPublic, Optional.empty());
   }
 
   SenderKeyState.fromKeyPair(
       int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
-    SenderKeyState(id, iteration, chainKey, signatureKey.publicKey,
-        Optional.of(signatureKey.privateKey));
+    var signatureKeyPublic = signatureKey.publicKey;
+    var signatureKeyPrivate = Optional.of(signatureKey.privateKey);
+    init(id, iteration, chainKey, signatureKeyPublic, signatureKeyPrivate);
   }
 
-  SenderKeyState(
+  void init(
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKeyPublic,
       [Optional<ECPrivateKey> signatureKeyPrivate]) {
     var seed = Uint8List.fromList(chainKey);
-    seed.addAll(chainKey);
     var senderChainKeyStructure =
         SenderKeyStateStructure_SenderChainKey.create()
           ..iteration = iteration
           ..seed = seed;
-    var signingKeyStructure =
-        SenderKeyStateStructure_SenderSigningKey.create()
-          ..public = signatureKeyPublic.serialize();
+    var signingKeyStructure = SenderKeyStateStructure_SenderSigningKey.create()
+      ..public = signatureKeyPublic.serialize();
     if (signatureKeyPrivate.isPresent) {
       signingKeyStructure..private = signatureKeyPrivate.value.serialize();
     }
@@ -63,7 +61,7 @@ class SenderKeyState {
         _senderKeyStateStructure.senderChainKey =
             SenderKeyStateStructure_SenderChainKey.create()
               ..iteration = senderChainKey.iteration
-              ..seed = senderChainKey.seed
+              ..seed = List.from(senderChainKey.seed)
       };
 
   ECPublicKey get signingKeyPublic =>

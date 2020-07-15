@@ -13,7 +13,7 @@ class SenderKeyRecord {
   final LinkedList<Entry<SenderKeyState>> _senderKeyStates =
       LinkedList<Entry<SenderKeyState>>();
 
-  SenderKeyRecord._();
+  SenderKeyRecord();
 
   SenderKeyRecord.fromSerialized(Uint8List serialized) {
     var senderKeyRecordStructure =
@@ -59,16 +59,18 @@ class SenderKeyRecord {
         SenderKeyState.fromKeyPair(id, iteration, chainKey, signatureKey)));
   }
 
-//  Uint8List serialize() {
-//    var recordStructure = SenderKeyRecordStructure.getDefault();
-//    for (var senderKeyState in _senderKeyStates) {
-//      recordStructure.senderKeyStates.add(senderKeyState.value.structure);
-//    }
-//    return recordStructure
-//  }
+  Uint8List serialize() {
+    var recordStructure = SenderKeyRecordStructure.create();
+    _senderKeyStates.forEach((entry) {
+      recordStructure.senderKeyStates.add(entry.value.structure);
+    });
+    return recordStructure.writeToBuffer();
+  }
 }
 
 class Entry<T> extends LinkedListEntry<Entry<T>> {
   T value;
-  Entry(this.value);
+  Entry(T value) {
+    this.value = value;
+  }
 }

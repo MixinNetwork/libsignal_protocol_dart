@@ -59,7 +59,9 @@ class GroupCipher {
       var plaintext = getPlainText(
           senderKey.iv, senderKey.cipherKey, senderKeyMessage.ciphertext);
 
-      callback(plaintext);
+      if (callback != null) {
+        callback(plaintext);
+      }
 
       _senderKeyStore.storeSenderKey(_senderKeyId, record);
       return plaintext;
@@ -97,7 +99,7 @@ class GroupCipher {
   Uint8List getPlainText(Uint8List iv, Uint8List key, Uint8List ciphertext) {
     CipherParameters params = PaddedBlockCipherParameters(
         ParametersWithIV(KeyParameter(key), iv), null);
-    var cipher = PaddedBlockCipher('AES/CBC/PKCS5');
+    var cipher = PaddedBlockCipher('AES/CBC/PKCS7'); // TODO use PKCS5
     cipher.init(false, params);
     return cipher.process(ciphertext);
   }
@@ -105,7 +107,7 @@ class GroupCipher {
   Uint8List getCipherText(Uint8List iv, Uint8List key, Uint8List plaintext) {
     CipherParameters params = PaddedBlockCipherParameters(
         ParametersWithIV(KeyParameter(key), iv), null);
-    var cipher = PaddedBlockCipher('AES/CBC/PKCS5');
+    var cipher = PaddedBlockCipher('AES/CBC/PKCS7'); // TODO use PKCS5
     cipher.init(true, params);
     return cipher.process(plaintext);
   }

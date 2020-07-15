@@ -36,8 +36,9 @@ Uint8List sign(Uint8List privateKey, Uint8List message) {
   final sig = result.ref;
   free(private);
   free(msg);
+  final retVal = hex.decode(sig.toString());
   free(result);
-  return hex.decode(sig.toString());
+  return retVal;
 }
 
 bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
