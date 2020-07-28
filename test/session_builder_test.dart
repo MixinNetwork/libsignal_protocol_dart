@@ -178,7 +178,6 @@ void main() {
     var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
     var outgoingMessage =
         aliceSessionCipher.encrypt(utf8.encode(originalMessage));
-
     assert(outgoingMessage.getType() == CiphertextMessage.PREKEY_TYPE);
 
     var incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
@@ -192,7 +191,8 @@ void main() {
     var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
     var plaintext =
         bobSessionCipher.decryptWithCallback(incomingMessage, (plaintext) {
-      assert(originalMessage == String.fromCharCodes(plaintext));
+      var result = utf8.decode(plaintext, allowMalformed: true);
+      assert(originalMessage == result);
       assert(!bobStore.containsSession(ALICE_ADDRESS));
     });
 
@@ -202,7 +202,7 @@ void main() {
             3);
     assert(
         bobStore.loadSession(ALICE_ADDRESS).sessionState.aliceBaseKey != null);
-    assert(originalMessage == String.fromCharCodes(plaintext));
+    assert(originalMessage == utf8.decode(plaintext, allowMalformed: true));
 
     var bobOutgoingMessage =
         bobSessionCipher.encrypt(utf8.encode(originalMessage));
@@ -210,7 +210,8 @@ void main() {
 
     var alicePlaintext = aliceSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(bobOutgoingMessage.serialize()));
-    assert(String.fromCharCodes(alicePlaintext) == originalMessage);
+    assert(
+        utf8.decode(alicePlaintext, allowMalformed: true) == originalMessage);
 
     runInteraction(aliceStore, bobStore);
 
@@ -255,7 +256,7 @@ void main() {
 
     plaintext = bobSessionCipher
         .decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
-    assert(String.fromCharCodes(plaintext) == originalMessage);
+    assert(utf8.decode(plaintext, allowMalformed: true) == originalMessage);
 
     bobPreKey = PreKeyBundle(
         bobStore.getLocalRegistrationId(),

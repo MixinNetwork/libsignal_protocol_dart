@@ -110,7 +110,9 @@ class SessionCipher {
     var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
     var plaintext = _decrypt(sessionRecord, ciphertext.getWhisperMessage());
 
-    callback(plaintext);
+    if (callback != null) {
+      callback(plaintext);
+    }
 
     _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
