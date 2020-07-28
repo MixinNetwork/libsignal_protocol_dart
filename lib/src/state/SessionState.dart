@@ -247,10 +247,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.add(entry.value);
     });
 
-    var newSessionStructure = _sessionStructure.clone();
-    newSessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
-    _sessionStructure = newSessionStructure;
-
+    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
     return result;
   }
 
@@ -269,11 +266,9 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.removeAt(0);
     }
 
-    var newSessionStructure = _sessionStructure.clone();
     var receiveChains = <SessionStructure_Chain>[];
     receiveChains.add(chain);
-    newSessionStructure.receiverChains.addAll(receiveChains);
-    _sessionStructure = newSessionStructure;
+    _sessionStructure.receiverChains.addAll(receiveChains);
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
