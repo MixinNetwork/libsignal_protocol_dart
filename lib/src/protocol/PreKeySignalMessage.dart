@@ -88,7 +88,8 @@ class PreKeySignalMessage extends CiphertextMessage {
     ];
 
     var messageBytes = builder.toBuilder().writeToBuffer();
-    serialized = ByteUtil.combine([versionBytes, messageBytes]);
+    serialized =
+        ByteUtil.combine([Uint8List.fromList(versionBytes), messageBytes]);
   }
 
   int getMessageVersion() {
