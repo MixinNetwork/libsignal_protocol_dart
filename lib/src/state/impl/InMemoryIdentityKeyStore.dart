@@ -3,6 +3,7 @@ import 'dart:collection';
 import '../../IdentityKey.dart';
 import '../../IdentityKeyPair.dart';
 import '../../SignalProtocolAddress.dart';
+import '../../eq.dart';
 import '../IdentityKeyStore.dart';
 
 class InMemoryIdentityKeyStore extends IdentityKeyStore {
@@ -32,7 +33,7 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
   bool isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey,
       Direction direction) {
     var trusted = trustedKeys[address];
-    return (trusted == null || trusted == identityKey);
+    return (trusted == null || eq(trusted.serialize(), identityKey.serialize()));
   }
 
   @override

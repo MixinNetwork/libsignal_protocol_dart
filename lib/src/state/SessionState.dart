@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
+import '../Entry.dart';
 import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
 import '../InvalidKeyException.dart';
@@ -15,7 +16,9 @@ import 'LocalStorageProtocol.pb.dart';
 import 'package:optional/optional.dart';
 import 'package:tuple/tuple.dart';
 
-class SessionState {
+import 'package:collection/collection.dart';
+
+class SessionState extends LinkedListEntry<SessionState> {
   static final int MAX_MESSAGE_KEYS = 2000;
 
   SessionStructure _sessionStructure;
@@ -29,7 +32,7 @@ class SessionState {
   }
 
   SessionState.fromSessionState(SessionState copy) {
-    _sessionStructure = copy._sessionStructure.toBuilder();
+    _sessionStructure = copy.structure.clone();
   }
 
   SessionStructure get structure => _sessionStructure;
@@ -71,7 +74,7 @@ class SessionState {
 
   IdentityKey getLocalIdentityKey() {
     try {
-      return IdentityKey.fromBytes(_sessionStructure.localIdentityPublic, 0);
+      return IdentityKey.fromBytes(Uint8List.fromList(_sessionStructure.localIdentityPublic), 0);
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
@@ -124,7 +127,8 @@ class SessionState {
         var chainSenderRatchetKey =
             Curve.decodePoint(receiverChain.senderRatchetKey, 0);
 
-        if (chainSenderRatchetKey == senderEphemeral) {
+        Function eq = ListEquality().equals;
+        if (eq(chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
           return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
@@ -215,52 +219,59 @@ class SessionState {
       return null;
     }
 
-/*
-    List<SessionStructure_Chain_MessageKey>     messageKeyList     = new LinkedList<>(chain.getMessageKeysList());
-    Iterator<SessionStructure_Chain_MessageKey> messageKeyIterator = messageKeyList.iterator();
-    MessageKeys                result             = null;
+    var messageKeyList = LinkedList<Entry<SessionStructure_Chain_MessageKey>>();
+    chain.messageKeys.forEach((element) {
+      messageKeyList.add(Entry(element));
+    });
+    var messageKeyIterator = messageKeyList.iterator;
+    var result;
+    while (messageKeyIterator.moveNext()) {
+      var entry = messageKeyIterator.current;
+      var messageKey = entry.value;
+      if (messageKey.index == counter) {
+        var cipherKey = messageKey.writeToBuffer();
+        var macKey = messageKey.macKey;
+        var iv = messageKey.iv;
+        var index = messageKey.index;
+        result = MessageKeys(cipherKey, macKey, iv, index);
 
-    while (messageKeyIterator.hasNext()) {
-      Chain.MessageKey messageKey = messageKeyIterator.next();
-
-      if (messageKey.getIndex() == counter) {
-        result = new MessageKeys(new SecretKeySpec(messageKey.getCipherKey().toByteArray(), "AES"),
-                                 new SecretKeySpec(messageKey.getMacKey().toByteArray(), "HmacSHA256"),
-                                 new IvParameterSpec(messageKey.getIv().toByteArray()),
-                                 messageKey.getIndex());
-
-        messageKeyIterator.remove();
+        messageKeyList.remove(entry);
         break;
       }
     }
 
-    var updatedChain = chain.toBuilder().clearMessageKeys()
-                              .addAllMessageKeys(messageKeyList)
-                              .build();
+    chain.messageKeys.clear();
+    messageKeyList.forEach((entry) {
+      chain.messageKeys.add(entry.value);
+    });
 
-    this.sessionStructure = this.sessionStructure.toBuilder()
-                                                 .setReceiverChains(chainAndIndex.second(), updatedChain)
-                                                 .build();
-                                                 
+    var newSessionStructure = SessionStructure.create();
+    newSessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
+    _sessionStructure = newSessionStructure;
+
     return result;
-    */
   }
 
   void setMessageKeys(ECPublicKey senderEphemeral, MessageKeys messageKeys) {
     var chainAndIndex = _getReceiverChain(senderEphemeral);
     var chain = chainAndIndex.item1;
     var messageKeyStructure = SessionStructure_Chain_MessageKey.create()
-      ..cipherKey = messageKeys.getCipherKey()
-      ..macKey = messageKeys.getMacKey()
+      ..cipherKey = Uint8List.fromList(messageKeys.getCipherKey())
+      ..macKey = Uint8List.fromList(messageKeys.getMacKey())
       ..index = messageKeys.getCounter()
-      ..iv = messageKeys.getIv();
+      ..iv = Uint8List.fromList(messageKeys.getIv());
 
-    chain.messageKeys.add(messageKeyStructure);
+     chain.messageKeys.add(messageKeyStructure);
 
-    if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
-      chain.messageKeys.removeAt(0);
-    }
-    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
+     if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
+       chain.messageKeys.removeAt(0);
+     }
+
+    var newSessionStructure = SessionStructure.create();
+     var receiveChains = <SessionStructure_Chain>[];
+     receiveChains.add(chain);
+    newSessionStructure.receiverChains.addAll(receiveChains);
+    _sessionStructure = newSessionStructure;
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {

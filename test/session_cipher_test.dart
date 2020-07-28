@@ -11,6 +11,7 @@ import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
 import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
 import 'package:libsignal_protocol_dart/src/ecc/ECKeyPair.dart';
 import 'package:libsignal_protocol_dart/src/ecc/ECPublicKey.dart';
+import 'package:libsignal_protocol_dart/src/eq.dart';
 import 'package:libsignal_protocol_dart/src/protocol/CiphertextMessage.dart';
 import 'package:libsignal_protocol_dart/src/protocol/SignalMessage.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/AliceSignalProtocolParameters.dart';
@@ -30,67 +31,67 @@ void main() {
     var bobStore = TestInMemorySignalProtocolStore();
 
     aliceStore.storeSession(
-        SignalProtocolAddress("+14159999999", 1), aliceSessionRecord);
+        SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     bobStore.storeSession(
-        SignalProtocolAddress("+14158888888", 1), bobSessionRecord);
+        SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     var aliceCipher = SessionCipher.fromStore(
-        aliceStore, SignalProtocolAddress("+14159999999", 1));
+        aliceStore, SignalProtocolAddress('+14159999999', 1));
     var bobCipher = SessionCipher.fromStore(
-        bobStore, SignalProtocolAddress("+14158888888", 1));
+        bobStore, SignalProtocolAddress('+14158888888', 1));
 
     var alicePlaintext = utf8.encode('This is a plaintext message.');
     var message = aliceCipher.encrypt(alicePlaintext);
     var bobPlaintext = bobCipher
         .decryptFromSignal(SignalMessage.fromSerialized(message.serialize()));
 
-    assert(alicePlaintext == bobPlaintext);
+    assert(eq(alicePlaintext, bobPlaintext));
 
-    var bobReply = utf8.encode("This is a message from Bob.");
+    var bobReply = utf8.encode('This is a message from Bob.');
     var reply = bobCipher.encrypt(bobReply);
     var receivedReply = aliceCipher
         .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
 
-    assert(bobReply == receivedReply);
+    assert(eq(bobReply, receivedReply));
 
-    List<CiphertextMessage> aliceCiphertextMessages = List<CiphertextMessage>();
-    List<Uint8List> alicePlaintextMessages = List<Uint8List>();
+    var aliceCiphertextMessages = <CiphertextMessage>[];
+    var alicePlaintextMessages = <Uint8List>[];
 
-    for (int i = 0; i < 50; i++) {
-      alicePlaintextMessages.add(utf8.encode("смерть за смерть $i"));
+    for (var i = 0; i < 50; i++) {
+      alicePlaintextMessages.add(utf8.encode('смерть за смерть $i'));
       aliceCiphertextMessages
-          .add(aliceCipher.encrypt(utf8.encode("смерть за смерть $i")));
+          .add(aliceCipher.encrypt(utf8.encode('смерть за смерть $i')));
     }
 
     var seed = DateTime.now().microsecondsSinceEpoch;
 
-    // Collections.shuffle(aliceCiphertextMessages, Random(seed));
-    // Collections.shuffle(alicePlaintextMessages, Random(seed));
+    aliceCiphertextMessages.shuffle(Random(seed));
+    alicePlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < aliceCiphertextMessages.length / 2; i++) {
       var receivedPlaintext = bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
-      assert(receivedPlaintext == alicePlaintextMessages[i]);
+      assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
-    List<CiphertextMessage> bobCiphertextMessages = List<CiphertextMessage>();
-    List<Uint8List> bobPlaintextMessages = List<Uint8List>();
+    var bobCiphertextMessages = <CiphertextMessage>[];
+    var bobPlaintextMessages = <Uint8List>[];
 
-    for (int i = 0; i < 20; i++) {
-      bobPlaintextMessages.add(utf8.encode("смерть за смерть $i"));
+    for (var i = 0; i < 20; i++) {
+      bobPlaintextMessages.add(utf8.encode('смерть за смерть $i'));
       bobCiphertextMessages
-          .add(bobCipher.encrypt(utf8.encode("смерть за смерть $i")));
+          .add(bobCipher.encrypt(utf8.encode('смерть за смерть $i')));
     }
 
     seed = DateTime.now().millisecondsSinceEpoch;
 
-    // Collections.shuffle(bobCiphertextMessages, new Random(seed));
-    // Collections.shuffle(bobPlaintextMessages, new Random(seed));
+    bobCiphertextMessages.shuffle(Random(seed));
+    bobPlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < bobCiphertextMessages.length / 2; i++) {
       var receivedPlaintext = aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
-      assert(receivedPlaintext == bobPlaintextMessages[i]);
+      assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
 
     for (var i = (aliceCiphertextMessages.length / 2) as int;
@@ -98,7 +99,7 @@ void main() {
         i++) {
       var receivedPlaintext = bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
-      assert(receivedPlaintext == alicePlaintextMessages[i]);
+      assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
     for (var i = (bobCiphertextMessages.length / 2) as int;
@@ -106,7 +107,7 @@ void main() {
         i++) {
       var receivedPlaintext = aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
-      assert(receivedPlaintext == bobPlaintextMessages[i]);
+      assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
   }
 
@@ -173,18 +174,18 @@ void main() {
     var bobStore = TestInMemorySignalProtocolStore();
 
     aliceStore.storeSession(
-        SignalProtocolAddress("+14159999999", 1), aliceSessionRecord);
+        SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     bobStore.storeSession(
-        SignalProtocolAddress("+14158888888", 1), bobSessionRecord);
+        SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     var aliceCipher = SessionCipher.fromStore(
-        aliceStore, SignalProtocolAddress("+14159999999", 1));
+        aliceStore, SignalProtocolAddress('+14159999999', 1));
     var bobCipher = SessionCipher.fromStore(
-        bobStore, SignalProtocolAddress("+14158888888", 1));
+        bobStore, SignalProtocolAddress('+14158888888', 1));
 
-    var inflight = List<CiphertextMessage>();
+    var inflight = <CiphertextMessage>[];
 
-    for (int i = 0; i < 2010; i++) {
+    for (var i = 0; i < 2010; i++) {
       inflight.add(aliceCipher.encrypt(utf8
           .encode("you've never been so hungry, you've never been so cold")));
     }

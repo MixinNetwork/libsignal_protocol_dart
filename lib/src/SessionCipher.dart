@@ -147,7 +147,9 @@ class SessionCipher {
     _identityKeyStore.saveIdentity(
         _remoteAddress, sessionRecord.sessionState.getRemoteIdentityKey());
 
-    callback(plaintext);
+    if (callback != null) {
+      callback(plaintext);
+    }
 
     _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
@@ -157,7 +159,7 @@ class SessionCipher {
 
   Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage cipherText) {
     // synchronized(SESSION_LOCK) {
-    var previousStates = sessionRecord.previousSessionStates.iterator;
+    var previousStates = sessionRecord.previousSessionStates;
     var exceptions = [];
 
     try {
@@ -170,14 +172,14 @@ class SessionCipher {
     } on InvalidMessageException catch (e) {
       exceptions.add(e);
     }
-    var _previousStates = HasNextIterator(previousStates);
+    var _previousStates = HasNextIterator(previousStates.iterator);
     while (_previousStates.hasNext) {
       try {
         var promotedState =
             SessionState.fromSessionState(_previousStates.next());
         var plaintext = _decryptFromState(promotedState, cipherText);
 
-        // _previousStates.remove();
+        previousStates.remove(promotedState);
         sessionRecord.promoteState(promotedState);
 
         return plaintext;

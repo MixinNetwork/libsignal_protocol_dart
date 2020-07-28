@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
+import '../../Entry.dart';
 import '../../ecc/ECKeyPair.dart';
 import '../../ecc/ECPublicKey.dart';
 import 'SenderKeyState.dart';
@@ -65,12 +66,5 @@ class SenderKeyRecord {
       recordStructure.senderKeyStates.add(entry.value.structure);
     });
     return recordStructure.writeToBuffer();
-  }
-}
-
-class Entry<T> extends LinkedListEntry<Entry<T>> {
-  T value;
-  Entry(T value) {
-    this.value = value;
   }
 }

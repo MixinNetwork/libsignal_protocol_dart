@@ -19,5 +19,5 @@ Uint8List aesCbcDecrypt(
   final encrypter = Encrypter(AES(k));
   final decrypted = encrypter.decryptBytes(Encrypted(cipherText), iv: iv);
   print(decrypted);
-  return decrypted;
+  return Uint8List.fromList(decrypted);
 }
