@@ -15,7 +15,7 @@ import 'LocalStorageProtocol.pb.dart';
 import 'package:optional/optional.dart';
 import 'package:tuple/tuple.dart';
 
-class SessionState extends LinkedListEntry<SessionState> {
+class SessionState {
   static final int MAX_MESSAGE_KEYS = 2000;
 
   SessionStructure _sessionStructure;
@@ -255,17 +255,12 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..index = messageKeys.getCounter()
       ..iv = messageKeys.getIv();
 
-    // var updatedChain = chain.addMessageKeys(messageKeyStructure);
+    chain.messageKeys.add(messageKeyStructure);
 
-    // if (updatedChain.getMessageKeysCount() > MAX_MESSAGE_KEYS) {
-    //   updatedChain.removeMessageKeys(0);
-    // }
-
-    // this._sessionStructure = this
-    //     ._sessionStructure
-    //     .toBuilder()
-    //     .setReceiverChains(chainAndIndex.item2, updatedChain.build())
-    //     .build();
+    if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
+      chain.messageKeys.removeAt(0);
+    }
+    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
@@ -276,8 +271,8 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..key = chainKey.key
       ..index = chainKey.index;
 
-    var updatedChain = chain.chainKey = chainKeyStructure;
-    // this._sessionStructure.receiverChains[chainAndIndex.item2] = updatedChain;
+    chain.chainKey = chainKeyStructure;
+    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
   }
 
   void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,
