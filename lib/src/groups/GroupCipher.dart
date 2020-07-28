@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:libsignal_protocol_dart/src/cbc.dart';
 import 'package:pointycastle/api.dart';
 
 import '../DecryptionCallback.dart';
@@ -27,7 +28,7 @@ class GroupCipher {
       var senderKeyState = record.getSenderKeyState();
       var senderKey = senderKeyState.senderChainKey.senderMessageKey;
       var ciphertext =
-          getCipherText(senderKey.iv, senderKey.cipherKey, paddedPlaintext);
+          aesCbcEncrypt(senderKey.cipherKey, senderKey.iv, paddedPlaintext);
       var senderKeyMessage = SenderKeyMessage(senderKeyState.keyId,
           senderKey.iteration, ciphertext, senderKeyState.signingKeyPrivate);
       senderKeyState.senderChainKey = senderKeyState.senderChainKey.next;
@@ -56,8 +57,8 @@ class GroupCipher {
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);
-      var plaintext = getPlainText(
-          senderKey.iv, senderKey.cipherKey, senderKeyMessage.ciphertext);
+      var plaintext = aesCbcDecrypt(
+          senderKey.cipherKey, senderKey.iv, senderKeyMessage.ciphertext);
 
       if (callback != null) {
         callback(plaintext);
@@ -94,21 +95,5 @@ class GroupCipher {
 
     senderKeyState.senderChainKey = senderChainKey.next;
     return senderChainKey.senderMessageKey;
-  }
-
-  Uint8List getPlainText(Uint8List iv, Uint8List key, Uint8List ciphertext) {
-    CipherParameters params = PaddedBlockCipherParameters(
-        ParametersWithIV(KeyParameter(key), iv), null);
-    var cipher = PaddedBlockCipher('AES/CBC/PKCS7'); // TODO use PKCS5
-    cipher.init(false, params);
-    return cipher.process(ciphertext);
-  }
-
-  Uint8List getCipherText(Uint8List iv, Uint8List key, Uint8List plaintext) {
-    CipherParameters params = PaddedBlockCipherParameters(
-        ParametersWithIV(KeyParameter(key), iv), null);
-    var cipher = PaddedBlockCipher('AES/CBC/PKCS7'); // TODO use PKCS5
-    cipher.init(true, params);
-    return cipher.process(plaintext);
   }
 }

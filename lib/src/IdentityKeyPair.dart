@@ -16,7 +16,6 @@ class IdentityKeyPair {
     final structure = IdentityKeyPairStructure.fromBuffer(serialized);
     _publicKey =
         IdentityKey.fromBytes(Uint8List.fromList(structure.publicKey), 0);
-
     _privateKey =
         Curve.decodePrivatePoint(Uint8List.fromList(structure.privateKey));
   }
