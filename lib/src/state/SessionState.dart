@@ -74,7 +74,8 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   IdentityKey getLocalIdentityKey() {
     try {
-      return IdentityKey.fromBytes(Uint8List.fromList(_sessionStructure.localIdentityPublic), 0);
+      return IdentityKey.fromBytes(
+          Uint8List.fromList(_sessionStructure.localIdentityPublic), 0);
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
@@ -128,7 +129,8 @@ class SessionState extends LinkedListEntry<SessionState> {
             Curve.decodePoint(receiverChain.senderRatchetKey, 0);
 
         Function eq = ListEquality().equals;
-        if (eq(chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
+        if (eq(
+            chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
           return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
@@ -229,7 +231,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       var entry = messageKeyIterator.current;
       var messageKey = entry.value;
       if (messageKey.index == counter) {
-        var cipherKey = messageKey.writeToBuffer();
+        var cipherKey = messageKey.cipherKey;
         var macKey = messageKey.macKey;
         var iv = messageKey.iv;
         var index = messageKey.index;
@@ -245,7 +247,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.add(entry.value);
     });
 
-    var newSessionStructure = SessionStructure.create();
+    var newSessionStructure = _sessionStructure.clone();
     newSessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
     _sessionStructure = newSessionStructure;
 
@@ -261,15 +263,15 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..index = messageKeys.getCounter()
       ..iv = Uint8List.fromList(messageKeys.getIv());
 
-     chain.messageKeys.add(messageKeyStructure);
+    chain.messageKeys.add(messageKeyStructure);
 
-     if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
-       chain.messageKeys.removeAt(0);
-     }
+    if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
+      chain.messageKeys.removeAt(0);
+    }
 
-    var newSessionStructure = SessionStructure.create();
-     var receiveChains = <SessionStructure_Chain>[];
-     receiveChains.add(chain);
+    var newSessionStructure = _sessionStructure.clone();
+    var receiveChains = <SessionStructure_Chain>[];
+    receiveChains.add(chain);
     newSessionStructure.receiverChains.addAll(receiveChains);
     _sessionStructure = newSessionStructure;
   }

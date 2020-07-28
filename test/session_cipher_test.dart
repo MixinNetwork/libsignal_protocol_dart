@@ -94,7 +94,7 @@ void main() {
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
 
-    for (var i = (aliceCiphertextMessages.length / 2) as int;
+    for (var i = aliceCiphertextMessages.length ~/ 2;
         i < aliceCiphertextMessages.length;
         i++) {
       var receivedPlaintext = bobCipher.decryptFromSignal(
@@ -102,7 +102,7 @@ void main() {
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
-    for (var i = (bobCiphertextMessages.length / 2) as int;
+    for (var i = bobCiphertextMessages.length ~/ 2;
         i < bobCiphertextMessages.length;
         i++) {
       var receivedPlaintext = aliceCipher.decryptFromSignal(
