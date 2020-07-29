@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:fixnum/fixnum.dart';
 import 'package:pointycastle/api.dart';
 
 import '../IdentityKey.dart';
@@ -8,6 +9,7 @@ import '../IdentityKeyPair.dart';
 import '../ecc/Curve.dart';
 import '../ecc/ECKeyPair.dart';
 import '../state/PreKeyRecord.dart';
+import '../state/SignedPreKeyRecord.dart';
 import 'Medium.dart';
 
 class KeyHelper {
@@ -36,6 +38,16 @@ class KeyHelper {
           ((start + i) % (Medium.MAX_VALUE - 1)) + 1, Curve.generateKeyPair()));
     }
     return results;
+  }
+
+  static SignedPreKeyRecord generateSignedPreKey(
+      IdentityKeyPair identityKeyPair, int signedPreKeyId) {
+    var keyPair = Curve.generateKeyPair();
+    var signature = Curve.calculateSignature(
+        identityKeyPair.getPrivateKey(), keyPair.publicKey.serialize());
+
+    return SignedPreKeyRecord(signedPreKeyId,
+        Int64(DateTime.now().millisecondsSinceEpoch), keyPair, signature);
   }
 
   static ECKeyPair generateSenderSigningKey() {
