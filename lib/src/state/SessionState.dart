@@ -32,7 +32,7 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   SessionState.fromSessionState(SessionState copy) {
-    _sessionStructure = copy.structure.clone();
+    _sessionStructure = copy.structure;
   }
 
   SessionStructure get structure => _sessionStructure;

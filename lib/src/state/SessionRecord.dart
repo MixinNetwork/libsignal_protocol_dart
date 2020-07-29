@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'SessionState.dart';
-
 import 'LocalStorageProtocol.pb.dart';
 
 class SessionRecord {
@@ -75,17 +74,13 @@ class SessionRecord {
   }
 
   Uint8List serialize() {
-    // List<SessionStructure> previousStructures = LinkedList<SessionStructure>();
-
-    // for (SessionState previousState : previousStates) {
-    //   previousStructures.add(previousState.getStructure());
-    // }
-
+    var previousStructures = <SessionStructure>[];
+    for (var previousState in _previousStates) {
+      previousStructures.add(previousState.structure);
+    }
     var record = RecordStructure.create();
     record.currentSession = _sessionState.structure;
-    // record.previousSession = _;
-    // .addAllPreviousSessions(previousStructures)
-    // .build();
+    record.previousSessions.addAll(previousStructures);
 
     return record.toBuilder().writeToBuffer();
   }
