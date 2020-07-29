@@ -1,18 +1,12 @@
 import 'dart:typed_data';
-import 'package:pointycastle/api.dart';
+import 'package:cryptography/cryptography.dart';
 
 Uint8List aesCbcEncrypt(Uint8List key, Uint8List iv, Uint8List plaintext) {
-  CipherParameters params = PaddedBlockCipherParameters(
-      ParametersWithIV(KeyParameter(key), iv), null);
-  var cipher = PaddedBlockCipher('AES/CBC/PKCS7');
-  cipher.init(true, params);
-  return cipher.process(plaintext);
+  return aesCbc.encryptSync(plaintext,
+      secretKey: SecretKey(key), nonce: Nonce(iv));
 }
 
 Uint8List aesCbcDecrypt(Uint8List key, Uint8List iv, Uint8List ciphertext) {
-  CipherParameters params = PaddedBlockCipherParameters(
-      ParametersWithIV(KeyParameter(key), iv), null);
-  var cipher = PaddedBlockCipher('AES/CBC/PKCS7');
-  cipher.init(false, params);
-  return cipher.process(ciphertext);
+  return aesCbc.decryptSync(ciphertext,
+      secretKey: SecretKey(key), nonce: Nonce(iv));
 }
