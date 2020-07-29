@@ -7,6 +7,8 @@ import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
 import '../ecc/Curve.dart';
 import '../ecc/ECKeyPair.dart';
+import '../state/PreKeyRecord.dart';
+import 'Medium.dart';
 
 class KeyHelper {
   static IdentityKeyPair generateIdentityKeyPair() {
@@ -24,6 +26,16 @@ class KeyHelper {
     } else {
       return secureRandom.nextInt(16380) + 1;
     }
+  }
+
+  static List<PreKeyRecord> generatePreKeys(int start, int count) {
+    var results = <PreKeyRecord>[];
+    start--;
+    for (var i = 0; i < count; i++) {
+      results.add(PreKeyRecord(
+          ((start + i) % (Medium.MAX_VALUE - 1)) + 1, Curve.generateKeyPair()));
+    }
+    return results;
   }
 
   static ECKeyPair generateSenderSigningKey() {
