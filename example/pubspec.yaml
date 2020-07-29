@@ -1,0 +1,4 @@
+name: example
+dependencies:
+  libsignal_protocol_dart:
+    path: ../
