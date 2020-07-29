@@ -6,7 +6,6 @@ import 'package:crypto/crypto.dart';
 
 import '../IdentityKey.dart';
 import '../util/ByteUtil.dart';
-import '../util/IdentityKeyComparator.dart';
 
 class DeviceConsistencyCommitment {
   static const String VERSION = 'DeviceConsistencyCommitment_V0';
