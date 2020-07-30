@@ -41,5 +41,11 @@ export 'src/state/SignalProtocolStore.dart';
 export 'src/state/SignedPreKeyRecord.dart';
 export 'src/state/SignedPreKeyStore.dart';
 
+export 'src/state/impl/InMemoryIdentityKeyStore.dart';
+export 'src/state/impl/InMemoryPreKeyStore.dart';
+export 'src/state/impl/InMemorySessionStore.dart';
+export 'src/state/impl/InMemorySignalProtocolStore.dart';
+export 'src/state/impl/InMemorySignedPreKeyStore.dart';
+
 export 'src/util/ByteUtil.dart';
 export 'src/util/KeyHelper.dart';

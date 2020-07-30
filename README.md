@@ -1,15 +1,59 @@
 # libsignal_protocol_dart
 
-libsignal_protocol_dart is a pure Dart implementation of the Signal Protocol.
+libsignal_protocol_dart is a Dart/Flutter implementation of the Signal Protocol.
 
+## Documentation
 
-## Getting Started
+For more information on how the Signal Protocol works:
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+- [Double Ratchet](https://whispersystems.org/docs/specifications/doubleratchet/)
+- [X3DH Key Agreement](https://whispersystems.org/docs/specifications/x3dh/)
+- [XEdDSA Signature Schemes](https://whispersystems.org/docs/specifications/xeddsa/)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Usage
+
+## Install time
+
+At install time, a signal client needs to generate its identity keys, registration id, and prekeys.
+
+```dart
+void install() {
+  var identityKeyPair = KeyHelper.generateIdentityKeyPair();
+  var registerationId = KeyHelper.generateRegistrationId(false);
+
+  var preKeys = KeyHelper.generatePreKeys(0, 110);
+
+  var signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0);
+
+  var sessionStore = InMemorySessionStore();
+  var preKeyStore = InMemoryPreKeyStore();
+  var signedPreKeyStore = InMemorySignedPreKeyStore();
+  var identityStore =
+      InMemoryIdentityKeyStore(identityKeyPair, registerationId);
+
+  for (var p in preKeys) {
+    preKeyStore.storePreKey(p.id, p);
+  }
+  signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
+}
+```
+
+## Building a session
+
+A signal client needs to implement four interfaces: IdentityKeyStore, PreKeyStore, SignedPreKeyStore, and SessionStore. These will manage loading and storing of identity, prekeys, signed prekeys, and session state.
+
+Once those are implemented, you can build a session in this way:
+
+```dart
+  var remoteAddress = SignalProtocolAddress("remote", 1);
+  var sessionBuilder = SessionBuilder(sessionStore, preKeyStore,
+      signedPreKeyStore, identityStore, remoteAddress);
+
+  sessionBuilder.processPreKeyBundle(retrievedPreKey);
+
+  var sessionCipher = SessionCipher(sessionStore, preKeyStore,
+      signedPreKeyStore, identityStore, remoteAddress);
+  var ciphertext = sessionCipher.encrypt(utf8.encode("Hello Mixin"));
+
+  deliver(ciphertext);
+```
