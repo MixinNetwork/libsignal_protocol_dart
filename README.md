@@ -9,6 +9,7 @@ For more information on how the Signal Protocol works:
 - [Double Ratchet](https://whispersystems.org/docs/specifications/doubleratchet/)
 - [X3DH Key Agreement](https://whispersystems.org/docs/specifications/x3dh/)
 - [XEdDSA Signature Schemes](https://whispersystems.org/docs/specifications/xeddsa/)
+- [Signal Protocol Java](https://github.com/signalapp/libsignal-protocol-java/)
 
 ## Usage
 
