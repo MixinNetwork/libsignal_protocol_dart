@@ -37,7 +37,6 @@ func SignSignature(privateKey, message, dest *string) {
 
 	d := *Sign(&p, msg, random)
 	*dest = hex.EncodeToString(d[:])
-	fmt.Println(dest)
 }
 
 //export VerifySignature

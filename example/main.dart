@@ -8,4 +8,6 @@ void main() {
   for (var p in preKeys) {
     print(p.id);
   }
+  var signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0);
+  print(signedPreKey);
 }
