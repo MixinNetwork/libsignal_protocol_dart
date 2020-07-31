@@ -1,6 +1,6 @@
 import 'package:libsignal_protocol_dart/src/InvalidKeyException.dart';
 import 'package:libsignal_protocol_dart/src/InvalidKeyIdException.dart';
-import 'package:libsignal_protocol_dart/src/protocol/SenderKeyDistributuinMessage.dart';
+import 'package:libsignal_protocol_dart/src/protocol/SenderKeyDistributionMessageWrapper.dart';
 import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
 
 import 'SenderKeyName.dart';

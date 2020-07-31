@@ -39,3 +39,10 @@ void install() {
 
   //deliver(ciphertext);
 }
+
+void groupSessioin() {
+  var senderKeyName = SenderKeyName("", SignalProtocolAddress("sender", 1));
+  var senderKeyStore = InMemorySenderKeyStore();
+  var groupSession = GroupCipher(senderKeyStore, senderKeyName);
+  groupSession.encrypt(utf8.encode("Hello Mixin"));
+}

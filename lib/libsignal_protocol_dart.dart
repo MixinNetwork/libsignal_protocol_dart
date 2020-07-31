@@ -23,10 +23,11 @@ export 'src/ecc/ECPublicKey.dart';
 export 'src/groups/GroupCipher.dart';
 export 'src/groups/GroupSessionBuilder.dart';
 export 'src/groups/SenderKeyName.dart';
+export 'src/groups/state/InMemorySenderKeyStore.dart';
 
 export 'src/protocol/CiphertextMessage.dart';
 export 'src/protocol/PreKeySignalMessage.dart';
-export 'src/protocol/SenderKeyDistributuinMessage.dart';
+export 'src/protocol/SenderKeyDistributionMessageWrapper.dart';
 export 'src/protocol/SenderKeyMessage.dart';
 export 'src/protocol/SignalMessage.dart';
 

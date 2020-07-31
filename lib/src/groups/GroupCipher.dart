@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/cbc.dart';
-import 'package:pointycastle/api.dart';
 
 import '../DecryptionCallback.dart';
 import '../DuplicateMessageException.dart';

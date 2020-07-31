@@ -58,3 +58,14 @@ Once those are implemented, you can build a session in this way:
 
   deliver(ciphertext);
 ```
+
+## Building a group session
+
+If you wanna send message to a group, send a SenderKeyDistributionMessage to all members of the group.
+
+```dart
+  var senderKeyName = SenderKeyName("", SignalProtocolAddress("sender", 1));
+  var senderKeyStore = InMemorySenderKeyStore();
+  var groupSession = GroupCipher(senderKeyStore, senderKeyName);
+  groupSession.encrypt(utf8.encode("Hello Mixin"));
+```
