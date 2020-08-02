@@ -1,6 +1,6 @@
 # libsignal_protocol_dart
 
-libsignal_protocol_dart is a Dart/Flutter implementation of the Signal Protocol.
+libsignal_protocol_dart is a pure Dart/Flutter implementation of the Signal Protocol.
 
 ## Documentation
 

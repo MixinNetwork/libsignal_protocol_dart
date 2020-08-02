@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:pointycastle/api.dart' as pc;
 import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
 import 'DjbECPublicKey.dart';
 import 'ECKeyPair.dart';
 import 'ECPrivateKey.dart';
 import 'ECPublicKey.dart';
-import 'SignCurve25519.dart';
+import 'ed25519.dart';
 
 class Curve {
   static const int djbType = 0x05;
@@ -85,8 +86,8 @@ class Curve {
         return false;
       }
 
-      return verify(
-          (signingKey as DjbECPublicKey).publicKey, message, signature);
+      var publicKey = (signingKey as DjbECPublicKey).publicKey;
+      return verify(publicKey, message, signature);
     } else {
       throw InvalidKeyException(
           'Unknown Signing Key type' + signingKey.getType().toString());
@@ -100,7 +101,14 @@ class Curve {
     }
 
     if (signingKey.getType() == djbType) {
-      return sign((signingKey as DjbECPrivateKey).serialize(), message);
+      var privateKey = signingKey.serialize();
+      var secureRandom = pc.SecureRandom('AES/CTR/AUTO-SEED-PRNG');
+      final key = Uint8List(32);
+      final keyParam = pc.KeyParameter(key);
+      secureRandom.seed(keyParam);
+      var random =  secureRandom.nextBytes(64);
+
+      return sign(privateKey, message, random);
     } else {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
