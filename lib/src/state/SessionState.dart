@@ -97,7 +97,8 @@ class SessionState extends LinkedListEntry<SessionState> {
   ECPublicKey getSenderRatchetKey() {
     try {
       return Curve.decodePoint(
-          _sessionStructure.senderChain.senderRatchetKey, 0);
+          Uint8List.fromList(_sessionStructure.senderChain.senderRatchetKey),
+          0);
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }
@@ -183,8 +184,8 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   ChainKey getSenderChainKey() {
     var chainKeyStructure = _sessionStructure.senderChain.chainKey;
-    return ChainKey(HKDF.createFor(getSessionVersion()), chainKeyStructure.key,
-        chainKeyStructure.index);
+    return ChainKey(HKDF.createFor(getSessionVersion()),
+        Uint8List.fromList(chainKeyStructure.key), chainKeyStructure.index);
   }
 
   void setSenderChainKey(ChainKey nextChainKey) {
