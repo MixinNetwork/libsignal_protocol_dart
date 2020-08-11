@@ -25,7 +25,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   @override
   List<SignedPreKeyRecord> loadSignedPreKeys() {
     try {
-      var results = List<SignedPreKeyRecord>();
+      var results = <SignedPreKeyRecord>[];
       for (var serialized in store.values) {
         results.add(SignedPreKeyRecord.fromSerialized(serialized));
       }
