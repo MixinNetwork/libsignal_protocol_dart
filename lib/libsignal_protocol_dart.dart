@@ -6,6 +6,7 @@ export 'src/SessionBuilder.dart';
 export 'src/SignalProtocolAddress.dart';
 export 'src/IdentityKey.dart';
 export 'src/IdentityKeyPair.dart';
+export 'src/ProvisioningCipher.dart';
 export 'src/InvalidKeyException.dart';
 export 'src/InvalidKeyIdException.dart';
 export 'src/LegacyMessageException.dart';
