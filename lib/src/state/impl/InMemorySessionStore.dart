@@ -19,7 +19,7 @@ class InMemorySessionStore extends SessionStore {
 
   @override
   void deleteAllSessions(String name) {
-    for (var k in sessions.keys) {
+    for (var k in sessions.keys.toList()) {
       if (k.getName() == name) {
         sessions.remove(k);
       }
