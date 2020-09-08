@@ -33,7 +33,7 @@ class InMemorySessionStore extends SessionStore {
 
   @override
   List<int> getSubDeviceSessions(String name) {
-    var deviceIds = List<int>();
+    var deviceIds = <int>[];
 
     for (var key in sessions.keys) {
       if (key.getName() == name && key.getDeviceId() != 1) {

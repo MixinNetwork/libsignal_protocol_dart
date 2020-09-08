@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
 import 'package:libsignal_protocol_dart/src/InvalidMessageException.dart';
@@ -11,7 +10,7 @@ import 'package:libsignal_protocol_dart/src/groups/GroupSessionBuilder.dart';
 import 'package:libsignal_protocol_dart/src/groups/SenderKeyName.dart';
 import 'package:libsignal_protocol_dart/src/groups/state/InMemorySenderKeyStore.dart';
 import 'package:libsignal_protocol_dart/src/protocol/SenderKeyDistributionMessageWrapper.dart';
-import 'package:pointycastle/api.dart';
+import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
 import 'package:test/test.dart';
 
 import 'package:collection/collection.dart';
@@ -94,11 +93,7 @@ void main() {
             sentAliceDistributionMessage.serialize());
     bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
 
-    var secureRandom = SecureRandom("AES/CTR/AUTO-SEED-PRNG");
-    final key = Uint8List(32);
-    final keyParam = KeyParameter(key);
-    secureRandom.seed(keyParam);
-    var plaintext = secureRandom.nextBytes(1024 * 1024);
+    var plaintext = KeyHelper.generateRandomBytes(1024 * 1024);
 
     var ciphertextFromAlice = aliceGroupCipher.encrypt(plaintext);
     var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);

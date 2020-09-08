@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import '../util/ByteUtil.dart';
-import 'package:pointycastle/src/utils.dart';
 
 import 'Curve.dart';
 import 'ECPublicKey.dart';
@@ -42,4 +41,12 @@ class DjbECPublicKey extends ECPublicKey {
 
   @override
   int get hashCode => _publicKey.hashCode;
+
+  BigInt decodeBigInt(List<int> bytes) {
+    var result = BigInt.from(0);
+    for (var i = 0; i < bytes.length; i++) {
+      result += BigInt.from(bytes[bytes.length - i - 1]) << (8 * i);
+    }
+    return result;
+  }
 }
