@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:pointycastle/api.dart' as pc;
+import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
 import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
 import 'DjbECPublicKey.dart';
@@ -102,11 +102,7 @@ class Curve {
 
     if (signingKey.getType() == djbType) {
       var privateKey = signingKey.serialize();
-      var secureRandom = pc.SecureRandom('AES/CTR/AUTO-SEED-PRNG');
-      final key = Uint8List(32);
-      final keyParam = pc.KeyParameter(key);
-      secureRandom.seed(keyParam);
-      var random =  secureRandom.nextBytes(64);
+      var random = KeyHelper.generateRandomBytes();
 
       return sign(privateKey, message, random);
     } else {

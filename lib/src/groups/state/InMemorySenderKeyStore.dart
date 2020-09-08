@@ -1,4 +1,3 @@
-
 import 'dart:collection';
 import 'dart:io';
 
@@ -27,5 +26,4 @@ class InMemorySenderKeyStore extends SenderKeyStore {
   void storeSenderKey(SenderKeyName senderKeyName, SenderKeyRecord record) {
     _store[senderKeyName] = record;
   }
-
 }

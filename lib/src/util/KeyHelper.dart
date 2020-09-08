@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:fixnum/fixnum.dart';
-import 'package:pointycastle/api.dart';
 
 import '../IdentityKey.dart';
 import '../IdentityKeyPair.dart';
@@ -22,11 +21,10 @@ class KeyHelper {
   static int integerMax = 0x7fffffff;
 
   static int generateRegistrationId(bool extendedRange) {
-    final secureRandom = Random.secure();
     if (extendedRange) {
-      return secureRandom.nextInt(integerMax - 1) + 1;
+      return _random.nextInt(integerMax - 1) + 1;
     } else {
-      return secureRandom.nextInt(16380) + 1;
+      return _random.nextInt(16380) + 1;
     }
   }
 
@@ -55,15 +53,17 @@ class KeyHelper {
   }
 
   static Uint8List generateSenderKey() {
-    var secureRandom = SecureRandom("AES/CTR/AUTO-SEED-PRNG");
-    final key = Uint8List(32);
-    final keyParam = KeyParameter(key);
-    secureRandom.seed(keyParam);
-    return secureRandom.nextBytes(32);
+    return generateRandomBytes();
   }
 
   static int generateSenderKeyId() {
-    final secureRandom = Random.secure();
-    return secureRandom.nextInt(integerMax);
+    return _random.nextInt(integerMax);
+  }
+
+  static final Random _random = Random.secure();
+
+  static Uint8List generateRandomBytes([int length = 32]) {
+    var values = List<int>.generate(length, (i) => _random.nextInt(256));
+    return Uint8List.fromList(values);
   }
 }
