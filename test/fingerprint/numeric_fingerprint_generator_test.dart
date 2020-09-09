@@ -500,7 +500,7 @@ void main() {
     var generator = NumericFingerprintGenerator(1024);
     var aliceFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14152222222'),
+        utf8.encode('+141512222222'),
         aliceIdentityKey,
         utf8.encode('+14153333333'),
         bobIdentityKey);
@@ -524,7 +524,7 @@ void main() {
         bobFingerprint.scannableFingerprint
             .compareTo(aliceFingerprint.scannableFingerprint.fingerprints),
         false);
-  }, skip: 'Failing historical test');
+  });
 
   test('testDifferentVersionsMakeSameFingerPrintsButDifferentScannable', () {
     var aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
