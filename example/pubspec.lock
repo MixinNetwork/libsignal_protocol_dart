@@ -50,13 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0"
-  ffi:
+  ed25519_edwards:
     dependency: transitive
     description:
-      name: ffi
+      name: ed25519_edwards
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.3"
+    version: "0.0.4"
   fixnum:
     dependency: transitive
     description:
@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.11"
+  hex:
+    dependency: transitive
+    description:
+      name: hex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   js:
     dependency: transitive
     description:
@@ -77,7 +84,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.2"
   matcher:
     dependency: transitive
     description:
@@ -106,13 +113,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  pointycastle:
-    dependency: transitive
-    description:
-      name: pointycastle
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   protobuf:
     dependency: transitive
     description:
@@ -156,4 +156,4 @@ packages:
     source: hosted
     version: "1.2.0"
 sdks:
-  dart: ">=2.7.0 <3.0.0"
+  dart: ">=2.8.1 <3.0.0"
