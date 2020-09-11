@@ -4,7 +4,7 @@ import 'package:convert/convert.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:ed25519_edwards/src/edwards25519.dart';
 
-import '../../libsignal_protocol_dart.dart';
+import 'Curve.dart';
 
 Uint8List sign(Uint8List privateKey, Uint8List message, Uint8List random) {
   var A = ExtendedGroupElement();
