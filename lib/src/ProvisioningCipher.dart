@@ -13,14 +13,13 @@ class ProvisionEnvelope {
   Uint8List public_key;
   Uint8List body;
 
-  ProvisionEnvelope(Uint8List publicKey, Uint8List body) {
-    this.public_key = publicKey;
-    this.body = body;
-  }
+  ProvisionEnvelope(this.public_key, this.body);
 }
 
 class ProvisioningCipher {
-  ECPublicKey _theirPublicKey;
+  final ECPublicKey _theirPublicKey;
+
+  ProvisioningCipher(this._theirPublicKey);
 
   Uint8List encrypt(Uint8List message) {
     var ourKeyPair = Curve.generateKeyPair();
