@@ -52,7 +52,7 @@ Uint8List decrypt(String privateKey, String content) {
       sharedSecret, null, utf8.encode(PROVISION), DerivedRootSecrets.SIZE);
 
   var aesKey = derivedSecretBytes.getRange(0, 32);
-  var macKey = derivedSecretBytes.getRange(32, derivedSecretBytes.length)
+  var macKey = derivedSecretBytes.getRange(32, derivedSecretBytes.length);
 
   if (!verifyMAC(macKey, ivAndCiphertext, mac)) {
     throw InvalidMacException("MAC doesn't match!");
@@ -61,10 +61,10 @@ Uint8List decrypt(String privateKey, String content) {
   return plaintext;
 }
 
-bool verifyMAC(Uint8List key,  Uint8List input,  Uint8List mac) {
-    var hmacSha256 = Hmac(sha256, key);
-    var digest = hmacSha256.convert(input);
-    return digest.bytes == mac;
+bool verifyMAC(Uint8List key, Uint8List input, Uint8List mac) {
+  var hmacSha256 = Hmac(sha256, key);
+  var digest = hmacSha256.convert(input);
+  return digest.bytes == mac;
 }
 
 class ProvisioningCipher {
