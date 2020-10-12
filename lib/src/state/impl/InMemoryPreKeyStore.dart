@@ -18,7 +18,7 @@ class InMemoryPreKeyStore extends PreKeyStore {
   PreKeyRecord loadPreKey(int preKeyId) {
     try {
       if (!store.containsKey(preKeyId)) {
-        throw InvalidKeyIdException('No such prekeyrecord!');
+        throw InvalidKeyIdException('No such prekeyrecord! - $preKeyId');
       }
 
       return PreKeyRecord.fromBuffer(store[preKeyId]);

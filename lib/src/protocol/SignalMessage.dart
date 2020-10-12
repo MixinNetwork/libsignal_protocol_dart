@@ -56,7 +56,7 @@ class SignalMessage extends CiphertextMessage {
       _previousCounter = whisperMessage.previousCounter;
       _ciphertext = whisperMessage.ciphertext;
     } on InvalidProtocolBufferException catch (e) {
-      throw InvalidMessageException('');
+      throw InvalidMessageException(e.toString());
     } on InvalidKeyException catch (e) {
       throw InvalidMessageException(e.detailMessage);
     }
