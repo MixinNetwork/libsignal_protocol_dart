@@ -13,7 +13,6 @@ dependencies:
   crypto: ^2.1.5
   optional: ^5.0.0
   tuple: ^1.0.3
-  dartx: ^0.5.0
   fixnum: ^0.10.11
   collection: ^1.14.13
   ed25519_edwards: ^0.0.4
