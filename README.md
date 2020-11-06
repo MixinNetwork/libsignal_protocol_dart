@@ -1,5 +1,7 @@
 # libsignal_protocol_dart
 
+[![Dart CI]({https://github.com/MixinNetwork/libsignal_protocol_dart}/workflows/Dart%20CI/badge.svg)]({https://github.com/MixinNetwork/libsignal_protocol_dart}/actions)
+
 libsignal_protocol_dart is a pure Dart/Flutter implementation of the Signal Protocol.
 
 ## Documentation
