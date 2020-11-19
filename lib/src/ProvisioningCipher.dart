@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 
 import 'InvalidMacException.dart';
@@ -21,12 +22,12 @@ class ProvisionEnvelope {
   ProvisionEnvelope(this.public_key, this.body);
 
   ProvisionEnvelope.fromJson(Map<String, dynamic> json)
-      : public_key = json['public_key'],
-        body = json['body'];
+      : public_key = base64Decode(json['public_key']),
+        body = base64Decode(json['body']);
 
   Map<String, dynamic> toJson() => {
-        'public_key': public_key,
-        'body': body,
+        'public_key': base64Encode(public_key),
+        'body': base64Encode(body),
       };
 }
 
@@ -41,30 +42,35 @@ Uint8List decrypt(String privateKey, String content) {
   if (message[0] != 1) {
     throw LegacyMessageException('Invalid version');
   }
-  var iv = message.getRange(1, 16 + 1);
-  var mac = message.getRange(message.length - 32, message.length);
-  var ivAndCiphertext = message.getRange(0, message.length - 32);
-  var cipherText = message.getRange(16 + 1, message.length - 32);
+  var iv = Uint8List.fromList(message.getRange(1, 16 + 1).toList());
+  var mac = message.getRange(message.length - 32, message.length).toList();
+  var ivAndCiphertext =
+      Uint8List.fromList(message.getRange(0, message.length - 32).toList());
+  var cipherText = Uint8List.fromList(
+      message.getRange(16 + 1, message.length - 32).toList());
   var sharedSecret = Curve.calculateAgreement(
       publicKeyable, Curve.decodePrivatePoint(ourPrivateKey));
 
-  var derivedSecretBytes = HKDFv3().deriveSecrets4(
-      sharedSecret, null, utf8.encode(PROVISION), DerivedRootSecrets.SIZE);
+  var derivedSecretBytes = HKDFv3().deriveSecrets(
+      sharedSecret, utf8.encode(PROVISION), DerivedRootSecrets.SIZE);
 
-  var aesKey = derivedSecretBytes.getRange(0, 32);
-  var macKey = derivedSecretBytes.getRange(32, derivedSecretBytes.length);
+  var aesKey = Uint8List.fromList(derivedSecretBytes.getRange(0, 32).toList());
+  var macKey = Uint8List.fromList(
+      derivedSecretBytes.getRange(32, derivedSecretBytes.length).toList());
 
   if (!verifyMAC(macKey, ivAndCiphertext, mac)) {
     throw InvalidMacException("MAC doesn't match!");
   }
-  var plaintext = aesCbcDecrypt(iv, aesKey, cipherText);
+  var plaintext = aesCbcDecrypt(aesKey, iv, cipherText);
   return plaintext;
 }
 
-bool verifyMAC(Uint8List key, Uint8List input, Uint8List mac) {
+Function eq = const ListEquality().equals;
+
+bool verifyMAC(Uint8List key, Uint8List input, List<int> mac) {
   var hmacSha256 = Hmac(sha256, key);
   var digest = hmacSha256.convert(input);
-  return digest.bytes == mac;
+  return eq(digest.bytes, mac);
 }
 
 class ProvisioningCipher {
