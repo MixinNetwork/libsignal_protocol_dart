@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 
 import 'InvalidMacException.dart';
@@ -9,6 +8,7 @@ import 'LegacyMessageException.dart';
 import 'cbc.dart';
 import 'ecc/Curve.dart';
 import 'ecc/ECPublicKey.dart';
+import 'eq.dart';
 import 'kdf/DerivedRootSecrets.dart';
 import 'kdf/HKDFv3.dart';
 import 'util/ByteUtil.dart';
@@ -64,8 +64,6 @@ Uint8List decrypt(String privateKey, String content) {
   var plaintext = aesCbcDecrypt(aesKey, iv, cipherText);
   return plaintext;
 }
-
-Function eq = const ListEquality().equals;
 
 bool verifyMAC(Uint8List key, Uint8List input, List<int> mac) {
   var hmacSha256 = Hmac(sha256, key);
