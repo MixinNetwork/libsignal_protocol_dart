@@ -5,6 +5,7 @@ import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
 import 'package:libsignal_protocol_dart/src/InvalidMessageException.dart';
 import 'package:libsignal_protocol_dart/src/NoSessionException.dart';
 import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
+import 'package:libsignal_protocol_dart/src/eq.dart';
 import 'package:libsignal_protocol_dart/src/groups/GroupCipher.dart';
 import 'package:libsignal_protocol_dart/src/groups/GroupSessionBuilder.dart';
 import 'package:libsignal_protocol_dart/src/groups/SenderKeyName.dart';
@@ -98,7 +99,6 @@ void main() {
     var ciphertextFromAlice = aliceGroupCipher.encrypt(plaintext);
     var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
 
-    Function eq = const ListEquality().equals;
     assert(eq(plaintextFromAlice, plaintext));
   });
 

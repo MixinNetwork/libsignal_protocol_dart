@@ -8,6 +8,7 @@ import '../InvalidKeyException.dart';
 import '../ecc/Curve.dart';
 import '../ecc/ECKeyPair.dart';
 import '../ecc/ECPublicKey.dart';
+import '../eq.dart';
 import '../kdf/HKDF.dart';
 import '../ratchet/ChainKey.dart';
 import '../ratchet/MessageKeys.dart';
@@ -129,7 +130,6 @@ class SessionState extends LinkedListEntry<SessionState> {
         var chainSenderRatchetKey =
             Curve.decodePoint(receiverChain.senderRatchetKey, 0);
 
-        Function eq = ListEquality().equals;
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
           return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
