@@ -26,9 +26,9 @@ void install() {
   }
   signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
 
-  var remoteAddress = SignalProtocolAddress('remote', 1);
-  var sessionBuilder = SessionBuilder(sessionStore, preKeyStore,
-      signedPreKeyStore, identityStore, remoteAddress);
+  var bobAddress = SignalProtocolAddress('bob', 1);
+  var sessionBuilder = SessionBuilder(
+      sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
 
   // Should get remote from the server
   var remoteRegId = KeyHelper.generateRegistrationId(false);
@@ -49,12 +49,32 @@ void install() {
 
   sessionBuilder.processPreKeyBundle(retrievedPreKey);
 
-  var sessionCipher = SessionCipher(sessionStore, preKeyStore,
-      signedPreKeyStore, identityStore, remoteAddress);
+  var sessionCipher = SessionCipher(
+      sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
   var ciphertext =
       sessionCipher.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  print(ciphertext);
   print(ciphertext.serialize());
   //deliver(ciphertext);
+
+  var signalProtocolStore =
+      InMemorySignalProtocolStore(remoteIdentityKeyPair, 1);
+  var aliceAddress = SignalProtocolAddress("alice", 1);
+  var remoteSessionCipher =
+      SessionCipher.fromStore(signalProtocolStore, aliceAddress);
+
+  for (var p in remotePreKeys) {
+    signalProtocolStore.storePreKey(p.id, p);
+  }
+  signalProtocolStore.storeSignedPreKey(
+      remoteSignedPreKey.id, remoteSignedPreKey);
+
+  if (ciphertext.getType() == CiphertextMessage.PREKEY_TYPE) {
+    remoteSessionCipher.decryptWithCallback(ciphertext as PreKeySignalMessage,
+        (plaintext) {
+      print(String.fromCharCodes(plaintext));
+    });
+  }
 }
 
 void groupSessioin() {
