@@ -25,6 +25,7 @@ export 'src/groups/GroupCipher.dart';
 export 'src/groups/GroupSessionBuilder.dart';
 export 'src/groups/SenderKeyName.dart';
 export 'src/groups/state/InMemorySenderKeyStore.dart';
+export 'src/groups/state/SenderKeyStore.dart';
 
 export 'src/protocol/CiphertextMessage.dart';
 export 'src/protocol/PreKeySignalMessage.dart';
