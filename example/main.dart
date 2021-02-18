@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -51,8 +52,7 @@ void install() {
 
   var sessionCipher = SessionCipher(
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
-  var ciphertext =
-      sessionCipher.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  var ciphertext = sessionCipher.encrypt(utf8.encode('Hello Mixin🤣'));
   print(ciphertext);
   print(ciphertext.serialize());
   //deliver(ciphertext);
@@ -72,7 +72,7 @@ void install() {
   if (ciphertext.getType() == CiphertextMessage.PREKEY_TYPE) {
     remoteSessionCipher.decryptWithCallback(ciphertext as PreKeySignalMessage,
         (plaintext) {
-      print(String.fromCharCodes(plaintext));
+      print(utf8.decode(plaintext));
     });
   }
 }
