@@ -43,7 +43,7 @@ class GroupCipher {
   }
 
   Uint8List decryptWithCallback(
-      Uint8List senderKeyMessageBytes, DecryptionCallback callback) {
+      Uint8List senderKeyMessageBytes, DecryptionCallback? callback) {
     // TODO wrap in synchronized
     try {
       var record = _senderKeyStore.loadSenderKey(_senderKeyId);

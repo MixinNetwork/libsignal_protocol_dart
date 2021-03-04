@@ -104,7 +104,7 @@ class SessionCipher {
   }
 
   Uint8List decryptWithCallback(
-      PreKeySignalMessage ciphertext, DecryptionCallback callback) {
+      PreKeySignalMessage ciphertext, DecryptionCallback? callback) {
     // synchronized(SESSION_LOCK) {
     var sessionRecord = _sessionStore.loadSession(_remoteAddress);
     var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
@@ -129,7 +129,7 @@ class SessionCipher {
   }
 
   Uint8List decryptFromSignalWithCallback(
-      SignalMessage cipherText, DecryptionCallback callback) {
+      SignalMessage cipherText, DecryptionCallback? callback) {
     // synchronized(SESSION_LOCK) {
     if (!_sessionStore.containsSession(_remoteAddress)) {
       throw NoSessionException('No session for: $_remoteAddress');

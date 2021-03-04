@@ -4,19 +4,19 @@ version: 0.2.1
 homepage: https://github.com/MixinNetwork/libsignal_protocol_dart
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  protobuf: ^1.1.1
-  convert: ^2.1.1
-  crypto: ^2.1.5
-  optional: ^5.0.0+1
-  tuple: ^1.0.3
-  fixnum: ^0.10.11
-  collection: ^1.14.13
-  pointycastle: ^2.0.1
-  ed25519_edwards: ^0.0.5
+  protobuf: ^2.0.0
+  convert: ^3.0.0
+  crypto: ^3.0.0
+  optional: ^6.0.0-nullsafety.0
+  tuple: ^2.0.0-nullsafety.0
+  fixnum: ^1.0.0
+  collection: ^1.15.0
+  ed25519_edwards: ^0.1.0-nullsafety.1
   x25519: ^0.0.2
+
 
 dev_dependencies:
   test: ^1.15.1
