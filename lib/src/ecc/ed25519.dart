@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as cr;
 import 'package:convert/convert.dart';
-import 'package:cryptography/cryptography.dart';
+import 'package:ed25519_edwards/ed25519_edwards.dart';
 import 'package:ed25519_edwards/src/edwards25519.dart';
 
 import 'Curve.dart';
@@ -88,7 +88,7 @@ Uint8List sign(Uint8List privateKey, Uint8List message, Uint8List random) {
 }
 
 // verify checks whether the message has a valid signature.
-bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
+bool verifySig(Uint8List publicKey, Uint8List message, Uint8List signature) {
   publicKey[31] &= 0x7F;
 
   var edY = FieldElement();
@@ -109,6 +109,6 @@ bool verify(Uint8List publicKey, Uint8List message, Uint8List signature) {
   A_ed[31] |= signature[63] & 0x80;
   signature[63] &= 0x7F;
 
-  return ed25519.verifySync(
-      message, Signature(signature, publicKey: PublicKey(A_ed)));
+// bool verify(PublicKey publicKey, Uint8List message, Uint8List sig) {
+  return verify(PublicKey(A_ed.toList()), message, signature);
 }

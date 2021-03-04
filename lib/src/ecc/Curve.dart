@@ -87,7 +87,7 @@ class Curve {
       }
 
       var publicKey = (signingKey as DjbECPublicKey).publicKey;
-      return verify(publicKey, message, signature);
+      return verifySig(publicKey, message, signature);
     } else {
       throw InvalidKeyException(
           'Unknown Signing Key type' + signingKey.getType().toString());
