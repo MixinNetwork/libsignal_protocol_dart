@@ -1,7 +1,8 @@
+// @dart=2.9
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
+import '../util/KeyHelper.dart';
 import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
 import 'DjbECPublicKey.dart';
