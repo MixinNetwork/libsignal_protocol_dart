@@ -1,7 +1,6 @@
 // @dart=2.9
 import 'dart:typed_data';
 
-import 'package:cryptography/cryptography.dart';
 import '../util/KeyHelper.dart';
 import '../InvalidKeyException.dart';
 import 'DjbECPrivateKey.dart';
@@ -10,15 +9,23 @@ import 'ECKeyPair.dart';
 import 'ECPrivateKey.dart';
 import 'ECPublicKey.dart';
 import 'ed25519.dart';
+import 'package:curve25519/curve25519.dart' as curve;
 
 class Curve {
   static const int djbType = 0x05;
 
   static ECKeyPair generateKeyPair() {
-    final keyPair = x25519.newKeyPairSync();
-    return ECKeyPair(
-        DjbECPublicKey(Uint8List.fromList(keyPair.publicKey.bytes)),
-        DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey.extractSync())));
+    var private = List<int>.filled(32, 0);
+    var public = List<int>.filled(32, 0);
+
+    private[0] &= 248;
+    private[31] &= 127;
+    private[31] |= 64;
+
+    curve.ScalarBaseMult(public, private);
+
+    return ECKeyPair(DjbECPublicKey(Uint8List.fromList(public)),
+        DjbECPrivateKey(Uint8List.fromList(private)));
   }
 
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
@@ -66,11 +73,11 @@ class Curve {
     }
 
     if (publicKey.getType() == djbType) {
-      var secretKey = x25519.sharedSecretSync(
-        localPrivateKey: PrivateKey((privateKey as DjbECPrivateKey).privateKey),
-        remotePublicKey: PublicKey((publicKey as DjbECPublicKey).publicKey),
+      var secretKey = curve.X25519(
+        List<int>.from((privateKey as DjbECPrivateKey).privateKey),
+        List<int>.from((publicKey as DjbECPublicKey).publicKey),
       );
-      return Uint8List.fromList(secretKey.extractSync());
+      return secretKey;
     } else {
       throw Exception('Unknown type: ' + publicKey.getType().toString());
     }

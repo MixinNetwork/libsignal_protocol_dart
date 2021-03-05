@@ -7,7 +7,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  cryptography: ^1.4.1
   protobuf: ^1.1.1
   convert: ^2.1.1
   crypto: ^2.1.5
@@ -16,6 +15,10 @@ dependencies:
   fixnum: ^0.10.11
   collection: ^1.14.13
   ed25519_edwards: ^0.0.5
+  curve25519:
+    git:
+      url: git@github.com:Tougee/curve25519.git
+      ref: main
 
 dev_dependencies:
   test: ^1.15.1
