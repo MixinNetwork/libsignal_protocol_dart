@@ -14,6 +14,7 @@ dependencies:
   tuple: ^1.0.3
   fixnum: ^0.10.11
   collection: ^1.14.13
+  pointycastle: ^2.0.1
   ed25519_edwards: ^0.0.5
   curve25519:
     git:
