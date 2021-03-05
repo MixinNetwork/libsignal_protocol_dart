@@ -9,7 +9,6 @@ Uint8List aesCbcEncrypt(Uint8List key, Uint8List iv, Uint8List plaintext) {
     ..init(true, ParametersWithIV(KeyParameter(key), iv)); // true=encrypt
 
   final cipherText = Uint8List(paddedPlaintext.length); // allocate space
-  print(paddedPlaintext.length);
   var offset = 0;
   while (offset < paddedPlaintext.length) {
     offset += cbc.processBlock(paddedPlaintext, offset, cipherText, offset);
