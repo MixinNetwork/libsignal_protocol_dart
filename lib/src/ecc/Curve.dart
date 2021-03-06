@@ -8,7 +8,7 @@ import 'ECKeyPair.dart';
 import 'ECPrivateKey.dart';
 import 'ECPublicKey.dart';
 import 'ed25519.dart';
-import 'package:curve25519/curve25519.dart' as curve;
+import 'package:x25519/x25519.dart';
 
 class Curve {
   static const int djbType = 0x05;
@@ -21,7 +21,7 @@ class Curve {
     private[31] &= 127;
     private[31] |= 64;
 
-    curve.ScalarBaseMult(public, private);
+    ScalarBaseMult(public, private);
 
     return ECKeyPair(DjbECPublicKey(Uint8List.fromList(public)),
         DjbECPrivateKey(Uint8List.fromList(private)));
@@ -72,7 +72,7 @@ class Curve {
     }
 
     if (publicKey.getType() == djbType) {
-      var secretKey = curve.X25519(
+      var secretKey = X25519(
         List<int>.from((privateKey as DjbECPrivateKey).privateKey),
         List<int>.from((publicKey as DjbECPublicKey).publicKey),
       );
