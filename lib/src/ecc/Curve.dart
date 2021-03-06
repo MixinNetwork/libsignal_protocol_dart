@@ -14,7 +14,7 @@ class Curve {
   static const int djbType = 0x05;
 
   static ECKeyPair generateKeyPair() {
-    var private = List<int>.filled(32, 0);
+    var private = KeyHelper.generateRandomBytes();
     var public = List<int>.filled(32, 0);
 
     private[0] &= 248;
