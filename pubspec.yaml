@@ -16,7 +16,7 @@ dependencies:
   collection: ^1.14.13
   pointycastle: ^2.0.1
   ed25519_edwards: ^0.0.5
-  x25519: ^0.0.1
+  x25519: ^0.0.2
 
 dev_dependencies:
   test: ^1.15.1

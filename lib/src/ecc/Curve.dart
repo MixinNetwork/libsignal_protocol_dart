@@ -8,23 +8,15 @@ import 'ECKeyPair.dart';
 import 'ECPrivateKey.dart';
 import 'ECPublicKey.dart';
 import 'ed25519.dart';
-import 'package:x25519/x25519.dart';
+import 'package:x25519/x25519.dart' as x25519;
 
 class Curve {
   static const int djbType = 0x05;
 
   static ECKeyPair generateKeyPair() {
-    var private = KeyHelper.generateRandomBytes();
-    var public = List<int>.filled(32, 0);
-
-    private[0] &= 248;
-    private[31] &= 127;
-    private[31] |= 64;
-
-    ScalarBaseMult(public, private);
-
-    return ECKeyPair(DjbECPublicKey(Uint8List.fromList(public)),
-        DjbECPrivateKey(Uint8List.fromList(private)));
+    var keyPair = x25519.generateKeyPair();
+    return ECKeyPair(DjbECPublicKey(Uint8List.fromList(keyPair.publicKey)),
+        DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey)));
   }
 
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
@@ -72,7 +64,7 @@ class Curve {
     }
 
     if (publicKey.getType() == djbType) {
-      var secretKey = X25519(
+      var secretKey = x25519.X25519(
         List<int>.from((privateKey as DjbECPrivateKey).privateKey),
         List<int>.from((publicKey as DjbECPublicKey).publicKey),
       );
