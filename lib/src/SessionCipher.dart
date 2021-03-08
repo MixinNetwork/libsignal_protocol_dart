@@ -210,11 +210,11 @@ class SessionCipher {
     var counter = ciphertextMessage.getCounter();
     var chainKey = _getOrCreateChainKey(sessionState, theirEphemeral);
     var messageKeys = _getOrCreateMessageKeys(
-        sessionState, theirEphemeral, chainKey, counter);
+        sessionState, theirEphemeral, chainKey!, counter);
 
     // TODO null safety
     ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey()!,
-        sessionState.getLocalIdentityKey(), messageKeys.getMacKey());
+        sessionState.getLocalIdentityKey(), messageKeys!.getMacKey());
 
     var plaintext = _getPlaintext(messageKeys, ciphertextMessage.getBody());
 

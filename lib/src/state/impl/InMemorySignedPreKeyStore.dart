@@ -16,7 +16,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
         throw InvalidKeyIdException(
             'No such signedprekeyrecord! $signedPreKeyId');
       }
-      return SignedPreKeyRecord.fromSerialized(store[signedPreKeyId]);
+      return SignedPreKeyRecord.fromSerialized(store[signedPreKeyId]!);
     } on IOException catch (e) {
       throw AssertionError(e);
     }
