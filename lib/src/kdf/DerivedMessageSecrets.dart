@@ -8,9 +8,9 @@ class DerivedMessageSecrets {
   static final int _MAC_KEY_LENGTH = 32;
   static final int _IV_LENGTH = 16;
 
-  Uint8List _cipherKey;
-  Uint8List _macKey;
-  Uint8List _iv;
+  late Uint8List _cipherKey;
+  late Uint8List _macKey;
+  late Uint8List _iv;
 
   DerivedMessageSecrets(Uint8List okm) {
     var keys =

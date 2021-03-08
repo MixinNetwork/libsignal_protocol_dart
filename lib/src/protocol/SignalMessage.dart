@@ -16,12 +16,12 @@ import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 class SignalMessage extends CiphertextMessage {
   static final int MAC_LENGTH = 8;
 
-  int _messageVersion;
-  ECPublicKey _senderRatchetKey;
-  int _counter;
-  int _previousCounter;
-  Uint8List _ciphertext;
-  Uint8List _serialized;
+  late int _messageVersion;
+  late ECPublicKey _senderRatchetKey;
+  late int _counter;
+  late int _previousCounter;
+  late Uint8List _ciphertext;
+  late Uint8List _serialized;
 
   SignalMessage.fromSerialized(Uint8List serialized) {
     try {

@@ -136,7 +136,7 @@ class RatchetingSession {
 
   static DerivedKeys calculateDerivedKeys(Uint8List masterSecret) {
     HKDF kdf = HKDFv3();
-    var bytes = utf8.encode('WhisperText');
+    var bytes = Uint8List.fromList(utf8.encode('WhisperText'));
     var derivedSecretBytes = kdf.deriveSecrets(masterSecret, bytes, 64);
     var derivedSecrets = ByteUtil.splitTwo(derivedSecretBytes, 32, 32);
 

@@ -59,7 +59,7 @@ abstract class HKDF {
         }
         input.add([i]);
         input.close();
-        var stepResult = output.events.single.bytes;
+        var stepResult = Uint8List.fromList(output.events.single.bytes);
         var stepSize = min(remainingBytes, stepResult.length);
 
         for (var j = 0; j < stepSize; j++) {

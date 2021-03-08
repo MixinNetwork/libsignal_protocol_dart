@@ -14,8 +14,6 @@ import 'package:libsignal_protocol_dart/src/protocol/SenderKeyDistributionMessag
 import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
 import 'package:test/test.dart';
 
-import 'package:collection/collection.dart';
-
 void main() {
   final SENDER_ADDRESS = SignalProtocolAddress('+14150001111', 1);
   final GROUP_SENDER =

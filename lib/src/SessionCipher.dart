@@ -32,7 +32,7 @@ class SessionCipher {
 
   SessionStore _sessionStore;
   IdentityKeyStore _identityKeyStore;
-  SessionBuilder _sessionBuilder;
+  late SessionBuilder _sessionBuilder;
   PreKeyStore _preKeyStore;
   SignalProtocolAddress _remoteAddress;
 

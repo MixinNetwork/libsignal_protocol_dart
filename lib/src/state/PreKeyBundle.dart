@@ -17,23 +17,14 @@ class PreKeyBundle {
   IdentityKey _identityKey;
 
   PreKeyBundle(
-      int registrationId,
-      int deviceId,
-      int preKeyId,
-      ECPublicKey preKeyPublic,
-      int signedPreKeyId,
-      ECPublicKey signedPreKeyPublic,
-      Uint8List signedPreKeySignature,
-      IdentityKey identityKey) {
-    _registrationId = registrationId;
-    _deviceId = deviceId;
-    _preKeyId = preKeyId;
-    _preKeyPublic = preKeyPublic;
-    _signedPreKeyId = signedPreKeyId;
-    _signedPreKeyPublic = signedPreKeyPublic;
-    _signedPreKeySignature = signedPreKeySignature;
-    _identityKey = identityKey;
-  }
+      this._registrationId,
+      this._deviceId,
+      this._preKeyId,
+      this._preKeyPublic,
+      this._signedPreKeyId,
+      this._signedPreKeyPublic,
+      this._signedPreKeySignature,
+      this._identityKey);
 
   int getDeviceId() {
     return _deviceId;

@@ -7,7 +7,7 @@ import '../InvalidKeyException.dart';
 import 'LocalStorageProtocol.pb.dart';
 
 class SignedPreKeyRecord {
-  SignedPreKeyRecordStructure _structure;
+  late SignedPreKeyRecordStructure _structure;
 
   SignedPreKeyRecord(
       int id, Int64 timestamp, ECKeyPair keyPair, Uint8List signature) {

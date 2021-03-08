@@ -14,14 +14,14 @@ import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 import 'package:optional/optional.dart';
 
 class PreKeySignalMessage extends CiphertextMessage {
-  int _version;
-  int registrationId;
-  Optional<int> preKeyId;
-  int signedPreKeyId;
-  ECPublicKey baseKey;
-  IdentityKey identityKey;
-  SignalMessage message;
-  Uint8List serialized;
+  late int _version;
+  late int registrationId;
+  late Optional<int> preKeyId;
+  late int signedPreKeyId;
+  late ECPublicKey baseKey;
+  late IdentityKey identityKey;
+  late SignalMessage message;
+  late Uint8List serialized;
 
   PreKeySignalMessage(Uint8List serialized) {
     try {

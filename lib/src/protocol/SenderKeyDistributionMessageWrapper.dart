@@ -11,11 +11,11 @@ import 'package:libsignal_protocol_dart/src/util/ByteUtil.dart';
 import 'package:protobuf/protobuf.dart';
 
 class SenderKeyDistributionMessageWrapper extends CiphertextMessage {
-  int _id;
-  int _iteration;
-  Uint8List _chainKey;
-  ECPublicKey _signatureKey;
-  Uint8List _serialized;
+  late int _id;
+  late int _iteration;
+  late Uint8List _chainKey;
+  late ECPublicKey _signatureKey;
+  late Uint8List _serialized;
 
   SenderKeyDistributionMessageWrapper(
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKey) {

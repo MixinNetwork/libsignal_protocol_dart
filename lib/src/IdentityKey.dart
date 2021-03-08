@@ -6,7 +6,7 @@ import 'ecc/Curve.dart';
 import 'ecc/ECPublicKey.dart';
 
 class IdentityKey {
-  ECPublicKey _publicKey;
+  late ECPublicKey _publicKey;
 
   IdentityKey(this._publicKey);
 

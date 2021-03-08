@@ -76,7 +76,7 @@ class GroupCipher {
     var senderChainKey = senderKeyState.senderChainKey;
     if (senderChainKey.iteration > iteration) {
       if (senderKeyState.hasSenderMessageKey(iteration)) {
-        return senderKeyState.removeSenderMessageKey(iteration);
+        return senderKeyState.removeSenderMessageKey(iteration)!;
       } else {
         throw DuplicateMessageException('Received message with old counter: '
             '${senderChainKey.iteration} , $iteration');

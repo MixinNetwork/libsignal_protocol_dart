@@ -8,13 +8,10 @@ class SenderChainKey {
   static final Uint8List _MESSAGE_KEY_SEED = Uint8List.fromList([0x01]);
   static final Uint8List _CHAIN_KEY_SEED = Uint8List.fromList([0x02]);
 
-  int _iteration;
-  Uint8List _chainKey;
+  final int _iteration;
+  final Uint8List _chainKey;
 
-  SenderChainKey(int iteration, Uint8List chainKey) {
-    _iteration = iteration;
-    _chainKey = chainKey;
-  }
+  SenderChainKey(this._iteration, this._chainKey);
 
   int get iteration => _iteration;
 

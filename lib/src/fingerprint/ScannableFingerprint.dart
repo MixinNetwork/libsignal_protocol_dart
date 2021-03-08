@@ -9,8 +9,8 @@ import '../state/FingerprintProtocol.pb.dart';
 import '../util/ByteUtil.dart';
 
 class ScannableFingerprint {
-  int _version;
-  CombinedFingerprints _fingerprints;
+  late int _version;
+  late CombinedFingerprints _fingerprints;
 
   ScannableFingerprint(int version, Uint8List localFingerprintData,
       Uint8List remoteFingerprintData) {

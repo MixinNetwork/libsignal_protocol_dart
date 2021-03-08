@@ -26,7 +26,8 @@ class DeviceConsistencyCodeGenerator {
     }
     input.close();
     var hash = output.events.single.bytes;
-    var digits = getEncodedChunk(hash, 0) + getEncodedChunk(hash, 5);
+    var digits = getEncodedChunk(Uint8List.fromList(hash), 0) +
+        getEncodedChunk(Uint8List.fromList(hash), 5);
     return digits.substring(0, 6);
   }
 

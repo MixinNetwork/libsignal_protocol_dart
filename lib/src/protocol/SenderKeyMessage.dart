@@ -16,11 +16,11 @@ import 'CiphertextMessage.dart';
 class SenderKeyMessage extends CiphertextMessage {
   static const int SIGNATURE_LENGTH = 64;
 
-  int _messageVersion;
-  int _keyId;
-  int _iteration;
-  Uint8List _ciphertext;
-  Uint8List _serialized;
+  late int _messageVersion;
+  late int _keyId;
+  late int _iteration;
+  late Uint8List _ciphertext;
+  late Uint8List _serialized;
 
   SenderKeyMessage(int keyId, int iteration, Uint8List ciphertext,
       ECPrivateKey signatureKey) {

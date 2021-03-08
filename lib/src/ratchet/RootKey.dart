@@ -23,7 +23,7 @@ class RootKey {
       ECPublicKey theirRatchetKey, ECKeyPair ourRatchetKey) {
     var sharedSecret =
         Curve.calculateAgreement(theirRatchetKey, ourRatchetKey.privateKey);
-    var bytes = utf8.encode('WhisperRatchet');
+    var bytes = Uint8List.fromList(utf8.encode('WhisperRatchet'));
     var derivedSecretBytes =
         _kdf.deriveSecrets4(sharedSecret, _key, bytes, DerivedRootSecrets.SIZE);
     var derivedSecrets = DerivedRootSecrets(derivedSecretBytes);

@@ -22,7 +22,7 @@ import 'package:collection/collection.dart';
 class SessionState extends LinkedListEntry<SessionState> {
   static final int MAX_MESSAGE_KEYS = 2000;
 
-  SessionStructure _sessionStructure;
+  late SessionStructure _sessionStructure;
 
   SessionState() {
     _sessionStructure = SessionStructure.create();

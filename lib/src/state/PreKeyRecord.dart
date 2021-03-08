@@ -5,7 +5,7 @@ import '../InvalidKeyException.dart';
 import 'LocalStorageProtocol.pb.dart';
 
 class PreKeyRecord {
-  PreKeyRecordStructure _structure;
+  late PreKeyRecordStructure _structure;
 
   PreKeyRecord(int id, ECKeyPair keyPair) {
     _structure = PreKeyRecordStructure.create()
