@@ -16,7 +16,7 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
 
   @override
   IdentityKey getIdentity(SignalProtocolAddress address) {
-    return trustedKeys[address];
+    return trustedKeys[address]!;
   }
 
   @override
@@ -30,16 +30,22 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
   }
 
   @override
-  bool isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey,
-      Direction direction) {
+  bool isTrustedIdentity(SignalProtocolAddress address,
+      IdentityKey? identityKey, Direction? direction) {
     var trusted = trustedKeys[address];
+    if (identityKey == null) {
+      return false;
+    }
     return (trusted == null ||
         eq(trusted.serialize(), identityKey.serialize()));
   }
 
   @override
-  bool saveIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
+  bool saveIdentity(SignalProtocolAddress address, IdentityKey? identityKey) {
     var existing = trustedKeys[address];
+    if (identityKey == null) {
+      return false;
+    }
     if (identityKey != existing) {
       trustedKeys[address] = identityKey;
       return true;

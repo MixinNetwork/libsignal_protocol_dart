@@ -12,9 +12,9 @@ import '../devices/DeviceConsistencyCommitment.dart';
 import '../devices/DeviceConsistencySignature.dart';
 
 class DeviceConsistencyMessage {
-  DeviceConsistencySignature _signature;
-  int _generation;
-  Uint8List _serialized;
+  late DeviceConsistencySignature _signature;
+  late int _generation;
+  late Uint8List _serialized;
 
   DeviceConsistencyMessage(
       DeviceConsistencyCommitment commitment, IdentityKeyPair identityKeyPair) {
@@ -50,8 +50,8 @@ class DeviceConsistencyMessage {
           commitment.serialized, Uint8List.fromList(message.signature));
 
       _generation = message.generation;
-      _signature =
-          DeviceConsistencySignature(message.signature, vrfOutputBytes);
+      _signature = DeviceConsistencySignature(
+          Uint8List.fromList(message.signature), vrfOutputBytes);
       _serialized = serialized;
     } on InvalidProtocolBufferException catch (e) {
       throw InvalidMessageException(e.message);

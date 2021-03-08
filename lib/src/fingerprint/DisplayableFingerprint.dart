@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import '../util/ByteUtil.dart';
 
 class DisplayableFingerprint {
-  String localFingerprintNumbers, remoteFingerprintNumbers;
+  late String localFingerprintNumbers, remoteFingerprintNumbers;
 
   DisplayableFingerprint(
       Uint8List localFingerprint, Uint8List remoteFingerprint) {

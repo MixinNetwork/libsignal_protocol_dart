@@ -19,6 +19,10 @@ class Curve {
         DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey)));
   }
 
+  static ECPublicKey decodePointList(List<int> bytes, int offset) {
+    return decodePoint(Uint8List.fromList(bytes), offset);
+  }
+
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
     if (bytes == null || bytes.length - offset < 1) {
       throw InvalidKeyException('No key type identifier');
@@ -123,6 +127,7 @@ class Curve {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
     }
+    return Uint8List(0);
   }
 
   static Uint8List verifyVrfSignature(
@@ -137,5 +142,6 @@ class Curve {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
     }
+    return Uint8List(0);
   }
 }

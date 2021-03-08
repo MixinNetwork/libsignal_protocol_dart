@@ -13,7 +13,7 @@ import '../../state/LocalStorageProtocol.pb.dart';
 class SenderKeyState {
   static const int _MAX_MESSAGE_KEYS = 2000;
 
-  SenderKeyStateStructure _senderKeyStateStructure;
+  late SenderKeyStateStructure _senderKeyStateStructure;
 
   SenderKeyState.fromPublicKey(int id, int iteration, Uint8List chainKey,
       ECPublicKey signatureKeyPublic) {
@@ -29,7 +29,7 @@ class SenderKeyState {
 
   void init(
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKeyPublic,
-      [Optional<ECPrivateKey> signatureKeyPrivate]) {
+      [Optional<ECPrivateKey>? signatureKeyPrivate]) {
     var seed = Uint8List.fromList(chainKey);
     var senderChainKeyStructure =
         SenderKeyStateStructure_SenderChainKey.create()
@@ -37,7 +37,7 @@ class SenderKeyState {
           ..seed = seed;
     var signingKeyStructure = SenderKeyStateStructure_SenderSigningKey.create()
       ..public = signatureKeyPublic.serialize();
-    if (signatureKeyPrivate.isPresent) {
+    if (signatureKeyPrivate!.isPresent) {
       signingKeyStructure..private = signatureKeyPrivate.value.serialize();
     }
     _senderKeyStateStructure = SenderKeyStateStructure.create()
@@ -55,7 +55,7 @@ class SenderKeyState {
 
   SenderChainKey get senderChainKey => SenderChainKey(
       _senderKeyStateStructure.senderChainKey.iteration,
-      _senderKeyStateStructure.senderChainKey.seed);
+      Uint8List.fromList(_senderKeyStateStructure.senderChainKey.seed));
 
   set senderChainKey(SenderChainKey senderChainKey) => {
         _senderKeyStateStructure.senderChainKey =
@@ -64,11 +64,11 @@ class SenderKeyState {
               ..seed = List.from(senderChainKey.seed)
       };
 
-  ECPublicKey get signingKeyPublic =>
-      Curve.decodePoint(_senderKeyStateStructure.senderSigningKey.public, 0);
+  ECPublicKey get signingKeyPublic => Curve.decodePointList(
+      _senderKeyStateStructure.senderSigningKey.public, 0);
 
   ECPrivateKey get signingKeyPrivate => Curve.decodePrivatePoint(
-      _senderKeyStateStructure.senderSigningKey.private);
+      Uint8List.fromList(_senderKeyStateStructure.senderSigningKey.private));
 
   bool hasSenderMessageKey(int iteration) {
     for (var senderMessageKey in _senderKeyStateStructure.senderMessageKeys) {
@@ -90,7 +90,7 @@ class SenderKeyState {
     }
   }
 
-  SenderMessageKey removeSenderMessageKey(int iteration) {
+  SenderMessageKey? removeSenderMessageKey(int iteration) {
     var keys = List.from(_senderKeyStateStructure.senderMessageKeys);
     keys.addAll(_senderKeyStateStructure.senderMessageKeys);
     var index = _senderKeyStateStructure.senderMessageKeys
@@ -98,7 +98,8 @@ class SenderKeyState {
     if (index == -1) return null;
     var senderMessageKey =
         _senderKeyStateStructure.senderMessageKeys.removeAt(index);
-    return SenderMessageKey(senderMessageKey.iteration, senderMessageKey.seed);
+    return SenderMessageKey(
+        senderMessageKey.iteration, Uint8List.fromList(senderMessageKey.seed));
   }
 
   SenderKeyStateStructure get structure => _senderKeyStateStructure;

@@ -60,13 +60,13 @@ class BobSignalProtocolParameters {
 }
 
 class Builder {
-  IdentityKeyPair ourIdentityKey;
-  ECKeyPair ourSignedPreKey;
-  Optional<ECKeyPair> ourOneTimePreKey;
-  ECKeyPair ourRatchetKey;
+  late IdentityKeyPair ourIdentityKey;
+  late ECKeyPair ourSignedPreKey;
+  late Optional<ECKeyPair> ourOneTimePreKey;
+  late ECKeyPair ourRatchetKey;
 
-  IdentityKey theirIdentityKey;
-  ECPublicKey theirBaseKey;
+  late IdentityKey theirIdentityKey;
+  late ECPublicKey theirBaseKey;
 
   Builder setOurIdentityKey(IdentityKeyPair ourIdentityKey) {
     this.ourIdentityKey = ourIdentityKey;

@@ -32,7 +32,7 @@ class SessionCipher {
 
   SessionStore _sessionStore;
   IdentityKeyStore _identityKeyStore;
-  SessionBuilder _sessionBuilder;
+  late SessionBuilder _sessionBuilder;
   PreKeyStore _preKeyStore;
   SignalProtocolAddress _remoteAddress;
 
@@ -104,7 +104,7 @@ class SessionCipher {
   }
 
   Uint8List decryptWithCallback(
-      PreKeySignalMessage ciphertext, DecryptionCallback callback) {
+      PreKeySignalMessage ciphertext, DecryptionCallback? callback) {
     // synchronized(SESSION_LOCK) {
     var sessionRecord = _sessionStore.loadSession(_remoteAddress);
     var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
@@ -129,7 +129,7 @@ class SessionCipher {
   }
 
   Uint8List decryptFromSignalWithCallback(
-      SignalMessage cipherText, DecryptionCallback callback) {
+      SignalMessage cipherText, DecryptionCallback? callback) {
     // synchronized(SESSION_LOCK) {
     if (!_sessionStore.containsSession(_remoteAddress)) {
       throw NoSessionException('No session for: $_remoteAddress');
@@ -210,10 +210,11 @@ class SessionCipher {
     var counter = ciphertextMessage.getCounter();
     var chainKey = _getOrCreateChainKey(sessionState, theirEphemeral);
     var messageKeys = _getOrCreateMessageKeys(
-        sessionState, theirEphemeral, chainKey, counter);
+        sessionState, theirEphemeral, chainKey!, counter);
 
-    ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey(),
-        sessionState.getLocalIdentityKey(), messageKeys.getMacKey());
+    // TODO null safety
+    ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey()!,
+        sessionState.getLocalIdentityKey(), messageKeys!.getMacKey());
 
     var plaintext = _getPlaintext(messageKeys, ciphertextMessage.getBody());
 
@@ -240,7 +241,7 @@ class SessionCipher {
     // }
   }
 
-  ChainKey _getOrCreateChainKey(
+  ChainKey? _getOrCreateChainKey(
       SessionState sessionState, ECPublicKey theirEphemeral) {
     try {
       if (sessionState.hasReceiverChain(theirEphemeral)) {
@@ -266,7 +267,7 @@ class SessionCipher {
     }
   }
 
-  MessageKeys _getOrCreateMessageKeys(SessionState sessionState,
+  MessageKeys? _getOrCreateMessageKeys(SessionState sessionState,
       ECPublicKey theirEphemeral, ChainKey chainKey, int counter) {
     if (chainKey.getIndex() > counter) {
       if (sessionState.hasMessageKeys(theirEphemeral, counter)) {

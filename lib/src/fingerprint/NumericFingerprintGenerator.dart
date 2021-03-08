@@ -16,9 +16,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
 
   int _iterations;
 
-  NumericFingerprintGenerator(int iterations) {
-    _iterations = iterations;
-  }
+  NumericFingerprintGenerator(this._iterations);
 
   @override
   Fingerprint createFor(
@@ -63,7 +61,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
       input.add(hash);
       input.add(publicKey);
       input.close();
-      hash = output.events.single.bytes;
+      hash = Uint8List.fromList(output.events.single.bytes);
     }
 
     return hash;

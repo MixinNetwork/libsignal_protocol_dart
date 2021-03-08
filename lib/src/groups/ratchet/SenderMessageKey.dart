@@ -5,17 +5,14 @@ import '../../util/ByteUtil.dart';
 
 class SenderMessageKey {
   int _iteration;
-  Uint8List _iv;
-  Uint8List _cipherKey;
   Uint8List _seed;
+  late Uint8List _iv;
+  late Uint8List _cipherKey;
 
-  SenderMessageKey(int iteration, Uint8List seed) {
+  SenderMessageKey(this._iteration, this._seed) {
     var derivative = HKDFv3()
         .deriveSecrets(seed, Uint8List.fromList('WhisperGroup'.codeUnits), 48);
     var parts = ByteUtil.splitTwo(derivative, 16, 32);
-
-    _iteration = iteration;
-    _seed = seed;
     _iv = parts[0];
     _cipherKey = parts[1];
   }

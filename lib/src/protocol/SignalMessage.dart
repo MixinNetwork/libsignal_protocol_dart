@@ -16,12 +16,12 @@ import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 class SignalMessage extends CiphertextMessage {
   static final int MAC_LENGTH = 8;
 
-  int _messageVersion;
-  ECPublicKey _senderRatchetKey;
-  int _counter;
-  int _previousCounter;
-  Uint8List _ciphertext;
-  Uint8List _serialized;
+  late int _messageVersion;
+  late ECPublicKey _senderRatchetKey;
+  late int _counter;
+  late int _previousCounter;
+  late Uint8List _ciphertext;
+  late Uint8List _serialized;
 
   SignalMessage.fromSerialized(Uint8List serialized) {
     try {
@@ -50,11 +50,12 @@ class SignalMessage extends CiphertextMessage {
       }
 
       _serialized = serialized;
-      _senderRatchetKey = Curve.decodePoint(whisperMessage.ratchetKey, 0);
+      _senderRatchetKey =
+          Curve.decodePoint(Uint8List.fromList(whisperMessage.ratchetKey), 0);
       _messageVersion = ByteUtil.highBitsToInt(version);
       _counter = whisperMessage.counter;
       _previousCounter = whisperMessage.previousCounter;
-      _ciphertext = whisperMessage.ciphertext;
+      _ciphertext = Uint8List.fromList(whisperMessage.ciphertext);
     } on InvalidProtocolBufferException catch (e) {
       throw InvalidMessageException(e.toString());
     } on InvalidKeyException catch (e) {
@@ -70,7 +71,7 @@ class SignalMessage extends CiphertextMessage {
       int previousCounter,
       Uint8List ciphertext,
       IdentityKey senderIdentityKey,
-      IdentityKey receiverIdentityKey) {
+      IdentityKey? receiverIdentityKey) {
     var version = Uint8List.fromList([
       ByteUtil.intsToByteHighAndLow(
           messageVersion, CiphertextMessage.CURRENT_VERSION)
@@ -83,7 +84,8 @@ class SignalMessage extends CiphertextMessage {
       ..ciphertext = ciphertext;
     var message = m.writeToBuffer();
 
-    var mac = _getMac(senderIdentityKey, receiverIdentityKey, macKey,
+    // TODO
+    var mac = _getMac(senderIdentityKey, receiverIdentityKey!, macKey,
         ByteUtil.combine([version, message]));
 
     _serialized = ByteUtil.combine([version, message, mac]);
@@ -133,7 +135,7 @@ class SignalMessage extends CiphertextMessage {
     input.add(receiverIdentityKey.publicKey.serialize());
     input.add(serialized);
     input.close();
-    Uint8List fullMac = output.events.single.bytes;
+    Uint8List fullMac = Uint8List.fromList(output.events.single.bytes);
     return ByteUtil.trim(fullMac, MAC_LENGTH);
   }
 

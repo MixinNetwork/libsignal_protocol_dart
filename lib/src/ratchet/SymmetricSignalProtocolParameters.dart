@@ -59,13 +59,13 @@ class SymmetricSignalProtocolParameters {
 }
 
 class Builder {
-  ECKeyPair ourBaseKey;
-  ECKeyPair ourRatchetKey;
-  IdentityKeyPair ourIdentityKey;
+  late ECKeyPair ourBaseKey;
+  late ECKeyPair ourRatchetKey;
+  late IdentityKeyPair ourIdentityKey;
 
-  ECPublicKey theirBaseKey;
-  ECPublicKey theirRatchetKey;
-  IdentityKey theirIdentityKey;
+  late ECPublicKey theirBaseKey;
+  late ECPublicKey theirRatchetKey;
+  late IdentityKey theirIdentityKey;
 
   Builder setOurBaseKey(ECKeyPair ourBaseKey) {
     this.ourBaseKey = ourBaseKey;

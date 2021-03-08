@@ -14,14 +14,14 @@ import '../state/WhisperTextProtocol.pb.dart' as signal_protos;
 import 'package:optional/optional.dart';
 
 class PreKeySignalMessage extends CiphertextMessage {
-  int _version;
-  int registrationId;
-  Optional<int> preKeyId;
-  int signedPreKeyId;
-  ECPublicKey baseKey;
-  IdentityKey identityKey;
-  SignalMessage message;
-  Uint8List serialized;
+  late int _version;
+  late int registrationId;
+  late Optional<int> preKeyId;
+  late int signedPreKeyId;
+  late ECPublicKey baseKey;
+  late IdentityKey identityKey;
+  late SignalMessage message;
+  late Uint8List serialized;
 
   PreKeySignalMessage(Uint8List serialized) {
     try {
@@ -45,10 +45,12 @@ class PreKeySignalMessage extends CiphertextMessage {
       signedPreKeyId = preKeyWhisperMessage.hasSignedPreKeyId()
           ? preKeyWhisperMessage.signedPreKeyId
           : -1;
-      baseKey = Curve.decodePoint(preKeyWhisperMessage.baseKey, 0);
-      identityKey =
-          IdentityKey(Curve.decodePoint(preKeyWhisperMessage.identityKey, 0));
-      message = SignalMessage.fromSerialized(preKeyWhisperMessage.message);
+      baseKey = Curve.decodePoint(
+          Uint8List.fromList(preKeyWhisperMessage.baseKey), 0);
+      identityKey = IdentityKey(Curve.decodePoint(
+          Uint8List.fromList(preKeyWhisperMessage.identityKey), 0));
+      message = SignalMessage.fromSerialized(
+          Uint8List.fromList(preKeyWhisperMessage.message));
     } on InvalidKeyException catch (e) {
       throw InvalidMessageException(e.detailMessage);
     } on LegacyMessageException catch (e) {

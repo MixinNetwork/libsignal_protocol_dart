@@ -10,8 +10,8 @@ import '../util/ByteUtil.dart';
 class DeviceConsistencyCommitment {
   static const String VERSION = 'DeviceConsistencyCommitment_V0';
 
-  int _generation;
-  Uint8List _serialized;
+  late int _generation;
+  late Uint8List _serialized;
 
   DeviceConsistencyCommitment(int generation, List<IdentityKey> identityKeys) {
     var sortedIdentityKeys = <IdentityKey>[];
@@ -30,7 +30,7 @@ class DeviceConsistencyCommitment {
     input.close();
 
     _generation = generation;
-    _serialized = output.events.single.bytes;
+    _serialized = Uint8List.fromList(output.events.single.bytes);
   }
 
   Uint8List get serialized => _serialized;

@@ -51,8 +51,8 @@ Uint8List decrypt(String privateKey, String content) {
   var sharedSecret = Curve.calculateAgreement(
       publicKeyable, Curve.decodePrivatePoint(ourPrivateKey));
 
-  var derivedSecretBytes = HKDFv3().deriveSecrets(
-      sharedSecret, utf8.encode(PROVISION), DerivedRootSecrets.SIZE);
+  var derivedSecretBytes = HKDFv3().deriveSecrets(sharedSecret,
+      Uint8List.fromList(utf8.encode(PROVISION)), DerivedRootSecrets.SIZE);
 
   var aesKey = Uint8List.fromList(derivedSecretBytes.getRange(0, 32).toList());
   var macKey = Uint8List.fromList(
@@ -80,8 +80,8 @@ class ProvisioningCipher {
     var ourKeyPair = Curve.generateKeyPair();
     var sharedSecret =
         Curve.calculateAgreement(_theirPublicKey, ourKeyPair.privateKey);
-    var derivedSecret =
-        HKDFv3().deriveSecrets(sharedSecret, utf8.encode(PROVISION), 64);
+    var derivedSecret = HKDFv3().deriveSecrets(
+        sharedSecret, Uint8List.fromList(utf8.encode(PROVISION)), 64);
     var parts = ByteUtil.splitTwo(derivedSecret, 32, 32);
 
     var version = Uint8List.fromList([1]);
@@ -90,7 +90,7 @@ class ProvisioningCipher {
     var body = ByteUtil.combine([version, ciphertext, mac]);
     var envelope = ProvisionEnvelope(ourKeyPair.publicKey.serialize(), body);
     var result = jsonEncode(envelope);
-    return utf8.encode(result);
+    return Uint8List.fromList(utf8.encode(result));
   }
 
   Uint8List getCiphertext(Uint8List key, Uint8List message) {

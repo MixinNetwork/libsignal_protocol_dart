@@ -58,7 +58,7 @@ Uint8List sign(Uint8List privateKey, Uint8List message, Uint8List random) {
   var r = output.events.single.bytes;
 
   var rReduced = Uint8List(32);
-  ScReduce(rReduced, r);
+  ScReduce(rReduced, Uint8List.fromList(r));
   var R = ExtendedGroupElement();
   GeScalarMultBase(R, rReduced);
 
@@ -74,7 +74,7 @@ Uint8List sign(Uint8List privateKey, Uint8List message, Uint8List random) {
   var hramDigest = output.events.single.bytes;
 
   var hramDigestReduced = Uint8List(32);
-  ScReduce(hramDigestReduced, hramDigest);
+  ScReduce(hramDigestReduced, Uint8List.fromList(hramDigest));
 
   var s = Uint8List(32);
   ScMulAdd(s, hramDigestReduced, privateKey, rReduced);

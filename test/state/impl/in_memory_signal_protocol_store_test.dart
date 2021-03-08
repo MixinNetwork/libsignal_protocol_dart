@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:fixnum/fixnum.dart';
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 import 'package:test/test.dart';
@@ -43,7 +43,8 @@ void main() {
         .processPreKeyBundle(bobPreKey);
 
     var aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
-    var msgAliceToBob = aliceSessionCipher.encrypt(utf8.encode(msgOrig));
+    var msgAliceToBob =
+        aliceSessionCipher.encrypt(Uint8List.fromList(utf8.encode(msgOrig)));
 
     // Pretend that Alice has now sent the message to Bob
 
@@ -80,7 +81,8 @@ void main() {
     // Bob to encrypt and send to Alice...
     //
 
-    var msgBobToAlice = bobSessionCipher.encrypt(utf8.encode(msgDecoded));
+    var msgBobToAlice =
+        bobSessionCipher.encrypt(Uint8List.fromList(utf8.encode(msgDecoded)));
     expect(
       msgBobToAlice.getType(),
       CiphertextMessage.WHISPER_TYPE,

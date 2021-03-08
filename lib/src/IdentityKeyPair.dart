@@ -7,8 +7,8 @@ import 'ecc/Curve.dart';
 import 'state/LocalStorageProtocol.pb.dart';
 
 class IdentityKeyPair {
-  IdentityKey _publicKey;
-  ECPrivateKey _privateKey;
+  late IdentityKey _publicKey;
+  late ECPrivateKey _privateKey;
 
   IdentityKeyPair(this._publicKey, this._privateKey);
 

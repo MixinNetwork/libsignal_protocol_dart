@@ -57,7 +57,8 @@ void main() {
     var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
 
     var originalMessage = 'smert ze smert';
-    var aliceMessage = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
+    var aliceMessage = aliceSessionCipher
+        .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
     assert(aliceMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
@@ -65,7 +66,8 @@ void main() {
         SignalMessage.fromSerialized(aliceMessage.serialize()));
     assert(String.fromCharCodes(plaintext) == (originalMessage));
 
-    var bobMessage = bobSessionCipher.encrypt(utf8.encode(originalMessage));
+    var bobMessage = bobSessionCipher
+        .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
     assert(bobMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
@@ -78,8 +80,8 @@ void main() {
           '''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
               surges up in the world--and defines himself aftward. $i''';
-      var aliceLoopingMessage =
-          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var aliceLoopingMessage = aliceSessionCipher
+          .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       var loopingPlaintext = bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
@@ -91,8 +93,8 @@ void main() {
           ('''What do we mean by saying that existence precedes essence?
           We mean that man first of all exists, encounters himself,
           surges up in the world--and defines himself aftward. $i''');
-      var bobLoopingMessage =
-          bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var bobLoopingMessage = bobSessionCipher
+          .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       var loopingPlaintext = aliceSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
@@ -107,8 +109,8 @@ void main() {
           ('''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
               surges up in the world--and defines himself aftward. $i''');
-      var aliceLoopingMessage =
-          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var aliceLoopingMessage = aliceSessionCipher
+          .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(
           loopingMessage, aliceLoopingMessage));
@@ -119,8 +121,8 @@ void main() {
           ('''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
               surges up in the world--and defines himself aftward. $i''');
-      var aliceLoopingMessage =
-          aliceSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var aliceLoopingMessage = aliceSessionCipher
+          .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       var loopingPlaintext = bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
@@ -129,8 +131,8 @@ void main() {
 
     for (var i = 0; i < 10; i++) {
       var loopingMessage = 'You can only desire based on what you know: $i';
-      var bobLoopingMessage =
-          bobSessionCipher.encrypt(utf8.encode(loopingMessage));
+      var bobLoopingMessage = bobSessionCipher
+          .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       var loopingPlaintext = aliceSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
@@ -176,8 +178,8 @@ void main() {
 
     final originalMessage = "L'homme est condamné à être libre";
     var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
-    var outgoingMessage =
-        aliceSessionCipher.encrypt(utf8.encode(originalMessage));
+    var outgoingMessage = aliceSessionCipher
+        .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
     assert(outgoingMessage.getType() == CiphertextMessage.PREKEY_TYPE);
 
     var incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
@@ -204,8 +206,8 @@ void main() {
         bobStore.loadSession(ALICE_ADDRESS).sessionState.aliceBaseKey != null);
     assert(originalMessage == utf8.decode(plaintext, allowMalformed: true));
 
-    var bobOutgoingMessage =
-        bobSessionCipher.encrypt(utf8.encode(originalMessage));
+    var bobOutgoingMessage = bobSessionCipher
+        .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
     assert(bobOutgoingMessage.getType() == CiphertextMessage.WHISPER_TYPE);
 
     var alicePlaintext = aliceSessionCipher.decryptFromSignal(
@@ -243,7 +245,8 @@ void main() {
             bobSignedPreKeyPair, bobSignedPreKeySignature));
     aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
-    outgoingMessage = aliceSessionCipher.encrypt(utf8.encode(originalMessage));
+    outgoingMessage = aliceSessionCipher
+        .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
     try {
       plaintext = bobSessionCipher

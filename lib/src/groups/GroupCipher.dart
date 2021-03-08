@@ -43,7 +43,7 @@ class GroupCipher {
   }
 
   Uint8List decryptWithCallback(
-      Uint8List senderKeyMessageBytes, DecryptionCallback callback) {
+      Uint8List senderKeyMessageBytes, DecryptionCallback? callback) {
     // TODO wrap in synchronized
     try {
       var record = _senderKeyStore.loadSenderKey(_senderKeyId);
@@ -76,7 +76,7 @@ class GroupCipher {
     var senderChainKey = senderKeyState.senderChainKey;
     if (senderChainKey.iteration > iteration) {
       if (senderKeyState.hasSenderMessageKey(iteration)) {
-        return senderKeyState.removeSenderMessageKey(iteration);
+        return senderKeyState.removeSenderMessageKey(iteration)!;
       } else {
         throw DuplicateMessageException('Received message with old counter: '
             '${senderChainKey.iteration} , $iteration');

@@ -31,7 +31,7 @@ class ChainKey {
   }
 
   MessageKeys getMessageKeys() {
-    var bytes = utf8.encode('WhisperMessageKeys');
+    var bytes = Uint8List.fromList(utf8.encode('WhisperMessageKeys'));
 
     var inputKeyMaterial = _getBaseMaterial(MESSAGE_KEY_SEED);
     var keyMaterialBytes =
@@ -45,6 +45,6 @@ class ChainKey {
   Uint8List _getBaseMaterial(Uint8List seed) {
     var hmacSha256 = Hmac(sha256, key);
     var digest = hmacSha256.convert(seed);
-    return digest.bytes;
+    return Uint8List.fromList(digest.bytes);
   }
 }

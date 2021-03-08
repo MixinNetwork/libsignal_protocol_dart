@@ -48,7 +48,7 @@ class InMemorySessionStore extends SessionStore {
   SessionRecord loadSession(SignalProtocolAddress remoteAddress) {
     try {
       if (containsSession(remoteAddress)) {
-        return SessionRecord.fromSerialized(sessions[remoteAddress]);
+        return SessionRecord.fromSerialized(sessions[remoteAddress]!);
       } else {
         return SessionRecord();
       }

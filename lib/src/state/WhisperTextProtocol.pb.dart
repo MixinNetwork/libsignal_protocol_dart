@@ -2,28 +2,56 @@
 //  Generated code. Do not modify.
 //  source: WhisperTextProtocol.proto
 //
-// @dart = 2.3
-// ignore_for_file: camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
+// @dart = 2.12
+// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
 class SignalMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SignalMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.List<$core.int>>(1, 'ratchetKey', $pb.PbFieldType.OY, protoName: 'ratchetKey')
-    ..a<$core.int>(2, 'counter', $pb.PbFieldType.OU3)
-    ..a<$core.int>(3, 'previousCounter', $pb.PbFieldType.OU3, protoName: 'previousCounter')
-    ..a<$core.List<$core.int>>(4, 'ciphertext', $pb.PbFieldType.OY)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SignalMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ratchetKey', $pb.PbFieldType.OY, protoName: 'ratchetKey')
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'counter', $pb.PbFieldType.OU3)
+    ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'previousCounter', $pb.PbFieldType.OU3, protoName: 'previousCounter')
+    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ciphertext', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
   SignalMessage._() : super();
-  factory SignalMessage() => create();
+  factory SignalMessage({
+    $core.List<$core.int>? ratchetKey,
+    $core.int? counter,
+    $core.int? previousCounter,
+    $core.List<$core.int>? ciphertext,
+  }) {
+    final _result = create();
+    if (ratchetKey != null) {
+      _result.ratchetKey = ratchetKey;
+    }
+    if (counter != null) {
+      _result.counter = counter;
+    }
+    if (previousCounter != null) {
+      _result.previousCounter = previousCounter;
+    }
+    if (ciphertext != null) {
+      _result.ciphertext = ciphertext;
+    }
+    return _result;
+  }
   factory SignalMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory SignalMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   SignalMessage clone() => SignalMessage()..mergeFromMessage(this);
-  SignalMessage copyWith(void Function(SignalMessage) updates) => super.copyWith((message) => updates(message as SignalMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SignalMessage copyWith(void Function(SignalMessage) updates) => super.copyWith((message) => updates(message as SignalMessage)) as SignalMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SignalMessage create() => SignalMessage._();
@@ -31,7 +59,7 @@ class SignalMessage extends $pb.GeneratedMessage {
   static $pb.PbList<SignalMessage> createRepeated() => $pb.PbList<SignalMessage>();
   @$core.pragma('dart2js:noInline')
   static SignalMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignalMessage>(create);
-  static SignalMessage _defaultInstance;
+  static SignalMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ratchetKey => $_getN(0);
@@ -71,22 +99,58 @@ class SignalMessage extends $pb.GeneratedMessage {
 }
 
 class PreKeySignalMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('PreKeySignalMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.int>(1, 'preKeyId', $pb.PbFieldType.OU3, protoName: 'preKeyId')
-    ..a<$core.List<$core.int>>(2, 'baseKey', $pb.PbFieldType.OY, protoName: 'baseKey')
-    ..a<$core.List<$core.int>>(3, 'identityKey', $pb.PbFieldType.OY, protoName: 'identityKey')
-    ..a<$core.List<$core.int>>(4, 'message', $pb.PbFieldType.OY)
-    ..a<$core.int>(5, 'registrationId', $pb.PbFieldType.OU3, protoName: 'registrationId')
-    ..a<$core.int>(6, 'signedPreKeyId', $pb.PbFieldType.OU3, protoName: 'signedPreKeyId')
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PreKeySignalMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'preKeyId', $pb.PbFieldType.OU3, protoName: 'preKeyId')
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'baseKey', $pb.PbFieldType.OY, protoName: 'baseKey')
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'identityKey', $pb.PbFieldType.OY, protoName: 'identityKey')
+    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'message', $pb.PbFieldType.OY)
+    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'registrationId', $pb.PbFieldType.OU3, protoName: 'registrationId')
+    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'signedPreKeyId', $pb.PbFieldType.OU3, protoName: 'signedPreKeyId')
     ..hasRequiredFields = false
   ;
 
   PreKeySignalMessage._() : super();
-  factory PreKeySignalMessage() => create();
+  factory PreKeySignalMessage({
+    $core.int? preKeyId,
+    $core.List<$core.int>? baseKey,
+    $core.List<$core.int>? identityKey,
+    $core.List<$core.int>? message,
+    $core.int? registrationId,
+    $core.int? signedPreKeyId,
+  }) {
+    final _result = create();
+    if (preKeyId != null) {
+      _result.preKeyId = preKeyId;
+    }
+    if (baseKey != null) {
+      _result.baseKey = baseKey;
+    }
+    if (identityKey != null) {
+      _result.identityKey = identityKey;
+    }
+    if (message != null) {
+      _result.message = message;
+    }
+    if (registrationId != null) {
+      _result.registrationId = registrationId;
+    }
+    if (signedPreKeyId != null) {
+      _result.signedPreKeyId = signedPreKeyId;
+    }
+    return _result;
+  }
   factory PreKeySignalMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory PreKeySignalMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   PreKeySignalMessage clone() => PreKeySignalMessage()..mergeFromMessage(this);
-  PreKeySignalMessage copyWith(void Function(PreKeySignalMessage) updates) => super.copyWith((message) => updates(message as PreKeySignalMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  PreKeySignalMessage copyWith(void Function(PreKeySignalMessage) updates) => super.copyWith((message) => updates(message as PreKeySignalMessage)) as PreKeySignalMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static PreKeySignalMessage create() => PreKeySignalMessage._();
@@ -94,7 +158,7 @@ class PreKeySignalMessage extends $pb.GeneratedMessage {
   static $pb.PbList<PreKeySignalMessage> createRepeated() => $pb.PbList<PreKeySignalMessage>();
   @$core.pragma('dart2js:noInline')
   static PreKeySignalMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<PreKeySignalMessage>(create);
-  static PreKeySignalMessage _defaultInstance;
+  static PreKeySignalMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get preKeyId => $_getIZ(0);
@@ -152,21 +216,53 @@ class PreKeySignalMessage extends $pb.GeneratedMessage {
 }
 
 class KeyExchangeMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('KeyExchangeMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.int>(1, 'id', $pb.PbFieldType.OU3)
-    ..a<$core.List<$core.int>>(2, 'baseKey', $pb.PbFieldType.OY, protoName: 'baseKey')
-    ..a<$core.List<$core.int>>(3, 'ratchetKey', $pb.PbFieldType.OY, protoName: 'ratchetKey')
-    ..a<$core.List<$core.int>>(4, 'identityKey', $pb.PbFieldType.OY, protoName: 'identityKey')
-    ..a<$core.List<$core.int>>(5, 'baseKeySignature', $pb.PbFieldType.OY, protoName: 'baseKeySignature')
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'KeyExchangeMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id', $pb.PbFieldType.OU3)
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'baseKey', $pb.PbFieldType.OY, protoName: 'baseKey')
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ratchetKey', $pb.PbFieldType.OY, protoName: 'ratchetKey')
+    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'identityKey', $pb.PbFieldType.OY, protoName: 'identityKey')
+    ..a<$core.List<$core.int>>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'baseKeySignature', $pb.PbFieldType.OY, protoName: 'baseKeySignature')
     ..hasRequiredFields = false
   ;
 
   KeyExchangeMessage._() : super();
-  factory KeyExchangeMessage() => create();
+  factory KeyExchangeMessage({
+    $core.int? id,
+    $core.List<$core.int>? baseKey,
+    $core.List<$core.int>? ratchetKey,
+    $core.List<$core.int>? identityKey,
+    $core.List<$core.int>? baseKeySignature,
+  }) {
+    final _result = create();
+    if (id != null) {
+      _result.id = id;
+    }
+    if (baseKey != null) {
+      _result.baseKey = baseKey;
+    }
+    if (ratchetKey != null) {
+      _result.ratchetKey = ratchetKey;
+    }
+    if (identityKey != null) {
+      _result.identityKey = identityKey;
+    }
+    if (baseKeySignature != null) {
+      _result.baseKeySignature = baseKeySignature;
+    }
+    return _result;
+  }
   factory KeyExchangeMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory KeyExchangeMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   KeyExchangeMessage clone() => KeyExchangeMessage()..mergeFromMessage(this);
-  KeyExchangeMessage copyWith(void Function(KeyExchangeMessage) updates) => super.copyWith((message) => updates(message as KeyExchangeMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  KeyExchangeMessage copyWith(void Function(KeyExchangeMessage) updates) => super.copyWith((message) => updates(message as KeyExchangeMessage)) as KeyExchangeMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static KeyExchangeMessage create() => KeyExchangeMessage._();
@@ -174,7 +270,7 @@ class KeyExchangeMessage extends $pb.GeneratedMessage {
   static $pb.PbList<KeyExchangeMessage> createRepeated() => $pb.PbList<KeyExchangeMessage>();
   @$core.pragma('dart2js:noInline')
   static KeyExchangeMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<KeyExchangeMessage>(create);
-  static KeyExchangeMessage _defaultInstance;
+  static KeyExchangeMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get id => $_getIZ(0);
@@ -223,19 +319,43 @@ class KeyExchangeMessage extends $pb.GeneratedMessage {
 }
 
 class SenderKeyMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SenderKeyMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.int>(1, 'id', $pb.PbFieldType.OU3)
-    ..a<$core.int>(2, 'iteration', $pb.PbFieldType.OU3)
-    ..a<$core.List<$core.int>>(3, 'ciphertext', $pb.PbFieldType.OY)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SenderKeyMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id', $pb.PbFieldType.OU3)
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'iteration', $pb.PbFieldType.OU3)
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ciphertext', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
   SenderKeyMessage._() : super();
-  factory SenderKeyMessage() => create();
+  factory SenderKeyMessage({
+    $core.int? id,
+    $core.int? iteration,
+    $core.List<$core.int>? ciphertext,
+  }) {
+    final _result = create();
+    if (id != null) {
+      _result.id = id;
+    }
+    if (iteration != null) {
+      _result.iteration = iteration;
+    }
+    if (ciphertext != null) {
+      _result.ciphertext = ciphertext;
+    }
+    return _result;
+  }
   factory SenderKeyMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory SenderKeyMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   SenderKeyMessage clone() => SenderKeyMessage()..mergeFromMessage(this);
-  SenderKeyMessage copyWith(void Function(SenderKeyMessage) updates) => super.copyWith((message) => updates(message as SenderKeyMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SenderKeyMessage copyWith(void Function(SenderKeyMessage) updates) => super.copyWith((message) => updates(message as SenderKeyMessage)) as SenderKeyMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SenderKeyMessage create() => SenderKeyMessage._();
@@ -243,7 +363,7 @@ class SenderKeyMessage extends $pb.GeneratedMessage {
   static $pb.PbList<SenderKeyMessage> createRepeated() => $pb.PbList<SenderKeyMessage>();
   @$core.pragma('dart2js:noInline')
   static SenderKeyMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SenderKeyMessage>(create);
-  static SenderKeyMessage _defaultInstance;
+  static SenderKeyMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get id => $_getIZ(0);
@@ -274,20 +394,48 @@ class SenderKeyMessage extends $pb.GeneratedMessage {
 }
 
 class SenderKeyDistributionMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('SenderKeyDistributionMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.int>(1, 'id', $pb.PbFieldType.OU3)
-    ..a<$core.int>(2, 'iteration', $pb.PbFieldType.OU3)
-    ..a<$core.List<$core.int>>(3, 'chainKey', $pb.PbFieldType.OY, protoName: 'chainKey')
-    ..a<$core.List<$core.int>>(4, 'signingKey', $pb.PbFieldType.OY, protoName: 'signingKey')
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SenderKeyDistributionMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id', $pb.PbFieldType.OU3)
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'iteration', $pb.PbFieldType.OU3)
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'chainKey', $pb.PbFieldType.OY, protoName: 'chainKey')
+    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'signingKey', $pb.PbFieldType.OY, protoName: 'signingKey')
     ..hasRequiredFields = false
   ;
 
   SenderKeyDistributionMessage._() : super();
-  factory SenderKeyDistributionMessage() => create();
+  factory SenderKeyDistributionMessage({
+    $core.int? id,
+    $core.int? iteration,
+    $core.List<$core.int>? chainKey,
+    $core.List<$core.int>? signingKey,
+  }) {
+    final _result = create();
+    if (id != null) {
+      _result.id = id;
+    }
+    if (iteration != null) {
+      _result.iteration = iteration;
+    }
+    if (chainKey != null) {
+      _result.chainKey = chainKey;
+    }
+    if (signingKey != null) {
+      _result.signingKey = signingKey;
+    }
+    return _result;
+  }
   factory SenderKeyDistributionMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory SenderKeyDistributionMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   SenderKeyDistributionMessage clone() => SenderKeyDistributionMessage()..mergeFromMessage(this);
-  SenderKeyDistributionMessage copyWith(void Function(SenderKeyDistributionMessage) updates) => super.copyWith((message) => updates(message as SenderKeyDistributionMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SenderKeyDistributionMessage copyWith(void Function(SenderKeyDistributionMessage) updates) => super.copyWith((message) => updates(message as SenderKeyDistributionMessage)) as SenderKeyDistributionMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static SenderKeyDistributionMessage create() => SenderKeyDistributionMessage._();
@@ -295,7 +443,7 @@ class SenderKeyDistributionMessage extends $pb.GeneratedMessage {
   static $pb.PbList<SenderKeyDistributionMessage> createRepeated() => $pb.PbList<SenderKeyDistributionMessage>();
   @$core.pragma('dart2js:noInline')
   static SenderKeyDistributionMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SenderKeyDistributionMessage>(create);
-  static SenderKeyDistributionMessage _defaultInstance;
+  static SenderKeyDistributionMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get id => $_getIZ(0);
@@ -335,18 +483,38 @@ class SenderKeyDistributionMessage extends $pb.GeneratedMessage {
 }
 
 class DeviceConsistencyCodeMessage extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo('DeviceConsistencyCodeMessage', package: const $pb.PackageName('textsecure'), createEmptyInstance: create)
-    ..a<$core.int>(1, 'generation', $pb.PbFieldType.OU3)
-    ..a<$core.List<$core.int>>(2, 'signature', $pb.PbFieldType.OY)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'DeviceConsistencyCodeMessage', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'textsecure'), createEmptyInstance: create)
+    ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'generation', $pb.PbFieldType.OU3)
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'signature', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
   DeviceConsistencyCodeMessage._() : super();
-  factory DeviceConsistencyCodeMessage() => create();
+  factory DeviceConsistencyCodeMessage({
+    $core.int? generation,
+    $core.List<$core.int>? signature,
+  }) {
+    final _result = create();
+    if (generation != null) {
+      _result.generation = generation;
+    }
+    if (signature != null) {
+      _result.signature = signature;
+    }
+    return _result;
+  }
   factory DeviceConsistencyCodeMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory DeviceConsistencyCodeMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
   DeviceConsistencyCodeMessage clone() => DeviceConsistencyCodeMessage()..mergeFromMessage(this);
-  DeviceConsistencyCodeMessage copyWith(void Function(DeviceConsistencyCodeMessage) updates) => super.copyWith((message) => updates(message as DeviceConsistencyCodeMessage));
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DeviceConsistencyCodeMessage copyWith(void Function(DeviceConsistencyCodeMessage) updates) => super.copyWith((message) => updates(message as DeviceConsistencyCodeMessage)) as DeviceConsistencyCodeMessage; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
   static DeviceConsistencyCodeMessage create() => DeviceConsistencyCodeMessage._();
@@ -354,7 +522,7 @@ class DeviceConsistencyCodeMessage extends $pb.GeneratedMessage {
   static $pb.PbList<DeviceConsistencyCodeMessage> createRepeated() => $pb.PbList<DeviceConsistencyCodeMessage>();
   @$core.pragma('dart2js:noInline')
   static DeviceConsistencyCodeMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeviceConsistencyCodeMessage>(create);
-  static DeviceConsistencyCodeMessage _defaultInstance;
+  static DeviceConsistencyCodeMessage? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get generation => $_getIZ(0);

@@ -60,13 +60,13 @@ class AliceSignalProtocolParameters {
 }
 
 class Builder {
-  IdentityKeyPair ourIdentityKey;
-  ECKeyPair ourBaseKey;
+  late IdentityKeyPair ourIdentityKey;
+  late ECKeyPair ourBaseKey;
 
-  IdentityKey theirIdentityKey;
-  ECPublicKey theirSignedPreKey;
-  ECPublicKey theirRatchetKey;
-  Optional<ECPublicKey> theirOneTimePreKey;
+  late IdentityKey theirIdentityKey;
+  late ECPublicKey theirSignedPreKey;
+  late ECPublicKey theirRatchetKey;
+  late Optional<ECPublicKey> theirOneTimePreKey;
 
   Builder setOurIdentityKey(IdentityKeyPair ourIdentityKey) {
     this.ourIdentityKey = ourIdentityKey;

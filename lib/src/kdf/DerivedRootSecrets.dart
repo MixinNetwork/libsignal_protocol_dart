@@ -5,8 +5,8 @@ import '../util/ByteUtil.dart';
 class DerivedRootSecrets {
   static final int SIZE = 64;
 
-  Uint8List _rootKey;
-  Uint8List _chainKey;
+  late Uint8List _rootKey;
+  late Uint8List _chainKey;
 
   DerivedRootSecrets(Uint8List okm) {
     var keys = ByteUtil.splitTwo(okm, 32, 32);
