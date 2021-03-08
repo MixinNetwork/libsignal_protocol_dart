@@ -11,8 +11,8 @@ class PreKeyBundle {
   ECPublicKey _preKeyPublic;
 
   int _signedPreKeyId;
-  ECPublicKey _signedPreKeyPublic;
-  Uint8List _signedPreKeySignature;
+  ECPublicKey? _signedPreKeyPublic;
+  Uint8List? _signedPreKeySignature;
 
   IdentityKey _identityKey;
 
@@ -42,11 +42,11 @@ class PreKeyBundle {
     return _signedPreKeyId;
   }
 
-  ECPublicKey getSignedPreKey() {
+  ECPublicKey? getSignedPreKey() {
     return _signedPreKeyPublic;
   }
 
-  Uint8List getSignedPreKeySignature() {
+  Uint8List? getSignedPreKeySignature() {
     return _signedPreKeySignature;
   }
 

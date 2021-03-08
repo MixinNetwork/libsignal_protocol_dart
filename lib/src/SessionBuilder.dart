@@ -108,8 +108,8 @@ class SessionBuilder {
     if (preKey.getSignedPreKey() != null &&
         !Curve.verifySignature(
             preKey.getIdentityKey().publicKey,
-            preKey.getSignedPreKey().serialize(),
-            preKey.getSignedPreKeySignature())) {
+            preKey.getSignedPreKey()!.serialize(),
+            preKey.getSignedPreKeySignature()!)) {
       throw InvalidKeyException('Invalid signature on device key!');
     }
 
@@ -131,7 +131,7 @@ class SessionBuilder {
         .setOurBaseKey(ourBaseKey)
         .setOurIdentityKey(_identityKeyStore.getIdentityKeyPair())
         .setTheirIdentityKey(preKey.getIdentityKey())
-        .setTheirSignedPreKey(theirSignedPreKey)
+        .setTheirSignedPreKey(theirSignedPreKey!)
         .setTheirRatchetKey(theirSignedPreKey)
         .setTheirOneTimePreKey(theirOneTimePreKey);
 
