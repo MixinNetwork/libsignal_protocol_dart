@@ -63,8 +63,9 @@ class SenderKeyDistributionMessageWrapper extends CiphertextMessage {
       _serialized = serialized;
       _id = distributionMessages.id;
       _iteration = distributionMessages.iteration;
-      _chainKey = distributionMessages.chainKey;
-      _signatureKey = Curve.decodePoint(distributionMessages.signingKey, 0);
+      _chainKey = Uint8List.fromList(distributionMessages.chainKey);
+      _signatureKey = Curve.decodePoint(
+          Uint8List.fromList(distributionMessages.signingKey), 0);
     } on InvalidProtocolBufferException catch (e) {
       throw InvalidMessageException(e.message);
     } on InvalidKeyException catch (e) {

@@ -29,7 +29,7 @@ class SenderKeyState {
 
   void init(
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKeyPublic,
-      [Optional<ECPrivateKey> signatureKeyPrivate]) {
+      [Optional<ECPrivateKey>? signatureKeyPrivate]) {
     var seed = Uint8List.fromList(chainKey);
     var senderChainKeyStructure =
         SenderKeyStateStructure_SenderChainKey.create()
@@ -37,7 +37,7 @@ class SenderKeyState {
           ..seed = seed;
     var signingKeyStructure = SenderKeyStateStructure_SenderSigningKey.create()
       ..public = signatureKeyPublic.serialize();
-    if (signatureKeyPrivate.isPresent) {
+    if (signatureKeyPrivate!.isPresent) {
       signingKeyStructure..private = signatureKeyPrivate.value.serialize();
     }
     _senderKeyStateStructure = SenderKeyStateStructure.create()

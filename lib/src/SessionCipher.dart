@@ -212,7 +212,8 @@ class SessionCipher {
     var messageKeys = _getOrCreateMessageKeys(
         sessionState, theirEphemeral, chainKey, counter);
 
-    ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey(),
+    // TODO null safety
+    ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey()!,
         sessionState.getLocalIdentityKey(), messageKeys.getMacKey());
 
     var plaintext = _getPlaintext(messageKeys, ciphertextMessage.getBody());
@@ -240,7 +241,7 @@ class SessionCipher {
     // }
   }
 
-  ChainKey _getOrCreateChainKey(
+  ChainKey? _getOrCreateChainKey(
       SessionState sessionState, ECPublicKey theirEphemeral) {
     try {
       if (sessionState.hasReceiverChain(theirEphemeral)) {
@@ -266,7 +267,7 @@ class SessionCipher {
     }
   }
 
-  MessageKeys _getOrCreateMessageKeys(SessionState sessionState,
+  MessageKeys? _getOrCreateMessageKeys(SessionState sessionState,
       ECPublicKey theirEphemeral, ChainKey chainKey, int counter) {
     if (chainKey.getIndex() > counter) {
       if (sessionState.hasMessageKeys(theirEphemeral, counter)) {

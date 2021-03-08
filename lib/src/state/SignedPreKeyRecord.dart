@@ -29,8 +29,9 @@ class SignedPreKeyRecord {
 
   ECKeyPair getKeyPair() {
     try {
-      var publicKey = Curve.decodePoint(_structure.publicKey, 0);
-      var privateKey = Curve.decodePrivatePoint(_structure.privateKey);
+      var publicKey = Curve.decodePointList(_structure.publicKey, 0);
+      var privateKey =
+          Curve.decodePrivatePoint(Uint8List.fromList(_structure.privateKey));
 
       return ECKeyPair(publicKey, privateKey);
     } on InvalidKeyException catch (e) {
@@ -38,7 +39,7 @@ class SignedPreKeyRecord {
     }
   }
 
-  Uint8List get signature => _structure.signature;
+  Uint8List get signature => Uint8List.fromList(_structure.signature);
 
   Uint8List serialize() {
     return _structure.writeToBuffer();

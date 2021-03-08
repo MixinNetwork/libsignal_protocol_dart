@@ -19,6 +19,10 @@ class Curve {
         DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey)));
   }
 
+  static ECPublicKey decodePointList(List<int> bytes, int offset) {
+    return decodePoint(Uint8List.fromList(bytes), offset);
+  }
+
   static ECPublicKey decodePoint(Uint8List bytes, int offset) {
     if (bytes == null || bytes.length - offset < 1) {
       throw InvalidKeyException('No key type identifier');
@@ -111,7 +115,7 @@ class Curve {
   }
 
   // ignore: missing_return
-  static Uint8List calculateVrfSignature(
+  static Uint8List? calculateVrfSignature(
       ECPrivateKey signingKey, Uint8List message) {
     if (signingKey == null || message == null) {
       throw Exception('Values must not be null');
@@ -125,7 +129,7 @@ class Curve {
     }
   }
 
-  static Uint8List verifyVrfSignature(
+  static Uint8List? verifyVrfSignature(
       ECPublicKey signingKey, Uint8List message, Uint8List signature) {
     if (signingKey == null || message == null || signature == null) {
       throw Exception('Values must not be null');

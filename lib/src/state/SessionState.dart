@@ -38,7 +38,8 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   SessionStructure get structure => _sessionStructure;
 
-  Uint8List get aliceBaseKey => _sessionStructure.aliceBaseKey;
+  Uint8List get aliceBaseKey =>
+      Uint8List.fromList(_sessionStructure.aliceBaseKey);
 
   set aliceBaseKey(Uint8List aliceBaseKey) {
     _sessionStructure.aliceBaseKey = aliceBaseKey;
@@ -61,12 +62,13 @@ class SessionState extends LinkedListEntry<SessionState> {
   set localIdentityKey(IdentityKey identityKey) =>
       _sessionStructure.localIdentityPublic = identityKey.serialize();
 
-  IdentityKey getRemoteIdentityKey() {
+  IdentityKey? getRemoteIdentityKey() {
     try {
       if (!_sessionStructure.hasRemoteIdentityPublic()) {
         return null;
       }
-      return IdentityKey.fromBytes(_sessionStructure.remoteIdentityPublic, 0);
+      return IdentityKey.fromBytes(
+          Uint8List.fromList(_sessionStructure.remoteIdentityPublic), 0);
     } on InvalidKeyException catch (e) {
       print(e);
       return null;
@@ -88,8 +90,8 @@ class SessionState extends LinkedListEntry<SessionState> {
       _sessionStructure.previousCounter = previousCounter;
 
   RootKey getRootKey() {
-    return RootKey(
-        HKDF.createFor(getSessionVersion()), _sessionStructure.rootKey);
+    return RootKey(HKDF.createFor(getSessionVersion()),
+        Uint8List.fromList(_sessionStructure.rootKey));
   }
 
   set rootKey(RootKey rootKey) =>
@@ -107,8 +109,8 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   ECKeyPair getSenderRatchetKeyPair() {
     var publicKey = getSenderRatchetKey();
-    var privateKey = Curve.decodePrivatePoint(
-        _sessionStructure.senderChain.senderRatchetKeyPrivate);
+    var privateKey = Curve.decodePrivatePoint(Uint8List.fromList(
+        _sessionStructure.senderChain.senderRatchetKeyPrivate));
     return ECKeyPair(publicKey, privateKey);
   }
 
@@ -120,15 +122,15 @@ class SessionState extends LinkedListEntry<SessionState> {
     return _sessionStructure.hasSenderChain();
   }
 
-  Tuple2<SessionStructure_Chain, int> _getReceiverChain(
+  Tuple2<SessionStructure_Chain, int>? _getReceiverChain(
       ECPublicKey senderEphemeral) {
     var receiverChains = _sessionStructure.receiverChains;
     var index = 0;
 
     for (var receiverChain in receiverChains) {
       try {
-        var chainSenderRatchetKey =
-            Curve.decodePoint(receiverChain.senderRatchetKey, 0);
+        var chainSenderRatchetKey = Curve.decodePoint(
+            Uint8List.fromList(receiverChain.senderRatchetKey), 0);
 
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
@@ -143,15 +145,17 @@ class SessionState extends LinkedListEntry<SessionState> {
     return null;
   }
 
-  ChainKey getReceiverChainKey(ECPublicKey senderEphemeral) {
+  ChainKey? getReceiverChainKey(ECPublicKey senderEphemeral) {
     var receiverChainAndIndex = _getReceiverChain(senderEphemeral);
-    var receiverChain = receiverChainAndIndex.item1;
+    var receiverChain = receiverChainAndIndex?.item1;
 
     if (receiverChain == null) {
       return null;
     } else {
-      return ChainKey(HKDF.createFor(getSessionVersion()),
-          receiverChain.chainKey.key, receiverChain.chainKey.index);
+      return ChainKey(
+          HKDF.createFor(getSessionVersion()),
+          Uint8List.fromList(receiverChain.chainKey.key),
+          receiverChain.chainKey.index);
     }
   }
 
@@ -200,11 +204,10 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   bool hasMessageKeys(ECPublicKey senderEphemeral, int counter) {
     var chainAndIndex = _getReceiverChain(senderEphemeral);
-    var chain = chainAndIndex.item1;
-
-    if (chain == null) {
+    if (chainAndIndex == null) {
       return false;
     }
+    var chain = chainAndIndex.item1;
 
     var messageKeyList = chain.messageKeys;
     for (var messageKey in messageKeyList) {
@@ -215,12 +218,12 @@ class SessionState extends LinkedListEntry<SessionState> {
     return false;
   }
 
-  MessageKeys removeMessageKeys(ECPublicKey senderEphemeral, int counter) {
+  MessageKeys? removeMessageKeys(ECPublicKey senderEphemeral, int counter) {
     var chainAndIndex = _getReceiverChain(senderEphemeral);
-    var chain = chainAndIndex.item1;
-    if (chain == null) {
+    if (chainAndIndex == null) {
       return null;
     }
+    var chain = chainAndIndex.item1;
 
     var messageKeyList = LinkedList<Entry<SessionStructure_Chain_MessageKey>>();
     chain.messageKeys.forEach((element) {
@@ -232,9 +235,9 @@ class SessionState extends LinkedListEntry<SessionState> {
       var entry = messageKeyIterator.current;
       var messageKey = entry.value;
       if (messageKey.index == counter) {
-        var cipherKey = messageKey.cipherKey;
-        var macKey = messageKey.macKey;
-        var iv = messageKey.iv;
+        var cipherKey = Uint8List.fromList(messageKey.cipherKey);
+        var macKey = Uint8List.fromList(messageKey.macKey);
+        var iv = Uint8List.fromList(messageKey.iv);
         var index = messageKey.index;
         result = MessageKeys(cipherKey, macKey, iv, index);
 
@@ -254,6 +257,9 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   void setMessageKeys(ECPublicKey senderEphemeral, MessageKeys messageKeys) {
     var chainAndIndex = _getReceiverChain(senderEphemeral);
+    if (chainAndIndex == null) {
+      return;
+    }
     var chain = chainAndIndex.item1;
     var messageKeyStructure = SessionStructure_Chain_MessageKey.create()
       ..cipherKey = Uint8List.fromList(messageKeys.getCipherKey())
@@ -274,7 +280,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
     var chainAndIndex = _getReceiverChain(senderEphemeral);
-    var chain = chainAndIndex.item1;
+    var chain = chainAndIndex!.item1;
 
     var chainKeyStructure = SessionStructure_Chain_ChainKey.create()
       ..key = chainKey.key
@@ -303,30 +309,33 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   ECKeyPair getPendingKeyExchangeBaseKey() {
-    var publicKey =
-        Curve.decodePoint(_sessionStructure.pendingKeyExchange.localBaseKey, 0);
+    var publicKey = Curve.decodePoint(
+        Uint8List.fromList(_sessionStructure.pendingKeyExchange.localBaseKey),
+        0);
 
-    var privateKey = Curve.decodePrivatePoint(
-        _sessionStructure.pendingKeyExchange.localBaseKeyPrivate);
+    var privateKey = Curve.decodePrivatePoint(Uint8List.fromList(
+        _sessionStructure.pendingKeyExchange.localBaseKeyPrivate));
 
     return ECKeyPair(publicKey, privateKey);
   }
 
   ECKeyPair getPendingKeyExchangeRatchetKey() {
-    var publicKey = Curve.decodePoint(
+    var publicKey = Curve.decodePointList(
         _sessionStructure.pendingKeyExchange.localRatchetKey, 0);
 
-    var privateKey = Curve.decodePrivatePoint(
-        _sessionStructure.pendingKeyExchange.localRatchetKeyPrivate);
+    var privateKey = Curve.decodePrivatePoint(Uint8List.fromList(
+        _sessionStructure.pendingKeyExchange.localRatchetKeyPrivate));
 
     return ECKeyPair(publicKey, privateKey);
   }
 
   IdentityKeyPair getPendingKeyExchangeIdentityKey() {
     var publicKey = IdentityKey.fromBytes(
-        _sessionStructure.pendingKeyExchange.localIdentityKey, 0);
-    var privateKey = Curve.decodePrivatePoint(
-        _sessionStructure.pendingKeyExchange.localIdentityKeyPrivate);
+        Uint8List.fromList(
+            _sessionStructure.pendingKeyExchange.localIdentityKey),
+        0);
+    var privateKey = Curve.decodePrivatePoint(Uint8List.fromList(
+        _sessionStructure.pendingKeyExchange.localIdentityKeyPrivate));
     return IdentityKeyPair(publicKey, privateKey);
   }
 
@@ -364,7 +373,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       return UnacknowledgedPreKeyMessageItems(
           preKeyId,
           _sessionStructure.pendingPreKey.signedPreKeyId,
-          Curve.decodePoint(_sessionStructure.pendingPreKey.baseKey, 0));
+          Curve.decodePointList(_sessionStructure.pendingPreKey.baseKey, 0));
     } on InvalidKeyException catch (e) {
       throw AssertionError(e);
     }

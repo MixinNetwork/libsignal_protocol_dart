@@ -36,13 +36,13 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  bool saveIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
+  bool saveIdentity(SignalProtocolAddress address, IdentityKey? identityKey) {
     return _identityKeyStore.saveIdentity(address, identityKey);
   }
 
   @override
-  bool isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey,
-      Direction direction) {
+  bool isTrustedIdentity(SignalProtocolAddress address,
+      IdentityKey? identityKey, Direction direction) {
     return _identityKeyStore.isTrustedIdentity(address, identityKey, direction);
   }
 
