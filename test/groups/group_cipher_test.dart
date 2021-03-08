@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
 import 'package:libsignal_protocol_dart/src/InvalidMessageException.dart';
@@ -43,8 +44,8 @@ void main() {
 
 //    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice =
-        aliceGroupCipher.encrypt(utf8.encode('smert ze smert'));
+    var ciphertextFromAlice = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
     try {
       var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
       throw AssertionError('Should be no session!');
@@ -69,8 +70,8 @@ void main() {
             sentAliceDistributionMessage.serialize());
     bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice =
-        aliceGroupCipher.encrypt(utf8.encode('smert ze smert'));
+    var ciphertextFromAlice = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
     var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
 
     assert(utf8.decode(plaintextFromAlice) == 'smert ze smert');
@@ -119,12 +120,12 @@ void main() {
 
     bobSessionBuilder.process(aliceName, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice =
-        aliceGroupCipher.encrypt(utf8.encode('smert ze smert'));
-    var ciphertextFromAlice2 =
-        aliceGroupCipher.encrypt(utf8.encode('smert ze smert2'));
-    var ciphertextFromAlice3 =
-        aliceGroupCipher.encrypt(utf8.encode('smert ze smert3'));
+    var ciphertextFromAlice = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
+    var ciphertextFromAlice2 = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert2')));
+    var ciphertextFromAlice3 = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert3')));
 
     var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
 
@@ -157,8 +158,8 @@ void main() {
     // Send off to some people.
 
     for (var i = 0; i < 100; i++) {
-      aliceGroupCipher
-          .encrypt(utf8.encode('up the punks up the punks up the punks'));
+      aliceGroupCipher.encrypt(Uint8List.fromList(
+          utf8.encode('up the punks up the punks up the punks')));
     }
 
     // Now Bob Joins.
@@ -171,8 +172,8 @@ void main() {
         SenderKeyDistributionMessageWrapper.fromSerialized(
             distributionMessageToBob.serialize()));
 
-    var ciphertext =
-        aliceGroupCipher.encrypt(utf8.encode('welcome to the group'));
+    var ciphertext = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('welcome to the group')));
     var plaintext = bobGroupCipher.decrypt(ciphertext);
 
     assert(utf8.decode(plaintext) == 'welcome to the group');
@@ -202,7 +203,8 @@ void main() {
     var ciphertexts = [];
 
     for (var i = 0; i < 100; i++) {
-      ciphertexts.add(aliceGroupCipher.encrypt(utf8.encode('up the punks')));
+      ciphertexts.add(aliceGroupCipher
+          .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
     }
 
     while (ciphertexts.isNotEmpty) {
@@ -221,7 +223,7 @@ void main() {
         SenderKeyName(
             'coolio groupio', SignalProtocolAddress('+10002223333', 1)));
     try {
-      aliceGroupCipher.encrypt(utf8.encode('up the punks'));
+      aliceGroupCipher.encrypt(Uint8List.fromList(utf8.encode('up the punks')));
       throw AssertionError('Should have failed!');
     } on NoSessionException {
       // good
@@ -245,11 +247,11 @@ void main() {
     bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
     for (var i = 0; i < 2001; i++) {
-      aliceGroupCipher.encrypt(utf8.encode('up the punks'));
+      aliceGroupCipher.encrypt(Uint8List.fromList(utf8.encode('up the punks')));
     }
 
-    var tooFarCiphertext =
-        aliceGroupCipher.encrypt(utf8.encode('notta gonna worka'));
+    var tooFarCiphertext = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('notta gonna worka')));
     try {
       bobGroupCipher.decrypt(tooFarCiphertext);
       throw AssertionError('Should have failed!');
@@ -277,7 +279,8 @@ void main() {
     var inflight = [];
 
     for (var i = 0; i < 2010; i++) {
-      inflight.add(aliceGroupCipher.encrypt(utf8.encode('up the punks')));
+      inflight.add(aliceGroupCipher
+          .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
     }
 
     bobGroupCipher.decrypt(inflight[1000]);

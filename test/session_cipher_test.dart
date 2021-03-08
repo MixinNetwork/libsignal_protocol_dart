@@ -39,14 +39,16 @@ void main() {
     var bobCipher = SessionCipher.fromStore(
         bobStore, SignalProtocolAddress('+14158888888', 1));
 
-    var alicePlaintext = utf8.encode('This is a plaintext message.');
+    var alicePlaintext =
+        Uint8List.fromList(utf8.encode('This is a plaintext message.'));
     var message = aliceCipher.encrypt(alicePlaintext);
     var bobPlaintext = bobCipher
         .decryptFromSignal(SignalMessage.fromSerialized(message.serialize()));
 
     assert(eq(alicePlaintext, bobPlaintext));
 
-    var bobReply = utf8.encode('This is a message from Bob.');
+    var bobReply =
+        Uint8List.fromList(utf8.encode('This is a message from Bob.'));
     var reply = bobCipher.encrypt(bobReply);
     var receivedReply = aliceCipher
         .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
@@ -57,9 +59,10 @@ void main() {
     var alicePlaintextMessages = <Uint8List>[];
 
     for (var i = 0; i < 50; i++) {
-      alicePlaintextMessages.add(utf8.encode('смерть за смерть $i'));
-      aliceCiphertextMessages
-          .add(aliceCipher.encrypt(utf8.encode('смерть за смерть $i')));
+      alicePlaintextMessages
+          .add(Uint8List.fromList(utf8.encode('смерть за смерть $i')));
+      aliceCiphertextMessages.add(aliceCipher
+          .encrypt(Uint8List.fromList(utf8.encode('смерть за смерть $i'))));
     }
 
     var seed = DateTime.now().microsecondsSinceEpoch;
@@ -77,9 +80,10 @@ void main() {
     var bobPlaintextMessages = <Uint8List>[];
 
     for (var i = 0; i < 20; i++) {
-      bobPlaintextMessages.add(utf8.encode('смерть за смерть $i'));
-      bobCiphertextMessages
-          .add(bobCipher.encrypt(utf8.encode('смерть за смерть $i')));
+      bobPlaintextMessages
+          .add(Uint8List.fromList(utf8.encode('смерть за смерть $i')));
+      bobCiphertextMessages.add(bobCipher
+          .encrypt(Uint8List.fromList(utf8.encode('смерть за смерть $i'))));
     }
 
     seed = DateTime.now().millisecondsSinceEpoch;
@@ -185,8 +189,8 @@ void main() {
     var inflight = <CiphertextMessage>[];
 
     for (var i = 0; i < 2010; i++) {
-      inflight.add(aliceCipher.encrypt(utf8
-          .encode("you've never been so hungry, you've never been so cold")));
+      inflight.add(aliceCipher.encrypt(Uint8List.fromList(utf8
+          .encode("you've never been so hungry, you've never been so cold"))));
     }
 
     bobCipher.decryptFromSignal(

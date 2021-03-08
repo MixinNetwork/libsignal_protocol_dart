@@ -406,7 +406,7 @@ void main() {
     expect(
         0,
         session
-            .getRemoteIdentityKey()
+            ?.getRemoteIdentityKey()
             .publicKey
             .compareTo(aliceIdentityPublicKey.publicKey));
     expect(session.getSenderChainKey().getKey(), senderChain);

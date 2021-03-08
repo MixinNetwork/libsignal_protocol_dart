@@ -392,8 +392,8 @@ void main() {
   test('testVectorsVersion1', () {
     var aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
     var bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
-    var aliceStableId = utf8.encode('+14152222222');
-    var bobStableId = utf8.encode('+14153333333');
+    var aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
+    var bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
 
     var generator = NumericFingerprintGenerator(5200);
 
@@ -424,16 +424,16 @@ void main() {
     var generator = NumericFingerprintGenerator(1024);
     var aliceFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14152222222'),
+        Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey);
 
     var bobFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
-        utf8.encode('+14152222222'),
+        Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey);
 
     expect(aliceFingerprint.displayableFingerprint.getDisplayText(),
@@ -463,16 +463,16 @@ void main() {
     var generator = NumericFingerprintGenerator(1024);
     var aliceFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14152222222'),
+        Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         mitmIdentityKey);
 
     var bobFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
-        utf8.encode('+14152222222'),
+        Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey);
 
     expect(
@@ -500,15 +500,15 @@ void main() {
     var generator = NumericFingerprintGenerator(1024);
     var aliceFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+141512222222'),
+        Uint8List.fromList(utf8.encode('+141512222222')),
         aliceIdentityKey,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey);
     var bobFingerprint = generator.createFor(
         VERSION_1,
-        utf8.encode('+14153333333'),
+        Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
-        utf8.encode('+14152222222'),
+        Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey);
 
     expect(
@@ -529,8 +529,8 @@ void main() {
   test('testDifferentVersionsMakeSameFingerPrintsButDifferentScannable', () {
     var aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
     var bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
-    var aliceStableId = utf8.encode('+14152222222');
-    var bobStableId = utf8.encode('+14153333333');
+    var aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
+    var bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
 
     var generator = NumericFingerprintGenerator(5200);
 

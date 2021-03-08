@@ -115,7 +115,7 @@ class Curve {
   }
 
   // ignore: missing_return
-  static Uint8List? calculateVrfSignature(
+  static Uint8List calculateVrfSignature(
       ECPrivateKey signingKey, Uint8List message) {
     if (signingKey == null || message == null) {
       throw Exception('Values must not be null');
@@ -127,9 +127,10 @@ class Curve {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
     }
+    return Uint8List(0);
   }
 
-  static Uint8List? verifyVrfSignature(
+  static Uint8List verifyVrfSignature(
       ECPublicKey signingKey, Uint8List message, Uint8List signature) {
     if (signingKey == null || message == null || signature == null) {
       throw Exception('Values must not be null');
@@ -141,5 +142,6 @@ class Curve {
       throw Exception(
           'Unknown Signing Key type' + signingKey.getType().toString());
     }
+    return Uint8List(0);
   }
 }

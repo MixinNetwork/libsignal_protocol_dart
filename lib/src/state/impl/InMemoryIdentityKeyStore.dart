@@ -31,7 +31,7 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
 
   @override
   bool isTrustedIdentity(SignalProtocolAddress address,
-      IdentityKey? identityKey, Direction direction) {
+      IdentityKey? identityKey, Direction? direction) {
     var trusted = trustedKeys[address];
     if (identityKey == null) {
       return false;
