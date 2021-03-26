@@ -33,7 +33,8 @@ class KeyHelper {
     start--;
     for (var i = 0; i < count; i++) {
       results.add(PreKeyRecord(
-          ((start + i) % (Medium.MAX_VALUE - 1)) + 1, Curve.generateKeyPair()));
+          ((start + i).remainder(Medium.MAX_VALUE - 1)) + 1,
+          Curve.generateKeyPair()));
     }
     return results;
   }
