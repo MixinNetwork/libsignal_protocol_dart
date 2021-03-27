@@ -32,7 +32,7 @@ class DeviceConsistencyCodeGenerator {
   }
 
   static String getEncodedChunk(Uint8List hash, int offset) {
-    var chunk = ByteUtil.byteArray5ToLong(hash, offset) % 100000;
+    var chunk = ByteUtil.byteArray5ToLong(hash, offset).remainder(100000);
     return chunk.toString().padLeft(5, '0');
   }
 }
