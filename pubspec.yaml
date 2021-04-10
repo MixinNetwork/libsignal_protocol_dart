@@ -9,12 +9,12 @@ environment:
 dependencies:
   protobuf: ^2.0.0
   convert: ^3.0.0
-  crypto: ^3.0.0
+  crypto: ^3.0.1
   optional: ^6.0.0-nullsafety.0
   tuple: ^2.0.0
   fixnum: ^1.0.0
   collection: ^1.15.0
-  pointycastle: ^3.0.0-nullsafety.2
+  pointycastle: ^3.0.1
   ed25519_edwards: ^0.1.0
   x25519: ^0.0.2
 
