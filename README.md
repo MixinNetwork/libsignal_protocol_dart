@@ -66,8 +66,25 @@ Once those are implemented, you can build a session in this way:
 If you wanna send message to a group, send a SenderKeyDistributionMessage to all members of the group.
 
 ```dart
-  var senderKeyName = SenderKeyName("", SignalProtocolAddress("sender", 1));
-  var senderKeyStore = InMemorySenderKeyStore();
-  var groupSession = GroupCipher(senderKeyStore, senderKeyName);
-  groupSession.encrypt(utf8.encode("Hello Mixin"));
+  final SENDER_ADDRESS = SignalProtocolAddress('+00000000001', 1);
+  final GROUP_SENDER =
+      SenderKeyName('Private group', SENDER_ADDRESS);
+    var aliceStore = InMemorySenderKeyStore();
+    var bobStore = InMemorySenderKeyStore();
+
+    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+
+    var aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
+    var bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+
+    var sentAliceDistributionMessage = aliceSessionBuilder.create(GROUP_SENDER);
+    var receivedAliceDistributionMessage =
+        SenderKeyDistributionMessageWrapper.fromSerialized(
+            sentAliceDistributionMessage.serialize());
+    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+
+    var ciphertextFromAlice = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
+    var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice)
 ```
