@@ -9,7 +9,7 @@ class InMemorySenderKeyStore extends SenderKeyStore {
   final _store = HashMap<SenderKeyName, SenderKeyRecord>();
 
   @override
-  SenderKeyRecord loadSenderKey(SenderKeyName senderKeyName) {
+  Future<SenderKeyRecord> loadSenderKey(SenderKeyName senderKeyName) async {
     try {
       var record = _store[senderKeyName];
       if (record == null) {
@@ -23,7 +23,8 @@ class InMemorySenderKeyStore extends SenderKeyStore {
   }
 
   @override
-  void storeSenderKey(SenderKeyName senderKeyName, SenderKeyRecord record) {
+  Future storeSenderKey(
+      SenderKeyName senderKeyName, SenderKeyRecord record) async {
     _store[senderKeyName] = record;
   }
 }
