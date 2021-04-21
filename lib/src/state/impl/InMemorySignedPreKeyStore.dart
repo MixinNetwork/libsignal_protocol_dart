@@ -10,7 +10,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   final store = HashMap<int, Uint8List>();
 
   @override
-  SignedPreKeyRecord loadSignedPreKey(int signedPreKeyId) {
+  Future<SignedPreKeyRecord> loadSignedPreKey(int signedPreKeyId) async {
     try {
       if (!store.containsKey(signedPreKeyId)) {
         throw InvalidKeyIdException(
@@ -23,7 +23,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   }
 
   @override
-  List<SignedPreKeyRecord> loadSignedPreKeys() {
+  Future<List<SignedPreKeyRecord>> loadSignedPreKeys() async {
     try {
       var results = <SignedPreKeyRecord>[];
       for (var serialized in store.values) {
@@ -41,7 +41,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   }
 
   @override
-  bool containsSignedPreKey(int signedPreKeyId) {
+  Future<bool> containsSignedPreKey(int signedPreKeyId) async {
     return store.containsKey(signedPreKeyId);
   }
 

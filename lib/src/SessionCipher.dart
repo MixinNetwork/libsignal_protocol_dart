@@ -50,9 +50,8 @@ class SessionCipher {
       SignalProtocolStore store, SignalProtocolAddress remoteAddress)
       : this(store, store, store, store, remoteAddress);
 
-  CiphertextMessage encrypt(Uint8List paddedMessage) {
-    // synchronized(SESSION_LOCK) {
-    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+  Future<CiphertextMessage> encrypt(Uint8List paddedMessage) async {
+    var sessionRecord = await _sessionStore.loadSession(_remoteAddress);
     var sessionState = sessionRecord.sessionState;
     var chainKey = sessionState.getSenderChainKey();
     var messageKeys = chainKey.getMessageKeys();
@@ -86,28 +85,27 @@ class SessionCipher {
 
     sessionState.setSenderChainKey(chainKey.getNextChainKey());
 
-    if (!_identityKeyStore.isTrustedIdentity(_remoteAddress,
+    if (!await _identityKeyStore.isTrustedIdentity(_remoteAddress,
         sessionState.getRemoteIdentityKey(), Direction.SENDING)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), sessionState.getRemoteIdentityKey());
     }
 
-    _identityKeyStore.saveIdentity(
+    await _identityKeyStore.saveIdentity(
         _remoteAddress, sessionState.getRemoteIdentityKey());
     _sessionStore.storeSession(_remoteAddress, sessionRecord);
     return ciphertextMessage;
-    // }
   }
 
-  Uint8List decrypt(PreKeySignalMessage ciphertext) {
+  Future<Uint8List> decrypt(PreKeySignalMessage ciphertext) async {
     return decryptWithCallback(ciphertext, () {}());
   }
 
-  Uint8List decryptWithCallback(
-      PreKeySignalMessage ciphertext, DecryptionCallback? callback) {
-    // synchronized(SESSION_LOCK) {
-    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
-    var unsignedPreKeyId = _sessionBuilder.process(sessionRecord, ciphertext);
+  Future<Uint8List> decryptWithCallback(
+      PreKeySignalMessage ciphertext, DecryptionCallback? callback) async {
+    var sessionRecord = await _sessionStore.loadSession(_remoteAddress);
+    var unsignedPreKeyId =
+        await _sessionBuilder.process(sessionRecord, ciphertext);
     var plaintext = _decrypt(sessionRecord, ciphertext.getWhisperMessage());
 
     if (callback != null) {
@@ -121,24 +119,22 @@ class SessionCipher {
     }
 
     return plaintext;
-    // }
   }
 
-  Uint8List decryptFromSignal(SignalMessage cipherText) {
+  Future<Uint8List> decryptFromSignal(SignalMessage cipherText) async {
     return decryptFromSignalWithCallback(cipherText, () {}());
   }
 
-  Uint8List decryptFromSignalWithCallback(
-      SignalMessage cipherText, DecryptionCallback? callback) {
-    // synchronized(SESSION_LOCK) {
-    if (!_sessionStore.containsSession(_remoteAddress)) {
+  Future<Uint8List> decryptFromSignalWithCallback(
+      SignalMessage cipherText, DecryptionCallback? callback) async {
+    if (!await _sessionStore.containsSession(_remoteAddress)) {
       throw NoSessionException('No session for: $_remoteAddress');
     }
 
-    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+    var sessionRecord = await _sessionStore.loadSession(_remoteAddress);
     var plaintext = _decrypt(sessionRecord, cipherText);
 
-    if (!_identityKeyStore.isTrustedIdentity(
+    if (!await _identityKeyStore.isTrustedIdentity(
         _remoteAddress,
         sessionRecord.sessionState.getRemoteIdentityKey(),
         Direction.RECEIVING)) {
@@ -146,7 +142,7 @@ class SessionCipher {
           sessionRecord.sessionState.getRemoteIdentityKey());
     }
 
-    _identityKeyStore.saveIdentity(
+    await _identityKeyStore.saveIdentity(
         _remoteAddress, sessionRecord.sessionState.getRemoteIdentityKey());
 
     if (callback != null) {
@@ -156,11 +152,9 @@ class SessionCipher {
     _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
     return plaintext;
-    // }
   }
 
   Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage cipherText) {
-    // synchronized(SESSION_LOCK) {
     var previousStates = sessionRecord.previousSessionStates;
     var exceptions = [];
 
@@ -191,7 +185,6 @@ class SessionCipher {
     }
 
     throw InvalidMessageException('No valid sessions. $exceptions[0]');
-    // }
   }
 
   Uint8List _decryptFromState(
@@ -223,20 +216,20 @@ class SessionCipher {
     return plaintext;
   }
 
-  int getRemoteRegistrationId() {
+  Future<int> getRemoteRegistrationId() async {
     // synchronized(SESSION_LOCK) {
-    var record = _sessionStore.loadSession(_remoteAddress);
+    var record = await _sessionStore.loadSession(_remoteAddress);
     return record.sessionState.remoteRegistrationId;
     // }
   }
 
-  int getSessionVersion() {
+  Future<int> getSessionVersion() async {
     // synchronized(SESSION_LOCK) {
-    if (!_sessionStore.containsSession(_remoteAddress)) {
+    if (!await _sessionStore.containsSession(_remoteAddress)) {
       // throw IllegalStateException("No session for ($_remoteAddress)!");
     }
 
-    var record = _sessionStore.loadSession(_remoteAddress);
+    var record = await _sessionStore.loadSession(_remoteAddress);
     return record.sessionState.getSessionVersion();
     // }
   }

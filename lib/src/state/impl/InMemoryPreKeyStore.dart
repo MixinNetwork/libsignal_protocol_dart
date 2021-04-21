@@ -10,12 +10,12 @@ class InMemoryPreKeyStore extends PreKeyStore {
   final store = HashMap<int, Uint8List>();
 
   @override
-  bool containsPreKey(int preKeyId) {
+  Future<bool> containsPreKey(int preKeyId) async {
     return store.containsKey(preKeyId);
   }
 
   @override
-  PreKeyRecord loadPreKey(int preKeyId) {
+  Future<PreKeyRecord> loadPreKey(int preKeyId) async {
     try {
       if (!store.containsKey(preKeyId)) {
         throw InvalidKeyIdException('No such prekeyrecord! - $preKeyId');

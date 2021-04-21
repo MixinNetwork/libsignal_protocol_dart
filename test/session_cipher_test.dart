@@ -25,7 +25,7 @@ import 'test_in_memory_signal_protocol_store.dart';
 
 void main() {
   void runInteraction(
-      SessionRecord aliceSessionRecord, SessionRecord bobSessionRecord) {
+      SessionRecord aliceSessionRecord, SessionRecord bobSessionRecord) async {
     var aliceStore = TestInMemorySignalProtocolStore();
     var bobStore = TestInMemorySignalProtocolStore();
 
@@ -41,16 +41,16 @@ void main() {
 
     var alicePlaintext =
         Uint8List.fromList(utf8.encode('This is a plaintext message.'));
-    var message = aliceCipher.encrypt(alicePlaintext);
-    var bobPlaintext = bobCipher
+    var message = await aliceCipher.encrypt(alicePlaintext);
+    var bobPlaintext = await bobCipher
         .decryptFromSignal(SignalMessage.fromSerialized(message.serialize()));
 
     assert(eq(alicePlaintext, bobPlaintext));
 
     var bobReply =
         Uint8List.fromList(utf8.encode('This is a message from Bob.'));
-    var reply = bobCipher.encrypt(bobReply);
-    var receivedReply = aliceCipher
+    var reply = await bobCipher.encrypt(bobReply);
+    var receivedReply = await aliceCipher
         .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
 
     assert(eq(bobReply, receivedReply));
@@ -61,7 +61,7 @@ void main() {
     for (var i = 0; i < 50; i++) {
       alicePlaintextMessages
           .add(Uint8List.fromList(utf8.encode('смерть за смерть $i')));
-      aliceCiphertextMessages.add(aliceCipher
+      aliceCiphertextMessages.add(await aliceCipher
           .encrypt(Uint8List.fromList(utf8.encode('смерть за смерть $i'))));
     }
 
@@ -82,7 +82,7 @@ void main() {
     for (var i = 0; i < 20; i++) {
       bobPlaintextMessages
           .add(Uint8List.fromList(utf8.encode('смерть за смерть $i')));
-      bobCiphertextMessages.add(bobCipher
+      bobCiphertextMessages.add(await bobCipher
           .encrypt(Uint8List.fromList(utf8.encode('смерть за смерть $i'))));
     }
 
@@ -166,7 +166,7 @@ void main() {
     runInteraction(aliceSessionRecord, bobSessionRecord);
   });
 
-  test('testMessageKeyLimits', () {
+  test('testMessageKeyLimits', () async {
     var aliceSessionRecord = SessionRecord();
     var bobSessionRecord = SessionRecord();
 
@@ -189,17 +189,17 @@ void main() {
     var inflight = <CiphertextMessage>[];
 
     for (var i = 0; i < 2010; i++) {
-      inflight.add(aliceCipher.encrypt(Uint8List.fromList(utf8
+      inflight.add(await aliceCipher.encrypt(Uint8List.fromList(utf8
           .encode("you've never been so hungry, you've never been so cold"))));
     }
 
-    bobCipher.decryptFromSignal(
+    await bobCipher.decryptFromSignal(
         SignalMessage.fromSerialized(inflight[1000].serialize()));
-    bobCipher.decryptFromSignal(SignalMessage.fromSerialized(
+    await bobCipher.decryptFromSignal(SignalMessage.fromSerialized(
         inflight[inflight.length - 1].serialize()));
 
     try {
-      bobCipher.decryptFromSignal(
+      await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(inflight[0].serialize()));
       throw AssertionError('Should have failed!');
     } on DuplicateMessageException catch (dme) {
