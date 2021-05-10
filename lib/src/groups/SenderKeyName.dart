@@ -18,8 +18,7 @@ class SenderKeyName {
   bool operator ==(other) {
     if (!(other is SenderKeyName)) return false;
 
-    var that = other as SenderKeyName;
-    return _groupId == that.groupId && _sender == that.sender;
+    return _groupId == other.groupId && _sender == other.sender;
   }
 
   @override

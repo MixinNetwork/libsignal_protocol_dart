@@ -28,8 +28,7 @@ class IdentityKey {
   bool operator ==(other) {
     if (!(other is IdentityKey)) return false;
 
-    var that = other as IdentityKey;
-    return _publicKey == that._publicKey;
+    return _publicKey == other._publicKey;
   }
 
   @override

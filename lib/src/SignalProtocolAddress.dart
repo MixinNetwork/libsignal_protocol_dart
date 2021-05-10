@@ -21,8 +21,7 @@ class SignalProtocolAddress {
   bool operator ==(other) {
     if (!(other is SignalProtocolAddress)) return false;
 
-    var that = other as SignalProtocolAddress;
-    return _name == that._name && _deviceId == that._deviceId;
+    return _name == other._name && _deviceId == other._deviceId;
   }
 
   @override
