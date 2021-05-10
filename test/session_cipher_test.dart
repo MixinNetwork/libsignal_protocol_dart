@@ -29,9 +29,9 @@ void main() {
     var aliceStore = TestInMemorySignalProtocolStore();
     var bobStore = TestInMemorySignalProtocolStore();
 
-    aliceStore.storeSession(
+    await aliceStore.storeSession(
         SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
-    bobStore.storeSession(
+    await bobStore.storeSession(
         SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     var aliceCipher = SessionCipher.fromStore(
@@ -176,9 +176,9 @@ void main() {
     var aliceStore = TestInMemorySignalProtocolStore();
     var bobStore = TestInMemorySignalProtocolStore();
 
-    aliceStore.storeSession(
+    await aliceStore.storeSession(
         SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
-    bobStore.storeSession(
+    await bobStore.storeSession(
         SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     var aliceCipher = SessionCipher.fromStore(

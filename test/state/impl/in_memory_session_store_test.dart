@@ -13,13 +13,13 @@ void main() {
     // containsSession & loadSession
     expect(await store.containsSession(address1), false);
     final sessionRecord1 = await store.loadSession(address1);
-    store.storeSession(address1, sessionRecord1);
+    await store.storeSession(address1, sessionRecord1);
     expect(await store.containsSession(address1), true);
 
     // loadSession & storeSession
     final sessionRecord2 = await store.loadSession(address1);
-    store.storeSession(address2a, sessionRecord2);
-    store.storeSession(address2b, sessionRecord2);
+    await store.storeSession(address2a, sessionRecord2);
+    await store.storeSession(address2b, sessionRecord2);
 
     // getSubDeviceSessions
     final subDeviceSessions1 =
@@ -38,12 +38,12 @@ void main() {
 
     // deleteSession & containsSession
     expect(await store.containsSession(address2a), true);
-    store.deleteSession(address2a);
+    await store.deleteSession(address2a);
     expect(await store.containsSession(address2a), false);
 
     // deleteAllSessions & containsSession
     expect(await store.containsSession(address2b), true);
-    store.deleteAllSessions(address2b.getName());
+    await store.deleteAllSessions(address2b.getName());
     expect(await store.containsSession(address2b), false);
   });
 }

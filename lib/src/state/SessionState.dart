@@ -17,8 +17,6 @@ import 'LocalStorageProtocol.pb.dart';
 import 'package:optional/optional.dart';
 import 'package:tuple/tuple.dart';
 
-import 'package:collection/collection.dart';
-
 class SessionState extends LinkedListEntry<SessionState> {
   static final int MAX_MESSAGE_KEYS = 2000;
 
