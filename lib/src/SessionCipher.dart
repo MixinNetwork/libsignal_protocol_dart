@@ -93,7 +93,7 @@ class SessionCipher {
 
     await _identityKeyStore.saveIdentity(
         _remoteAddress, sessionState.getRemoteIdentityKey());
-    _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    await _sessionStore.storeSession(_remoteAddress, sessionRecord);
     return ciphertextMessage;
   }
 
@@ -112,7 +112,7 @@ class SessionCipher {
       callback(plaintext);
     }
 
-    _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    await _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
     if (unsignedPreKeyId.isPresent) {
       _preKeyStore.removePreKey(unsignedPreKeyId.value);
@@ -149,7 +149,7 @@ class SessionCipher {
       callback(plaintext);
     }
 
-    _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    await _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
     return plaintext;
   }

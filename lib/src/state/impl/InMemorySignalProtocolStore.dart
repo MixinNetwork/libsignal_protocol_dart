@@ -83,8 +83,8 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  void storeSession(SignalProtocolAddress address, SessionRecord record) {
-    sessionStore.storeSession(address, record);
+  Future storeSession(SignalProtocolAddress address, SessionRecord record) async {
+    await sessionStore.storeSession(address, record);
   }
 
   @override
@@ -93,13 +93,13 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  void deleteSession(SignalProtocolAddress address) {
-    sessionStore.deleteSession(address);
+  Future deleteSession(SignalProtocolAddress address) async {
+    await sessionStore.deleteSession(address);
   }
 
   @override
-  void deleteAllSessions(String name) {
-    sessionStore.deleteAllSessions(name);
+  Future deleteAllSessions(String name) async {
+    await sessionStore.deleteAllSessions(name);
   }
 
   @override

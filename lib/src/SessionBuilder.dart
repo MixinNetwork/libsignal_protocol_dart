@@ -150,6 +150,6 @@ class SessionBuilder {
 
     await _identityKeyStore.saveIdentity(
         _remoteAddress, preKey.getIdentityKey());
-    _sessionStore.storeSession(_remoteAddress, sessionRecord);
+    await _sessionStore.storeSession(_remoteAddress, sessionRecord);
   }
 }

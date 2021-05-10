@@ -7,11 +7,11 @@ abstract class SessionStore {
 
   Future<List<int>> getSubDeviceSessions(String name);
 
-  void storeSession(SignalProtocolAddress address, SessionRecord record);
+  Future storeSession(SignalProtocolAddress address, SessionRecord record);
 
   Future<bool> containsSession(SignalProtocolAddress address);
 
-  void deleteSession(SignalProtocolAddress address);
+  Future deleteSession(SignalProtocolAddress address);
 
-  void deleteAllSessions(String name);
+  Future deleteAllSessions(String name);
 }

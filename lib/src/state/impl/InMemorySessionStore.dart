@@ -18,7 +18,7 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  void deleteAllSessions(String name) {
+  Future deleteAllSessions(String name) async {
     for (var k in sessions.keys.toList()) {
       if (k.getName() == name) {
         sessions.remove(k);
@@ -27,7 +27,7 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  void deleteSession(SignalProtocolAddress address) {
+  Future deleteSession(SignalProtocolAddress address) async {
     sessions.remove(address);
   }
 
@@ -58,7 +58,7 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  void storeSession(SignalProtocolAddress address, SessionRecord record) {
+  Future storeSession(SignalProtocolAddress address, SessionRecord record) async {
     sessions[address] = record.serialize();
   }
 }
