@@ -19,6 +19,22 @@ class Curve {
         DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey)));
   }
 
+  static ECKeyPair generateKeyPairFromPrivate(List<int> private) {
+    if (private.length != 32) {
+      throw InvalidKeyException('Invalid private key length: ${private.length}');
+    }
+    var public = List<int>.filled(32, 0);
+
+    private[0] &= 248;
+    private[31] &= 127;
+    private[31] |= 64;
+
+    x25519.ScalarBaseMult(public, private);
+
+    return ECKeyPair(DjbECPublicKey(Uint8List.fromList(public)),
+        DjbECPrivateKey(Uint8List.fromList(private)));
+  }
+
   static ECPublicKey decodePointList(List<int> bytes, int offset) {
     return decodePoint(Uint8List.fromList(bytes), offset);
   }
