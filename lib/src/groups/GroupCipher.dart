@@ -23,6 +23,7 @@ class GroupCipher {
   Future<Uint8List> encrypt(Uint8List paddedPlaintext) async {
     try {
       var record = await _senderKeyStore.loadSenderKey(_senderKeyId);
+      print('encrypt _senderKeyId: $_senderKeyId');
       var senderKeyState = record.getSenderKeyState();
       var senderKey = senderKeyState.senderChainKey.senderMessageKey;
       var ciphertext =
@@ -45,12 +46,14 @@ class GroupCipher {
       Uint8List senderKeyMessageBytes, DecryptionCallback? callback) async {
     try {
       var record = await _senderKeyStore.loadSenderKey(_senderKeyId);
+      print('decryptWithCallback _senderKeyId: $_senderKeyId');
       if (record.isEmpty) {
         throw NoSessionException('No sender key for: $_senderKeyId');
       }
 
       var senderKeyMessage =
           SenderKeyMessage.fromSerialized(senderKeyMessageBytes);
+      print('senderKeyMessage keeId: ${senderKeyMessage.keyId}, ${senderKeyMessage.ciphertext}');
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);
