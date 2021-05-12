@@ -46,14 +46,14 @@ class GroupCipher {
       Uint8List senderKeyMessageBytes, DecryptionCallback? callback) async {
     try {
       var record = await _senderKeyStore.loadSenderKey(_senderKeyId);
-      print('decryptWithCallback _senderKeyId: $_senderKeyId');
+      print('decryptWithCallback _senderKeyId: ${_senderKeyId.serialize()}');
       if (record.isEmpty) {
         throw NoSessionException('No sender key for: $_senderKeyId');
       }
 
       var senderKeyMessage =
           SenderKeyMessage.fromSerialized(senderKeyMessageBytes);
-      print('senderKeyMessage keeId: ${senderKeyMessage.keyId}, ${senderKeyMessage.ciphertext}');
+      print('senderKeyMessage keyId: ${senderKeyMessage.keyId}, ${senderKeyMessage.ciphertext}');
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);

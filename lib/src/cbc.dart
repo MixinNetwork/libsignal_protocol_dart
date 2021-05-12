@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
 
 Uint8List aesCbcEncrypt(Uint8List key, Uint8List iv, Uint8List plaintext) {
-  final paddedPlaintext = pad(plaintext, 128);
+  final paddedPlaintext = pad(plaintext, 16);
   final cbc = CBCBlockCipher(AESFastEngine())
     ..init(true, ParametersWithIV(KeyParameter(key), iv)); // true=encrypt
 
