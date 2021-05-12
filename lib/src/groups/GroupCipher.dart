@@ -26,8 +26,12 @@ class GroupCipher {
       print('encrypt _senderKeyId: $_senderKeyId');
       var senderKeyState = record.getSenderKeyState();
       var senderKey = senderKeyState.senderChainKey.senderMessageKey;
+      print('cipherKey: ${senderKey.cipherKey}');
+      print('iv: ${senderKey.iv}');
+      print('paddedPlaintext: $paddedPlaintext');
       var ciphertext =
           aesCbcEncrypt(senderKey.cipherKey, senderKey.iv, paddedPlaintext);
+      print('ciphertext: $ciphertext');
       var senderKeyMessage = SenderKeyMessage(senderKeyState.keyId,
           senderKey.iteration, ciphertext, senderKeyState.signingKeyPrivate);
       senderKeyState.senderChainKey = senderKeyState.senderChainKey.next;
@@ -57,8 +61,12 @@ class GroupCipher {
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);
+      print('cipherKey: ${senderKey.cipherKey}');
+      print('iv: ${senderKey.iv}');
+      print('ciphertext: ${senderKeyMessage.ciphertext}');
       var plaintext = aesCbcDecrypt(
           senderKey.cipherKey, senderKey.iv, senderKeyMessage.ciphertext);
+      print('plaintext: $plaintext');
 
       if (callback != null) {
         callback(plaintext);
