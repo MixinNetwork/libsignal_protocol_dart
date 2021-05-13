@@ -38,7 +38,7 @@ class SenderKeyState {
     var signingKeyStructure = SenderKeyStateStructure_SenderSigningKey.create()
       ..public = signatureKeyPublic.serialize();
     if (signatureKeyPrivate!.isPresent) {
-      signingKeyStructure..private = signatureKeyPrivate.value.serialize();
+      signingKeyStructure.private = signatureKeyPrivate.value.serialize();
     }
     _senderKeyStateStructure = SenderKeyStateStructure.create()
       ..senderKeyId = id

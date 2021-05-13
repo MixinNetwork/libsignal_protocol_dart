@@ -34,7 +34,10 @@ class GroupCipher {
       print('ciphertext: $ciphertext');
       var senderKeyMessage = SenderKeyMessage(senderKeyState.keyId,
           senderKey.iteration, ciphertext, senderKeyState.signingKeyPrivate);
-      senderKeyState.senderChainKey = senderKeyState.senderChainKey.next;
+      print('iteration: ${senderKey.iteration}');
+      final nextSenderChainKey = senderKeyState.senderChainKey.next;
+      print('new iteration: ${nextSenderChainKey.iteration}');
+      senderKeyState.senderChainKey = nextSenderChainKey;
       await _senderKeyStore.storeSenderKey(_senderKeyId, record);
       return senderKeyMessage.serialize();
     } on InvalidKeyIdException catch (e) {
@@ -57,7 +60,7 @@ class GroupCipher {
 
       var senderKeyMessage =
           SenderKeyMessage.fromSerialized(senderKeyMessageBytes);
-      print('senderKeyMessage keyId: ${senderKeyMessage.keyId}, ${senderKeyMessage.ciphertext}');
+      print('senderKeyMessage keyId: ${senderKeyMessage.keyId}');
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);

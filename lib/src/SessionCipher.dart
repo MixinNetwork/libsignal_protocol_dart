@@ -83,7 +83,10 @@ class SessionCipher {
           ciphertextMessage as SignalMessage);
     }
 
-    sessionState.setSenderChainKey(chainKey.getNextChainKey());
+    print('index: ${chainKey.index}');
+    final nextChainKey = chainKey.getNextChainKey();
+    sessionState.setSenderChainKey(nextChainKey);
+    print('new index: ${nextChainKey.index}');
 
     if (!await _identityKeyStore.isTrustedIdentity(_remoteAddress,
         sessionState.getRemoteIdentityKey(), Direction.SENDING)) {

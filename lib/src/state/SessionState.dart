@@ -195,9 +195,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..key = nextChainKey.getKey()
       ..index = nextChainKey.getIndex();
 
-    var chain = _sessionStructure.senderChain..chainKey = chainKey;
-
-    _sessionStructure.senderChain = chain;
+    _sessionStructure.senderChain.chainKey = chainKey;
   }
 
   bool hasMessageKeys(ECPublicKey senderEphemeral, int counter) {
