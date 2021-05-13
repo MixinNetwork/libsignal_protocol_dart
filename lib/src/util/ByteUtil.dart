@@ -55,7 +55,7 @@ class ByteUtil {
   }
 
   static int intsToByteHighAndLow(int highValue, int lowValue) {
-    return ((highValue << 4 | lowValue) & 0xFF);
+    return (((highValue << 4) | lowValue) & 0xFF);
   }
 
   static int highBitsToInt(int value) {
