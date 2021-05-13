@@ -192,8 +192,8 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   void setSenderChainKey(ChainKey nextChainKey) {
     var chainKey = SessionStructure_Chain_ChainKey.create()
-      ..key = nextChainKey.getKey()
-      ..index = nextChainKey.getIndex();
+      ..key = nextChainKey.key
+      ..index = nextChainKey.index;
 
     _sessionStructure.senderChain.chainKey = chainKey;
   }

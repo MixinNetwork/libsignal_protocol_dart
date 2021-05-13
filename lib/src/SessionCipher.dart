@@ -57,6 +57,7 @@ class SessionCipher {
     var messageKeys = chainKey.getMessageKeys();
     var senderEphemeral = sessionState.getSenderRatchetKey();
     var previousCounter = sessionState.previousCounter;
+    print('previousCounter: $previousCounter');
     var sessionVersion = sessionState.getSessionVersion();
 
     var ciphertextBody = getCiphertext(messageKeys, paddedMessage);
@@ -64,7 +65,7 @@ class SessionCipher {
         sessionVersion,
         messageKeys.getMacKey(),
         senderEphemeral,
-        chainKey.getIndex(),
+        chainKey.index,
         previousCounter,
         ciphertextBody,
         sessionState.getLocalIdentityKey(),
@@ -253,7 +254,7 @@ class SessionCipher {
         sessionState.rootKey = senderChain.item1;
         sessionState.addReceiverChain(theirEphemeral, receiverChain.item2);
         sessionState.previousCounter =
-            max(sessionState.getSenderChainKey().getIndex() - 1, 0);
+            max(sessionState.getSenderChainKey().index - 1, 0);
         sessionState.setSenderChain(ourNewEphemeral, senderChain.item2);
 
         return receiverChain.item2;
@@ -265,7 +266,7 @@ class SessionCipher {
 
   MessageKeys? _getOrCreateMessageKeys(SessionState sessionState,
       ECPublicKey theirEphemeral, ChainKey chainKey, int counter) {
-    if (chainKey.getIndex() > counter) {
+    if (chainKey.index > counter) {
       if (sessionState.hasMessageKeys(theirEphemeral, counter)) {
         return sessionState.removeMessageKeys(theirEphemeral, counter);
       } else {
@@ -274,11 +275,11 @@ class SessionCipher {
       }
     }
 
-    if (counter - chainKey.getIndex() > 2000) {
+    if (counter - chainKey.index > 2000) {
       throw InvalidMessageException('Over 2000 messages into the future!');
     }
 
-    while (chainKey.getIndex() < counter) {
+    while (chainKey.index < counter) {
       var messageKeys = chainKey.getMessageKeys();
       sessionState.setMessageKeys(theirEphemeral, messageKeys);
       chainKey = chainKey.getNextChainKey();

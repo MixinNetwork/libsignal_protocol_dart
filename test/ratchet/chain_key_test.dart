@@ -148,13 +148,13 @@ void main() {
 
     var chainKey = ChainKey(HKDF.createFor(2), seed, 0);
 
-    expect(chainKey.getKey(), seed);
+    expect(chainKey.key, seed);
     expect(chainKey.getMessageKeys().getCipherKey(), messageKey);
     expect(chainKey.getMessageKeys().getMacKey(), macKey);
-    expect(chainKey.getNextChainKey().getKey(), nextChainKey);
-    expect(chainKey.getIndex(), 0);
+    expect(chainKey.getNextChainKey().key, nextChainKey);
+    expect(chainKey.index, 0);
     expect(chainKey.getMessageKeys().getCounter(), 0);
-    expect(chainKey.getNextChainKey().getIndex(), 1);
+    expect(chainKey.getNextChainKey().index, 1);
     expect(chainKey.getNextChainKey().getMessageKeys().getCounter(), 1);
   });
 
@@ -302,13 +302,13 @@ void main() {
 
     var chainKey = ChainKey(HKDF.createFor(3), seed, 0);
 
-    expect(chainKey.getKey(), seed);
+    expect(chainKey.key, seed);
     expect(chainKey.getMessageKeys().getCipherKey(), messageKey);
     expect(chainKey.getMessageKeys().getMacKey(), macKey);
-    expect(chainKey.getNextChainKey().getKey(), nextChainKey);
-    expect(chainKey.getIndex(), 0);
+    expect(chainKey.getNextChainKey().key, nextChainKey);
+    expect(chainKey.index, 0);
     expect(chainKey.getMessageKeys().getCounter(), 0);
-    expect(chainKey.getNextChainKey().getIndex(), 1);
+    expect(chainKey.getNextChainKey().index, 1);
     expect(chainKey.getNextChainKey().getMessageKeys().getCounter(), 1);
   });
 }

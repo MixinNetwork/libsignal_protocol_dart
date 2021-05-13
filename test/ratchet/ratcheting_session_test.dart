@@ -409,6 +409,6 @@ void main() {
             .getRemoteIdentityKey()
             ?.publicKey
             .compareTo(aliceIdentityPublicKey.publicKey));
-    expect(session.getSenderChainKey().getKey(), senderChain);
+    expect(session.getSenderChainKey().key, senderChain);
   });
 }
