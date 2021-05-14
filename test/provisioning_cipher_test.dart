@@ -16,10 +16,13 @@ void main() {
   });
 
   test('testEncrypt', () {
-    var privateKey = base64.decode('v9FTNn2tg40ENCEaoCHstCo5J0wb9wKwgZQ6PYJjf0U=');
+    var privateKey =
+        base64.decode('v9FTNn2tg40ENCEaoCHstCo5J0wb9wKwgZQ6PYJjf0U=');
     var iv = base64.decode('tNp4sPQGKjwzqN0L8tDLDg==');
     var encode = 'l0JO9zrPWzrPg2r53Sjf6g==';
-    var ciphertext = aesCbcEncrypt(privateKey, iv, Uint8List.fromList(utf8.encode('Hello Mixin')));
+    var ciphertext = aesCbcEncrypt(
+        privateKey, iv, Uint8List.fromList(utf8.encode('Hello Mixin')));
     print('${base64.encode(ciphertext)}');
+    print(encode);
   });
 }

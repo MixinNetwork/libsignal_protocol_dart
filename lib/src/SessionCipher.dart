@@ -57,7 +57,6 @@ class SessionCipher {
     var messageKeys = chainKey.getMessageKeys();
     var senderEphemeral = sessionState.getSenderRatchetKey();
     var previousCounter = sessionState.previousCounter;
-    print('previousCounter: $previousCounter');
     var sessionVersion = sessionState.getSessionVersion();
 
     var ciphertextBody = getCiphertext(messageKeys, paddedMessage);
@@ -84,10 +83,8 @@ class SessionCipher {
           ciphertextMessage as SignalMessage);
     }
 
-    print('index: ${chainKey.index}');
     final nextChainKey = chainKey.getNextChainKey();
     sessionState.setSenderChainKey(nextChainKey);
-    print('new index: ${nextChainKey.index}');
 
     if (!await _identityKeyStore.isTrustedIdentity(_remoteAddress,
         sessionState.getRemoteIdentityKey(), Direction.SENDING)) {

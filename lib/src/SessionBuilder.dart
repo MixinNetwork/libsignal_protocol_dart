@@ -99,7 +99,6 @@ class SessionBuilder {
   }
 
   Future<void> processPreKeyBundle(PreKeyBundle preKey) async {
-    print('processPreKeyBundle');
     if (!await _identityKeyStore.isTrustedIdentity(
         _remoteAddress, preKey.getIdentityKey(), Direction.SENDING)) {
       throw UntrustedIdentityException(
@@ -118,9 +117,7 @@ class SessionBuilder {
       throw InvalidKeyException('No signed prekey!');
     }
 
-    print('processPreKeyBundle before loadSession');
     var sessionRecord = await _sessionStore.loadSession(_remoteAddress);
-    print('processPreKeyBundle after loadSession');
     var ourBaseKey = Curve.generateKeyPair();
     var theirSignedPreKey = preKey.getSignedPreKey();
     var theirOneTimePreKey = Optional.ofNullable(preKey.getPreKey());
@@ -128,23 +125,19 @@ class SessionBuilder {
         ? Optional.of(preKey.getPreKeyId())
         : Optional<int>.empty();
 
-    print('processPreKeyBundle before build aliceSignalProtocolParameters');
     var parameters = AliceSignalProtocolParameters.newBuilder();
     parameters
         .setOurBaseKey(ourBaseKey)
-        .setOurIdentityKey( await _identityKeyStore.getIdentityKeyPair())
+        .setOurIdentityKey(await _identityKeyStore.getIdentityKeyPair())
         .setTheirIdentityKey(preKey.getIdentityKey())
         .setTheirSignedPreKey(theirSignedPreKey!)
         .setTheirRatchetKey(theirSignedPreKey)
         .setTheirOneTimePreKey(theirOneTimePreKey);
-    print('processPreKeyBundle after build aliceSignalProtocolParameters');
 
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
-    print('processPreKeyBundle before initializeSessionAlice');
     RatchetingSession.initializeSessionAlice(
         sessionRecord.sessionState, parameters.create());
-    print('processPreKeyBundle after initializeSessionAlice');
 
     sessionRecord.sessionState.setUnacknowledgedPreKeyMessage(
         theirOneTimePreKeyId, preKey.getSignedPreKeyId(), ourBaseKey.publicKey);
@@ -154,10 +147,8 @@ class SessionBuilder {
         preKey.getRegistrationId();
     sessionRecord.sessionState.aliceBaseKey = ourBaseKey.publicKey.serialize();
 
-    print('processPreKeyBundle saveIdentity');
     await _identityKeyStore.saveIdentity(
         _remoteAddress, preKey.getIdentityKey());
-    print('processPreKeyBundle storeSession');
     await _sessionStore.storeSession(_remoteAddress, sessionRecord);
   }
 }

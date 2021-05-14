@@ -23,20 +23,13 @@ class GroupCipher {
   Future<Uint8List> encrypt(Uint8List paddedPlaintext) async {
     try {
       var record = await _senderKeyStore.loadSenderKey(_senderKeyId);
-      print('encrypt _senderKeyId: $_senderKeyId');
       var senderKeyState = record.getSenderKeyState();
       var senderKey = senderKeyState.senderChainKey.senderMessageKey;
-      print('cipherKey: ${senderKey.cipherKey}');
-      print('iv: ${senderKey.iv}');
-      print('paddedPlaintext: $paddedPlaintext');
       var ciphertext =
           aesCbcEncrypt(senderKey.cipherKey, senderKey.iv, paddedPlaintext);
-      print('ciphertext: $ciphertext');
       var senderKeyMessage = SenderKeyMessage(senderKeyState.keyId,
           senderKey.iteration, ciphertext, senderKeyState.signingKeyPrivate);
-      print('iteration: ${senderKey.iteration}');
       final nextSenderChainKey = senderKeyState.senderChainKey.next;
-      print('new iteration: ${nextSenderChainKey.iteration}');
       senderKeyState.senderChainKey = nextSenderChainKey;
       await _senderKeyStore.storeSenderKey(_senderKeyId, record);
       return senderKeyMessage.serialize();
@@ -53,23 +46,17 @@ class GroupCipher {
       Uint8List senderKeyMessageBytes, DecryptionCallback? callback) async {
     try {
       var record = await _senderKeyStore.loadSenderKey(_senderKeyId);
-      print('decryptWithCallback _senderKeyId: ${_senderKeyId.serialize()}');
       if (record.isEmpty) {
         throw NoSessionException('No sender key for: $_senderKeyId');
       }
 
       var senderKeyMessage =
           SenderKeyMessage.fromSerialized(senderKeyMessageBytes);
-      print('senderKeyMessage keyId: ${senderKeyMessage.keyId}');
       var senderKeyState = record.getSenderKeyStateById(senderKeyMessage.keyId);
       senderKeyMessage.verifySignature(senderKeyState.signingKeyPublic);
       var senderKey = getSenderKey(senderKeyState, senderKeyMessage.iteration);
-      print('cipherKey: ${senderKey.cipherKey}');
-      print('iv: ${senderKey.iv}');
-      print('ciphertext: ${senderKeyMessage.ciphertext}');
       var plaintext = aesCbcDecrypt(
           senderKey.cipherKey, senderKey.iv, senderKeyMessage.ciphertext);
-      print('plaintext: $plaintext');
 
       if (callback != null) {
         callback(plaintext);
