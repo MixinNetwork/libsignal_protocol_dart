@@ -26,33 +26,34 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
         InMemoryIdentityKeyStore(identityKeyPair, registrationId);
   }
   @override
-  IdentityKeyPair getIdentityKeyPair() {
+  Future<IdentityKeyPair> getIdentityKeyPair() async {
     return _identityKeyStore.getIdentityKeyPair();
   }
 
   @override
-  int getLocalRegistrationId() {
+  Future<int> getLocalRegistrationId() async {
     return _identityKeyStore.getLocalRegistrationId();
   }
 
   @override
-  bool saveIdentity(SignalProtocolAddress address, IdentityKey? identityKey) {
+  Future<bool> saveIdentity(
+      SignalProtocolAddress address, IdentityKey? identityKey) async {
     return _identityKeyStore.saveIdentity(address, identityKey);
   }
 
   @override
-  bool isTrustedIdentity(SignalProtocolAddress address,
-      IdentityKey? identityKey, Direction direction) {
+  Future<bool> isTrustedIdentity(SignalProtocolAddress address,
+      IdentityKey? identityKey, Direction direction) async {
     return _identityKeyStore.isTrustedIdentity(address, identityKey, direction);
   }
 
   @override
-  IdentityKey getIdentity(SignalProtocolAddress address) {
+  Future<IdentityKey> getIdentity(SignalProtocolAddress address) async {
     return _identityKeyStore.getIdentity(address);
   }
 
   @override
-  PreKeyRecord loadPreKey(int preKeyId) {
+  Future<PreKeyRecord> loadPreKey(int preKeyId) async {
     return preKeyStore.loadPreKey(preKeyId);
   }
 
@@ -62,7 +63,7 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  bool containsPreKey(int preKeyId) {
+  Future<bool> containsPreKey(int preKeyId) async {
     return preKeyStore.containsPreKey(preKeyId);
   }
 
@@ -72,42 +73,42 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  SessionRecord loadSession(SignalProtocolAddress address) {
+  Future<SessionRecord> loadSession(SignalProtocolAddress address) async {
     return sessionStore.loadSession(address);
   }
 
   @override
-  List<int> getSubDeviceSessions(String name) {
+  Future<List<int>> getSubDeviceSessions(String name) async {
     return sessionStore.getSubDeviceSessions(name);
   }
 
   @override
-  void storeSession(SignalProtocolAddress address, SessionRecord record) {
-    sessionStore.storeSession(address, record);
+  Future storeSession(SignalProtocolAddress address, SessionRecord record) async {
+    await sessionStore.storeSession(address, record);
   }
 
   @override
-  bool containsSession(SignalProtocolAddress address) {
+  Future<bool> containsSession(SignalProtocolAddress address) async {
     return sessionStore.containsSession(address);
   }
 
   @override
-  void deleteSession(SignalProtocolAddress address) {
-    sessionStore.deleteSession(address);
+  Future deleteSession(SignalProtocolAddress address) async {
+    await sessionStore.deleteSession(address);
   }
 
   @override
-  void deleteAllSessions(String name) {
-    sessionStore.deleteAllSessions(name);
+  Future deleteAllSessions(String name) async {
+    await sessionStore.deleteAllSessions(name);
   }
 
   @override
-  SignedPreKeyRecord loadSignedPreKey(int signedPreKeyId) {
+  Future<SignedPreKeyRecord> loadSignedPreKey(int signedPreKeyId) async {
     return signedPreKeyStore.loadSignedPreKey(signedPreKeyId);
   }
 
   @override
-  List<SignedPreKeyRecord> loadSignedPreKeys() {
+  Future<List<SignedPreKeyRecord>> loadSignedPreKeys() async {
     return signedPreKeyStore.loadSignedPreKeys();
   }
 
@@ -117,7 +118,7 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
   }
 
   @override
-  bool containsSignedPreKey(int signedPreKeyId) {
+  Future<bool> containsSignedPreKey(int signedPreKeyId) async {
     return signedPreKeyStore.containsSignedPreKey(signedPreKeyId);
   }
 

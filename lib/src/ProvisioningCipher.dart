@@ -13,7 +13,7 @@ import 'kdf/DerivedRootSecrets.dart';
 import 'kdf/HKDFv3.dart';
 import 'util/ByteUtil.dart';
 
-final String PROVISION = "Mixin Provisioning Message";
+final String PROVISION = 'Mixin Provisioning Message';
 
 class ProvisionEnvelope {
   final Uint8List public_key;

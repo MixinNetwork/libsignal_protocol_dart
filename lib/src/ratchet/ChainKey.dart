@@ -11,23 +11,19 @@ class ChainKey {
   static final Uint8List MESSAGE_KEY_SEED = Uint8List.fromList([0x01]);
   static final Uint8List CHAIN_KEY_SEED = Uint8List.fromList([0x02]);
 
-  final HKDF kdf;
-  final Uint8List key;
-  final int index;
+  final HKDF _kdf;
+  final Uint8List _key;
+  final int _index;
 
-  ChainKey(this.kdf, this.key, this.index);
+  ChainKey(this._kdf, this._key, this._index);
 
-  Uint8List getKey() {
-    return key;
-  }
+  Uint8List get key => _key;
 
-  int getIndex() {
-    return index;
-  }
+  int get index => _index;
 
   ChainKey getNextChainKey() {
     var nextKey = _getBaseMaterial(CHAIN_KEY_SEED);
-    return ChainKey(kdf, nextKey, index + 1);
+    return ChainKey(_kdf, nextKey, _index + 1);
   }
 
   MessageKeys getMessageKeys() {
@@ -35,15 +31,15 @@ class ChainKey {
 
     var inputKeyMaterial = _getBaseMaterial(MESSAGE_KEY_SEED);
     var keyMaterialBytes =
-        kdf.deriveSecrets(inputKeyMaterial, bytes, DerivedMessageSecrets.SIZE);
+        _kdf.deriveSecrets(inputKeyMaterial, bytes, DerivedMessageSecrets.SIZE);
     var keyMaterial = DerivedMessageSecrets(keyMaterialBytes);
 
     return MessageKeys(keyMaterial.getCipherKey(), keyMaterial.getMacKey(),
-        keyMaterial.getIv(), index);
+        keyMaterial.getIv(), _index);
   }
 
   Uint8List _getBaseMaterial(Uint8List seed) {
-    var hmacSha256 = Hmac(sha256, key);
+    var hmacSha256 = Hmac(sha256, _key);
     var digest = hmacSha256.convert(seed);
     return Uint8List.fromList(digest.bytes);
   }

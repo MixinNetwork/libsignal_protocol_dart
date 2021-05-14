@@ -18,6 +18,12 @@ class KeyHelper {
     return IdentityKeyPair(publicKey, keyPair.privateKey);
   }
 
+  static IdentityKeyPair generateIdentityKeyPairFromPrivate(List<int> private) {
+    var keyPair = Curve.generateKeyPairFromPrivate(private);
+    var publicKey = IdentityKey(keyPair.publicKey);
+    return IdentityKeyPair(publicKey, keyPair.privateKey);
+  }
+
   static int integerMax = 0x7fffffff;
 
   static int generateRegistrationId(bool extendedRange) {

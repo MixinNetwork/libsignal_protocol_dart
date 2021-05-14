@@ -18,7 +18,7 @@ import 'state/SignedPreKeyStore.dart';
 import 'package:optional/optional.dart';
 
 class SessionBuilder {
-  static final String TAG = 'SessionBulder';
+  static final String TAG = 'SessionBuilder';
 
   SessionStore _sessionStore;
   PreKeyStore _preKeyStore;
@@ -33,11 +33,11 @@ class SessionBuilder {
       SignalProtocolStore store, SignalProtocolAddress remoteAddress)
       : this(store, store, store, store, remoteAddress);
 
-  Optional<int> process(
-      SessionRecord sessionRecord, PreKeySignalMessage message) {
+  Future<Optional<int>> process(
+      SessionRecord sessionRecord, PreKeySignalMessage message) async {
     var theirIdentityKey = message.getIdentityKey();
 
-    if (!_identityKeyStore.isTrustedIdentity(
+    if (!await _identityKeyStore.isTrustedIdentity(
         _remoteAddress, theirIdentityKey, Direction.RECEIVING)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), theirIdentityKey);
@@ -45,13 +45,13 @@ class SessionBuilder {
 
     var unsignedPreKeyId = processV3(sessionRecord, message);
 
-    _identityKeyStore.saveIdentity(_remoteAddress, theirIdentityKey);
+    await _identityKeyStore.saveIdentity(_remoteAddress, theirIdentityKey);
 
     return unsignedPreKeyId;
   }
 
-  Optional<int> processV3(
-      SessionRecord sessionRecord, PreKeySignalMessage message) {
+  Future<Optional<int>> processV3(
+      SessionRecord sessionRecord, PreKeySignalMessage message) async {
     if (sessionRecord.hasSessionState(
         message.getMessageVersion(), message.getBaseKey().serialize())) {
       print(
@@ -61,20 +61,21 @@ class SessionBuilder {
 
     var ourSignedPreKey = _signedPreKeyStore
         .loadSignedPreKey(message.getSignedPreKeyId())
-        .getKeyPair();
+        .then((value) => value.getKeyPair());
 
     var parameters = BobSignalProtocolParameters.newBuilder();
 
     parameters
         .setTheirBaseKey(message.getBaseKey())
         .setTheirIdentityKey(message.getIdentityKey())
-        .setOurIdentityKey(_identityKeyStore.getIdentityKeyPair())
-        .setOurSignedPreKey(ourSignedPreKey)
-        .setOurRatchetKey(ourSignedPreKey);
+        .setOurIdentityKey(await _identityKeyStore.getIdentityKeyPair())
+        .setOurSignedPreKey(await ourSignedPreKey)
+        .setOurRatchetKey(await ourSignedPreKey);
 
     if (message.getPreKeyId().isPresent) {
-      parameters.setOurOneTimePreKey(Optional.of(
-          _preKeyStore.loadPreKey(message.getPreKeyId().value).getKeyPair()));
+      parameters.setOurOneTimePreKey(Optional.of(await _preKeyStore
+          .loadPreKey(message.getPreKeyId().value)
+          .then((value) => value.getKeyPair())));
     } else {
       parameters.setOurOneTimePreKey(Optional<ECKeyPair>.empty());
     }
@@ -85,7 +86,7 @@ class SessionBuilder {
         sessionRecord.sessionState, parameters.create());
 
     sessionRecord.sessionState.localRegistrationId =
-        _identityKeyStore.getLocalRegistrationId();
+        await _identityKeyStore.getLocalRegistrationId();
     sessionRecord.sessionState.remoteRegistrationId =
         message.getRegistrationId();
     sessionRecord.sessionState.aliceBaseKey = message.getBaseKey().serialize();
@@ -97,9 +98,8 @@ class SessionBuilder {
     }
   }
 
-  void processPreKeyBundle(PreKeyBundle preKey) {
-    //synchronized (SessionCipher.SESSION_LOCK) {
-    if (!_identityKeyStore.isTrustedIdentity(
+  Future<void> processPreKeyBundle(PreKeyBundle preKey) async {
+    if (!await _identityKeyStore.isTrustedIdentity(
         _remoteAddress, preKey.getIdentityKey(), Direction.SENDING)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), preKey.getIdentityKey());
@@ -117,7 +117,7 @@ class SessionBuilder {
       throw InvalidKeyException('No signed prekey!');
     }
 
-    var sessionRecord = _sessionStore.loadSession(_remoteAddress);
+    var sessionRecord = await _sessionStore.loadSession(_remoteAddress);
     var ourBaseKey = Curve.generateKeyPair();
     var theirSignedPreKey = preKey.getSignedPreKey();
     var theirOneTimePreKey = Optional.ofNullable(preKey.getPreKey());
@@ -126,10 +126,9 @@ class SessionBuilder {
         : Optional<int>.empty();
 
     var parameters = AliceSignalProtocolParameters.newBuilder();
-
     parameters
         .setOurBaseKey(ourBaseKey)
-        .setOurIdentityKey(_identityKeyStore.getIdentityKeyPair())
+        .setOurIdentityKey(await _identityKeyStore.getIdentityKeyPair())
         .setTheirIdentityKey(preKey.getIdentityKey())
         .setTheirSignedPreKey(theirSignedPreKey!)
         .setTheirRatchetKey(theirSignedPreKey)
@@ -143,13 +142,13 @@ class SessionBuilder {
     sessionRecord.sessionState.setUnacknowledgedPreKeyMessage(
         theirOneTimePreKeyId, preKey.getSignedPreKeyId(), ourBaseKey.publicKey);
     sessionRecord.sessionState.localRegistrationId =
-        _identityKeyStore.getLocalRegistrationId();
+        await _identityKeyStore.getLocalRegistrationId();
     sessionRecord.sessionState.remoteRegistrationId =
         preKey.getRegistrationId();
     sessionRecord.sessionState.aliceBaseKey = ourBaseKey.publicKey.serialize();
 
-    _identityKeyStore.saveIdentity(_remoteAddress, preKey.getIdentityKey());
-    _sessionStore.storeSession(_remoteAddress, sessionRecord);
-    //}
+    await _identityKeyStore.saveIdentity(
+        _remoteAddress, preKey.getIdentityKey());
+    await _sessionStore.storeSession(_remoteAddress, sessionRecord);
   }
 }

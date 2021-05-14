@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:libsignal_protocol_dart/src/eq.dart';
+
 import '../util/ByteUtil.dart';
 
 import 'Curve.dart';
@@ -35,8 +37,7 @@ class DjbECPublicKey extends ECPublicKey {
   bool operator ==(other) {
     if (!(other is DjbECPublicKey)) return false;
 
-    var that = other as DjbECPublicKey;
-    return _publicKey == that._publicKey;
+    return eq(_publicKey, other._publicKey);
   }
 
   @override

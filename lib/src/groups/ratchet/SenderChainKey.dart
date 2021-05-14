@@ -25,7 +25,7 @@ class SenderChainKey {
 
   Uint8List getDerivative(Uint8List seed, Uint8List key) {
     var hmacSha256 = Hmac(sha256, key);
-    var digest = hmacSha256.convert(key);
+    var digest = hmacSha256.convert(seed);
     return Uint8List.fromList(digest.bytes);
   }
 }

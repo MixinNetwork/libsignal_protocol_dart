@@ -1,14 +1,14 @@
 import 'SignedPreKeyRecord.dart';
 
 abstract class SignedPreKeyStore {
-  SignedPreKeyRecord loadSignedPreKey(
+  Future<SignedPreKeyRecord> loadSignedPreKey(
       int signedPreKeyId); //throws InvalidKeyIdException;
 
-  List<SignedPreKeyRecord> loadSignedPreKeys();
+  Future<List<SignedPreKeyRecord>> loadSignedPreKeys();
 
   void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record);
 
-  bool containsSignedPreKey(int signedPreKeyId);
+  Future<bool> containsSignedPreKey(int signedPreKeyId);
 
   void removeSignedPreKey(int signedPreKeyId);
 }

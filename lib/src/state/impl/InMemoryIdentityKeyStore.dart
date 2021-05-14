@@ -15,23 +15,23 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
   InMemoryIdentityKeyStore(this.identityKeyPair, this.localRegistrationId);
 
   @override
-  IdentityKey getIdentity(SignalProtocolAddress address) {
+  Future<IdentityKey> getIdentity(SignalProtocolAddress address) async {
     return trustedKeys[address]!;
   }
 
   @override
-  IdentityKeyPair getIdentityKeyPair() {
+  Future<IdentityKeyPair> getIdentityKeyPair() async {
     return identityKeyPair;
   }
 
   @override
-  int getLocalRegistrationId() {
+  Future<int> getLocalRegistrationId() async {
     return localRegistrationId;
   }
 
   @override
-  bool isTrustedIdentity(SignalProtocolAddress address,
-      IdentityKey? identityKey, Direction? direction) {
+  Future<bool> isTrustedIdentity(SignalProtocolAddress address,
+      IdentityKey? identityKey, Direction? direction) async {
     var trusted = trustedKeys[address];
     if (identityKey == null) {
       return false;
@@ -41,7 +41,8 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
   }
 
   @override
-  bool saveIdentity(SignalProtocolAddress address, IdentityKey? identityKey) {
+  Future<bool> saveIdentity(
+      SignalProtocolAddress address, IdentityKey? identityKey) async {
     var existing = trustedKeys[address];
     if (identityKey == null) {
       return false;

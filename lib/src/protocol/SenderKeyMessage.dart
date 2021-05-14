@@ -31,7 +31,7 @@ class SenderKeyMessage extends CiphertextMessage {
     var message = protocol.SenderKeyMessage.create()
       ..id = keyId
       ..iteration = iteration
-      ..ciphertext = List.from(ciphertext);
+      ..ciphertext = ciphertext;
     var messageList = message.writeToBuffer();
     var signature =
         _getSignature(signatureKey, ByteUtil.combine([version, messageList]));

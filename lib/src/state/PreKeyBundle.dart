@@ -3,18 +3,18 @@ import '../IdentityKey.dart';
 import '../ecc/ECPublicKey.dart';
 
 class PreKeyBundle {
-  int _registrationId;
+  final int _registrationId;
 
-  int _deviceId;
+  final int _deviceId;
 
-  int _preKeyId;
-  ECPublicKey _preKeyPublic;
+  final int _preKeyId;
+  final ECPublicKey _preKeyPublic;
 
-  int _signedPreKeyId;
-  ECPublicKey? _signedPreKeyPublic;
-  Uint8List? _signedPreKeySignature;
+  final int _signedPreKeyId;
+  final ECPublicKey? _signedPreKeyPublic;
+  final Uint8List? _signedPreKeySignature;
 
-  IdentityKey _identityKey;
+  final IdentityKey _identityKey;
 
   PreKeyBundle(
       this._registrationId,

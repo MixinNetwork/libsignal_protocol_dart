@@ -22,7 +22,7 @@ At install time, a signal client needs to generate its identity keys, registrati
 ```dart
 void install() {
   var identityKeyPair = KeyHelper.generateIdentityKeyPair();
-  var registerationId = KeyHelper.generateRegistrationId(false);
+  var registrationId = KeyHelper.generateRegistrationId(false);
 
   var preKeys = KeyHelper.generatePreKeys(0, 110);
 

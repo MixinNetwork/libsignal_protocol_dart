@@ -13,12 +13,12 @@ class InMemorySessionStore extends SessionStore {
   InMemorySessionStore();
 
   @override
-  bool containsSession(SignalProtocolAddress address) {
+  Future<bool> containsSession(SignalProtocolAddress address) async {
     return sessions.containsKey(address);
   }
 
   @override
-  void deleteAllSessions(String name) {
+  Future deleteAllSessions(String name) async {
     for (var k in sessions.keys.toList()) {
       if (k.getName() == name) {
         sessions.remove(k);
@@ -27,12 +27,12 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  void deleteSession(SignalProtocolAddress address) {
+  Future deleteSession(SignalProtocolAddress address) async {
     sessions.remove(address);
   }
 
   @override
-  List<int> getSubDeviceSessions(String name) {
+  Future<List<int>> getSubDeviceSessions(String name) async {
     var deviceIds = <int>[];
 
     for (var key in sessions.keys) {
@@ -45,9 +45,9 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  SessionRecord loadSession(SignalProtocolAddress remoteAddress) {
+  Future<SessionRecord> loadSession(SignalProtocolAddress remoteAddress) async {
     try {
-      if (containsSession(remoteAddress)) {
+      if (await containsSession(remoteAddress)) {
         return SessionRecord.fromSerialized(sessions[remoteAddress]!);
       } else {
         return SessionRecord();
@@ -58,7 +58,7 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  void storeSession(SignalProtocolAddress address, SessionRecord record) {
+  Future storeSession(SignalProtocolAddress address, SessionRecord record) async {
     sessions[address] = record.serialize();
   }
 }

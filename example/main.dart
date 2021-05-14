@@ -7,7 +7,7 @@ void main() {
   install();
 }
 
-void install() {
+void install() async {
   var identityKeyPair = KeyHelper.generateIdentityKeyPair();
   var registerationId = KeyHelper.generateRegistrationId(false);
 
@@ -51,8 +51,7 @@ void install() {
 
   var sessionCipher = SessionCipher(
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
-  var ciphertext =
-      sessionCipher.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin🤣')));
+  var ciphertext = await sessionCipher.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin🤣')));
   print(ciphertext);
   print(ciphertext.serialize());
   //deliver(ciphertext);
