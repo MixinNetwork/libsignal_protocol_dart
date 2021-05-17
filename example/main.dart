@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 
-void main() {
+void main() async {
   install();
 }
 
@@ -47,11 +47,12 @@ void install() async {
       remoteSignedPreKey.signature,
       remoteIdentityKeyPair.getPublicKey());
 
-  sessionBuilder.processPreKeyBundle(retrievedPreKey);
+  await sessionBuilder.processPreKeyBundle(retrievedPreKey);
 
   var sessionCipher = SessionCipher(
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
-  var ciphertext = await sessionCipher.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin🤣')));
+  var ciphertext = await sessionCipher
+      .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin🤣')));
   print(ciphertext);
   print(ciphertext.serialize());
   //deliver(ciphertext);
@@ -76,9 +77,9 @@ void install() async {
   }
 }
 
-void groupSessioin() {
+void groupSessioin() async {
   var senderKeyName = SenderKeyName("", SignalProtocolAddress("sender", 1));
   var senderKeyStore = InMemorySenderKeyStore();
   var groupSession = GroupCipher(senderKeyStore, senderKeyName);
-  groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  await groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
 }
