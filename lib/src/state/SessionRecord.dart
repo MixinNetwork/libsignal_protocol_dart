@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
+import 'package:libsignal_protocol_dart/src/eq.dart';
+
 import 'SessionState.dart';
 import 'LocalStorageProtocol.pb.dart';
 
@@ -31,13 +33,13 @@ class SessionRecord {
 
   bool hasSessionState(int version, Uint8List aliceBaseKey) {
     if (_sessionState.getSessionVersion() == version &&
-        aliceBaseKey == _sessionState.aliceBaseKey) {
+        eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
       return true;
     }
 
     for (var state in _previousStates) {
       if (state.getSessionVersion() == version &&
-          aliceBaseKey == _sessionState.aliceBaseKey) {
+          eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
         return true;
       }
     }
