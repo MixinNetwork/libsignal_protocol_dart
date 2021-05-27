@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/kdf/HKDF.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/ChainKey.dart';
+import 'package:libsignal_protocol_dart/src/kdf/hkdf.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/chain_key.dart';
 import 'package:test/test.dart';
 
 void main() {

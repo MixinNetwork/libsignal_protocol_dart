@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   test('should implement interface successfully', () async {
     final store = InMemoryPreKeyStore();
-    var preKeys = KeyHelper.generatePreKeys(1, 2);
+    var preKeys = generatePreKeys(1, 2);
 
     // storePreKey
     store.storePreKey(1, preKeys[0]);

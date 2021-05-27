@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/kdf/HKDF.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/RootKey.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/kdf/hkdf.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/root_key.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('testRootKeyDerivationV2', () {
-    var rootKeySeed = Uint8List.fromList([
+    final rootKeySeed = Uint8List.fromList([
       0x7b,
       0xa6,
       0xde,
@@ -43,7 +43,7 @@ void main() {
       0xcc
     ]);
 
-    var alicePublic = Uint8List.fromList([
+    final alicePublic = Uint8List.fromList([
       0x05,
       0xee,
       0x4f,
@@ -79,7 +79,7 @@ void main() {
       0x3a
     ]);
 
-    var alicePrivate = Uint8List.fromList([
+    final alicePrivate = Uint8List.fromList([
       0x21,
       0x68,
       0x22,
@@ -114,7 +114,7 @@ void main() {
       0x50
     ]);
 
-    var bobPublic = Uint8List.fromList([
+    final bobPublic = Uint8List.fromList([
       0x05,
       0xab,
       0xb8,
@@ -150,7 +150,7 @@ void main() {
       0x30
     ]);
 
-    var nextRoot = Uint8List.fromList([
+    final nextRoot = Uint8List.fromList([
       0xb1,
       0x14,
       0xf5,
@@ -185,7 +185,7 @@ void main() {
       0x31
     ]);
 
-    var nextChain = Uint8List.fromList([
+    final nextChain = Uint8List.fromList([
       0x9d,
       0x7d,
       0x24,
@@ -220,16 +220,16 @@ void main() {
       0x5f
     ]);
 
-    var alicePublicKey = Curve.decodePoint(alicePublic, 0);
-    var alicePrivateKey = Curve.decodePrivatePoint(alicePrivate);
-    var aliceKeyPair = ECKeyPair(alicePublicKey, alicePrivateKey);
+    final alicePublicKey = Curve.decodePoint(alicePublic, 0);
+    final alicePrivateKey = Curve.decodePrivatePoint(alicePrivate);
+    final aliceKeyPair = ECKeyPair(alicePublicKey, alicePrivateKey);
 
-    var bobPublicKey = Curve.decodePoint(bobPublic, 0);
-    var rootKey = RootKey(HKDF.createFor(2), rootKeySeed);
+    final bobPublicKey = Curve.decodePoint(bobPublic, 0);
+    final rootKey = RootKey(HKDF.createFor(2), rootKeySeed);
 
-    var rootKeyChainKeyPair = rootKey.createChain(bobPublicKey, aliceKeyPair);
-    var nextRootKey = rootKeyChainKeyPair.item1;
-    var nextChainKey = rootKeyChainKeyPair.item2;
+    final rootKeyChainKeyPair = rootKey.createChain(bobPublicKey, aliceKeyPair);
+    final nextRootKey = rootKeyChainKeyPair.item1;
+    final nextChainKey = rootKeyChainKeyPair.item2;
 
     expect(rootKey.getKeyBytes(), rootKeySeed);
     // TODO

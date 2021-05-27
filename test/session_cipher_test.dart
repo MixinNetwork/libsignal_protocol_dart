@@ -2,22 +2,22 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/SessionCipher.dart';
-import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECPublicKey.dart';
+import 'package:libsignal_protocol_dart/src/duplicate_message_exception.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/session_cipher.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_public_key.dart';
 import 'package:libsignal_protocol_dart/src/eq.dart';
-import 'package:libsignal_protocol_dart/src/protocol/CiphertextMessage.dart';
-import 'package:libsignal_protocol_dart/src/protocol/SignalMessage.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/AliceSignalProtocolParameters.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/BobSignalProtocolParameters.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/RatchetingSession.dart';
-import 'package:libsignal_protocol_dart/src/state/SessionRecord.dart';
-import 'package:libsignal_protocol_dart/src/state/SessionState.dart';
+import 'package:libsignal_protocol_dart/src/protocol/ciphertext_message.dart';
+import 'package:libsignal_protocol_dart/src/protocol/signal_message.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/alice_signal_protocol_parameters.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/bob_signal_protocol_parameters.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/ratcheting_session.dart';
+import 'package:libsignal_protocol_dart/src/state/session_record.dart';
+import 'package:libsignal_protocol_dart/src/state/session_state.dart';
 import 'package:optional/optional.dart';
 import 'package:test/test.dart';
 
@@ -202,7 +202,7 @@ void main() {
       await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(inflight[0].serialize()));
       throw AssertionError('Should have failed!');
-    } on DuplicateMessageException catch (dme) {
+    } on DuplicateMessageException {
       // good
     }
   }, skip: 'Failing historical test');

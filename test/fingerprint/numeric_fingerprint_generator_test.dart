@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/fingerprint/NumericFingerprintGenerator.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/fingerprint/numeric_fingerprint_generator.dart';
 import 'package:test/test.dart';
 
-var ALICE_IDENTITY = Uint8List.fromList([
+Uint8List ALICE_IDENTITY = Uint8List.fromList([
   0x05,
   0x06,
   0x86,
@@ -41,7 +41,7 @@ var ALICE_IDENTITY = Uint8List.fromList([
   0xd8,
   0x68
 ]);
-var BOB_IDENTITY = Uint8List.fromList([
+Uint8List BOB_IDENTITY = Uint8List.fromList([
   0x05,
   0xf7,
   0x81,
@@ -77,10 +77,10 @@ var BOB_IDENTITY = Uint8List.fromList([
   0x7b
 ]);
 
-var VERSION_1 = 1;
-var DISPLAYABLE_FINGERPRINT_V1 =
+int VERSION_1 = 1;
+String DISPLAYABLE_FINGERPRINT_V1 =
     '300354477692869396892869876765458257569162576843440918079131';
-var ALICE_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
+Uint8List ALICE_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
   0x08,
   0x01,
   0x12,
@@ -156,7 +156,7 @@ var ALICE_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
   0x3a,
   0x4d
 ]);
-var BOB_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
+Uint8List BOB_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
   0x08,
   0x01,
   0x12,
@@ -233,9 +233,9 @@ var BOB_SCANNABLE_FINGERPRINT_V1 = Uint8List.fromList([
   0xdf
 ]);
 
-var VERSION_2 = 2;
-var DISPLAYABLE_FINGERPRINT_V2 = DISPLAYABLE_FINGERPRINT_V1;
-var ALICE_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
+int VERSION_2 = 2;
+String DISPLAYABLE_FINGERPRINT_V2 = DISPLAYABLE_FINGERPRINT_V1;
+Uint8List ALICE_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
   0x08,
   0x02,
   0x12,
@@ -311,7 +311,7 @@ var ALICE_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
   0x3a,
   0x4d
 ]);
-var BOB_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
+Uint8List BOB_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
   0x08,
   0x02,
   0x12,
@@ -390,17 +390,17 @@ var BOB_SCANNABLE_FINGERPRINT_V2 = Uint8List.fromList([
 
 void main() {
   test('testVectorsVersion1', () {
-    var aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
-    var bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
-    var aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
-    var bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
+    final aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
+    final bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
+    final aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
+    final bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
 
-    var generator = NumericFingerprintGenerator(5200);
+    final generator = NumericFingerprintGenerator(5200);
 
-    var aliceFingerprint = generator.createFor(VERSION_1, aliceStableId,
+    final aliceFingerprint = generator.createFor(VERSION_1, aliceStableId,
         aliceIdentityKey, bobStableId, bobIdentityKey);
 
-    var bobFingerprint = generator.createFor(VERSION_1, bobStableId,
+    final bobFingerprint = generator.createFor(VERSION_1, bobStableId,
         bobIdentityKey, aliceStableId, aliceIdentityKey);
 
     expect(aliceFingerprint.displayableFingerprint.getDisplayText(),
@@ -415,21 +415,21 @@ void main() {
   });
 
   test('testMatchingFingerprints', () {
-    var aliceKeyPair = Curve.generateKeyPair();
-    var bobKeyPair = Curve.generateKeyPair();
+    final aliceKeyPair = Curve.generateKeyPair();
+    final bobKeyPair = Curve.generateKeyPair();
 
-    var aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
-    var bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
+    final aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
+    final bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
 
-    var generator = NumericFingerprintGenerator(1024);
-    var aliceFingerprint = generator.createFor(
+    final generator = NumericFingerprintGenerator(1024);
+    final aliceFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey,
         Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey);
 
-    var bobFingerprint = generator.createFor(
+    final bobFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
@@ -452,23 +452,23 @@ void main() {
   });
 
   test('testMismatchingFingerprints', () {
-    var aliceKeyPair = Curve.generateKeyPair();
-    var bobKeyPair = Curve.generateKeyPair();
-    var mitmKeyPair = Curve.generateKeyPair();
+    final aliceKeyPair = Curve.generateKeyPair();
+    final bobKeyPair = Curve.generateKeyPair();
+    final mitmKeyPair = Curve.generateKeyPair();
 
-    var aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
-    var bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
-    var mitmIdentityKey = IdentityKey(mitmKeyPair.publicKey);
+    final aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
+    final bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
+    final mitmIdentityKey = IdentityKey(mitmKeyPair.publicKey);
 
-    var generator = NumericFingerprintGenerator(1024);
-    var aliceFingerprint = generator.createFor(
+    final generator = NumericFingerprintGenerator(1024);
+    final aliceFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+14152222222')),
         aliceIdentityKey,
         Uint8List.fromList(utf8.encode('+14153333333')),
         mitmIdentityKey);
 
-    var bobFingerprint = generator.createFor(
+    final bobFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
@@ -491,20 +491,20 @@ void main() {
   });
 
   test('testMismatchingIdentifiers', () {
-    var aliceKeyPair = Curve.generateKeyPair();
-    var bobKeyPair = Curve.generateKeyPair();
+    final aliceKeyPair = Curve.generateKeyPair();
+    final bobKeyPair = Curve.generateKeyPair();
 
-    var aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
-    var bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
+    final aliceIdentityKey = IdentityKey(aliceKeyPair.publicKey);
+    final bobIdentityKey = IdentityKey(bobKeyPair.publicKey);
 
-    var generator = NumericFingerprintGenerator(1024);
-    var aliceFingerprint = generator.createFor(
+    final generator = NumericFingerprintGenerator(1024);
+    final aliceFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+141512222222')),
         aliceIdentityKey,
         Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey);
-    var bobFingerprint = generator.createFor(
+    final bobFingerprint = generator.createFor(
         VERSION_1,
         Uint8List.fromList(utf8.encode('+14153333333')),
         bobIdentityKey,
@@ -527,17 +527,17 @@ void main() {
   });
 
   test('testDifferentVersionsMakeSameFingerPrintsButDifferentScannable', () {
-    var aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
-    var bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
-    var aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
-    var bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
+    final aliceIdentityKey = IdentityKey.fromBytes(ALICE_IDENTITY, 0);
+    final bobIdentityKey = IdentityKey.fromBytes(BOB_IDENTITY, 0);
+    final aliceStableId = Uint8List.fromList(utf8.encode('+14152222222'));
+    final bobStableId = Uint8List.fromList(utf8.encode('+14153333333'));
 
-    var generator = NumericFingerprintGenerator(5200);
+    final generator = NumericFingerprintGenerator(5200);
 
-    var aliceFingerprintV1 = generator.createFor(VERSION_1, aliceStableId,
+    final aliceFingerprintV1 = generator.createFor(VERSION_1, aliceStableId,
         aliceIdentityKey, bobStableId, bobIdentityKey);
 
-    var aliceFingerprintV2 = generator.createFor(VERSION_2, aliceStableId,
+    final aliceFingerprintV2 = generator.createFor(VERSION_2, aliceStableId,
         aliceIdentityKey, bobStableId, bobIdentityKey);
 
     expect(

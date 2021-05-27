@@ -38,5 +38,4 @@ void main() {
 }
 
 SignedPreKeyRecord _generateSignedPreKey(int signedPreKeyId) =>
-    KeyHelper.generateSignedPreKey(
-        KeyHelper.generateIdentityKeyPair(), signedPreKeyId);
+    generateSignedPreKey(generateIdentityKeyPair(), signedPreKeyId);

@@ -1,15 +1,15 @@
-import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
-import 'package:libsignal_protocol_dart/src/devices/DeviceConsistencyCodeGenerator.dart';
-import 'package:libsignal_protocol_dart/src/devices/DeviceConsistencyCommitment.dart';
-import 'package:libsignal_protocol_dart/src/devices/DeviceConsistencySignature.dart';
-import 'package:libsignal_protocol_dart/src/protocol/DeviceConsistencyMessage.dart';
-import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/devices/device_consistency_code_generator.dart';
+import 'package:libsignal_protocol_dart/src/devices/device_consistency_commitment.dart';
+import 'package:libsignal_protocol_dart/src/devices/device_consistency_signature.dart';
+import 'package:libsignal_protocol_dart/src/protocol/device_consistency_message.dart';
+import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 import 'package:test/test.dart';
 
 void main() {
   String _generateCode(DeviceConsistencyCommitment commitment,
       List<DeviceConsistencyMessage> messages) {
-    var signatures = <DeviceConsistencySignature>[];
+    final signatures = <DeviceConsistencySignature>[];
     for (var message in messages) {
       signatures.add(message.signature);
     }
@@ -17,43 +17,42 @@ void main() {
   }
 
   test('testDeviceConsistency', () {
-    var deviceOne = KeyHelper.generateIdentityKeyPair();
-    var deviceTwo = KeyHelper.generateIdentityKeyPair();
-    var deviceThree = KeyHelper.generateIdentityKeyPair();
+    final deviceOne = generateIdentityKeyPair();
+    final deviceTwo = generateIdentityKeyPair();
+    final deviceThree = generateIdentityKeyPair();
 
-    var keyList = <IdentityKey>[];
-    keyList.add(deviceOne.getPublicKey());
-    keyList.add(deviceTwo.getPublicKey());
-    keyList.add(deviceThree.getPublicKey());
-
-    keyList.shuffle();
-    var deviceOneCommitment = DeviceConsistencyCommitment(1, keyList);
-
-    keyList.shuffle();
-    var deviceTwoCommitment = DeviceConsistencyCommitment(1, keyList);
+    final keyList = <IdentityKey>[]
+      ..add(deviceOne.getPublicKey())
+      ..add(deviceTwo.getPublicKey())
+      ..add(deviceThree.getPublicKey())
+      ..shuffle();
+    final deviceOneCommitment = DeviceConsistencyCommitment(1, keyList);
 
     keyList.shuffle();
-    var deviceThreeCommitment = DeviceConsistencyCommitment(1, keyList);
+    final deviceTwoCommitment = DeviceConsistencyCommitment(1, keyList);
+
+    keyList.shuffle();
+    final deviceThreeCommitment = DeviceConsistencyCommitment(1, keyList);
 
     expect(deviceOneCommitment.serialized, deviceTwoCommitment.serialized);
     expect(deviceTwoCommitment.serialized, deviceThreeCommitment.serialized);
 
-    var deviceOneMessage =
+    final deviceOneMessage =
         DeviceConsistencyMessage(deviceOneCommitment, deviceOne);
-    var deviceTwoMessage =
+    final deviceTwoMessage =
         DeviceConsistencyMessage(deviceOneCommitment, deviceTwo);
-    var deviceThreeMessage =
+    final deviceThreeMessage =
         DeviceConsistencyMessage(deviceOneCommitment, deviceThree);
 
-    var receivedDeviceOneMessage = DeviceConsistencyMessage.fromSerialized(
+    final receivedDeviceOneMessage = DeviceConsistencyMessage.fromSerialized(
         deviceOneCommitment,
         deviceOneMessage.serialized,
         deviceOne.getPublicKey());
-    var receivedDeviceTwoMessage = DeviceConsistencyMessage.fromSerialized(
+    final receivedDeviceTwoMessage = DeviceConsistencyMessage.fromSerialized(
         deviceOneCommitment,
         deviceTwoMessage.serialized,
         deviceTwo.getPublicKey());
-    var receivedDeviceThreeMessage = DeviceConsistencyMessage.fromSerialized(
+    final receivedDeviceThreeMessage = DeviceConsistencyMessage.fromSerialized(
         deviceOneCommitment,
         deviceThreeMessage.serialized,
         deviceThree.getPublicKey());
@@ -65,17 +64,17 @@ void main() {
     expect(deviceThreeMessage.signature.vrfOutput,
         receivedDeviceThreeMessage.signature.vrfOutput);
 
-    var codeOne = _generateCode(deviceOneCommitment, [
+    final codeOne = _generateCode(deviceOneCommitment, [
       deviceOneMessage,
       receivedDeviceTwoMessage,
       receivedDeviceThreeMessage
     ]);
-    var codeTwo = _generateCode(deviceTwoCommitment, [
+    final codeTwo = _generateCode(deviceTwoCommitment, [
       deviceTwoMessage,
       receivedDeviceThreeMessage,
       receivedDeviceOneMessage
     ]);
-    var codeThree = _generateCode(deviceThreeCommitment, [
+    final codeThree = _generateCode(deviceThreeCommitment, [
       deviceThreeMessage,
       receivedDeviceTwoMessage,
       receivedDeviceOneMessage
