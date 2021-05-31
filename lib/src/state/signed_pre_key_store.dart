@@ -6,9 +6,9 @@ abstract class SignedPreKeyStore {
 
   Future<List<SignedPreKeyRecord>> loadSignedPreKeys();
 
-  void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record);
+  Future<void> storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record);
 
   Future<bool> containsSignedPreKey(int signedPreKeyId);
 
-  void removeSignedPreKey(int signedPreKeyId);
+  Future<void> removeSignedPreKey(int signedPreKeyId);
 }

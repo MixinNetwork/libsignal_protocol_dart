@@ -73,7 +73,7 @@ Future<void> main() async {
     alicePlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < aliceCiphertextMessages.length / 2; i++) {
-      final receivedPlaintext = bobCipher.decryptFromSignal(
+      final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
       // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
@@ -95,7 +95,7 @@ Future<void> main() async {
     bobPlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < bobCiphertextMessages.length / 2; i++) {
-      final receivedPlaintext = aliceCipher.decryptFromSignal(
+      final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
       // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
@@ -104,7 +104,7 @@ Future<void> main() async {
     for (var i = aliceCiphertextMessages.length ~/ 2;
         i < aliceCiphertextMessages.length;
         i++) {
-      final receivedPlaintext = bobCipher.decryptFromSignal(
+      final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
       // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
@@ -113,15 +113,15 @@ Future<void> main() async {
     for (var i = bobCiphertextMessages.length ~/ 2;
         i < bobCiphertextMessages.length;
         i++) {
-      final receivedPlaintext = aliceCipher.decryptFromSignal(
+      final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
       // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
   }
 
-  void initializeSessionsV3(
-      SessionState aliceSessionState, SessionState bobSessionState) {
+  Future<void> initializeSessionsV3(
+      SessionState aliceSessionState, SessionState bobSessionState) async {
     final aliceIdentityKeyPair = Curve.generateKeyPair();
     final aliceIdentityKey = IdentityKeyPair(
         IdentityKey(aliceIdentityKeyPair.publicKey),
@@ -166,20 +166,20 @@ Future<void> main() async {
     RatchetingSession.initializeSessionBob(bobSessionState, bobParameters);
   }
 
-  test('testBasicSessionV3', () {
+  test('testBasicSessionV3', () async {
     final aliceSessionRecord = SessionRecord();
     final bobSessionRecord = SessionRecord();
 
-    initializeSessionsV3(
+    await initializeSessionsV3(
         aliceSessionRecord.sessionState, bobSessionRecord.sessionState);
-    runInteraction(aliceSessionRecord, bobSessionRecord);
+    await runInteraction(aliceSessionRecord, bobSessionRecord);
   });
 
   test('testMessageKeyLimits', () async {
     final aliceSessionRecord = SessionRecord();
     final bobSessionRecord = SessionRecord();
 
-    initializeSessionsV3(
+    await initializeSessionsV3(
         aliceSessionRecord.sessionState, bobSessionRecord.sessionState);
 
     final aliceStore = TestInMemorySignalProtocolStore();

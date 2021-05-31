@@ -23,7 +23,7 @@ class InMemorySenderKeyStore extends SenderKeyStore {
   }
 
   @override
-  Future storeSenderKey(
+  Future<void> storeSenderKey(
       SenderKeyName senderKeyName, SenderKeyRecord record) async {
     _store[senderKeyName] = record;
   }

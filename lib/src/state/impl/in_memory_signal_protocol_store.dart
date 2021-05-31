@@ -53,8 +53,8 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       preKeyStore.loadPreKey(preKeyId);
 
   @override
-  void storePreKey(int preKeyId, PreKeyRecord record) {
-    preKeyStore.storePreKey(preKeyId, record);
+  Future<void> storePreKey(int preKeyId, PreKeyRecord record) async {
+    await preKeyStore.storePreKey(preKeyId, record);
   }
 
   @override
@@ -62,8 +62,8 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       preKeyStore.containsPreKey(preKeyId);
 
   @override
-  void removePreKey(int preKeyId) {
-    preKeyStore.removePreKey(preKeyId);
+  Future<void> removePreKey(int preKeyId) async {
+    await preKeyStore.removePreKey(preKeyId);
   }
 
   @override
@@ -85,12 +85,12 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       sessionStore.containsSession(address);
 
   @override
-  Future deleteSession(SignalProtocolAddress address) async {
+  Future<void> deleteSession(SignalProtocolAddress address) async {
     await sessionStore.deleteSession(address);
   }
 
   @override
-  Future deleteAllSessions(String name) async {
+  Future<void> deleteAllSessions(String name) async {
     await sessionStore.deleteAllSessions(name);
   }
 
@@ -103,8 +103,9 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       signedPreKeyStore.loadSignedPreKeys();
 
   @override
-  void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record) {
-    signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record);
+  Future<void> storeSignedPreKey(
+      int signedPreKeyId, SignedPreKeyRecord record) async {
+    await signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record);
   }
 
   @override
@@ -112,7 +113,7 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       signedPreKeyStore.containsSignedPreKey(signedPreKeyId);
 
   @override
-  void removeSignedPreKey(int signedPreKeyId) {
-    signedPreKeyStore.removeSignedPreKey(signedPreKeyId);
+  Future<void> removeSignedPreKey(int signedPreKeyId) async {
+    await signedPreKeyStore.removeSignedPreKey(signedPreKeyId);
   }
 }

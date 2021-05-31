@@ -204,7 +204,6 @@ class SessionCipher {
     final messageKeys = _getOrCreateMessageKeys(
         sessionState, theirEphemeral, chainKey!, counter);
 
-    // TODO null safety
     ciphertextMessage.verifyMac(sessionState.getRemoteIdentityKey()!,
         sessionState.getLocalIdentityKey(), messageKeys!.getMacKey());
 

@@ -27,12 +27,12 @@ class InMemoryPreKeyStore extends PreKeyStore {
   }
 
   @override
-  void removePreKey(int preKeyId) {
+  Future<void> removePreKey(int preKeyId) async {
     store.remove(preKeyId);
   }
 
   @override
-  void storePreKey(int preKeyId, PreKeyRecord record) {
+  Future<void> storePreKey(int preKeyId, PreKeyRecord record) async {
     store[preKeyId] = record.serialize();
   }
 }

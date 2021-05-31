@@ -45,7 +45,8 @@ class GroupCipher {
     try {
       final record = await _senderKeyStore.loadSenderKey(_senderKeyId);
       if (record.isEmpty) {
-        throw NoSessionException('No sender key for: $_senderKeyId');
+        throw NoSessionException(
+            'No sender key for: ${_senderKeyId.serialize()}');
       }
 
       final senderKeyMessage =
