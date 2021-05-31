@@ -115,7 +115,7 @@ class SessionCipher {
     await _sessionStore.storeSession(_remoteAddress, sessionRecord);
 
     if (unsignedPreKeyId.isPresent) {
-      _preKeyStore.removePreKey(unsignedPreKeyId.value);
+      await _preKeyStore.removePreKey(unsignedPreKeyId.value);
     }
 
     return plaintext;

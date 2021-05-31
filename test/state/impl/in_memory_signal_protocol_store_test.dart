@@ -55,20 +55,19 @@ void main() {
     // Bob to decrypt...
     //
 
-    bobStore
-      ..storePreKey(
-        31337,
-        PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair),
-      )
-      ..storeSignedPreKey(
+    await bobStore.storePreKey(
+      31337,
+      PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair),
+    );
+    await bobStore.storeSignedPreKey(
+      22,
+      SignedPreKeyRecord(
         22,
-        SignedPreKeyRecord(
-          22,
-          Int64(DateTime.now().millisecondsSinceEpoch),
-          bobSignedPreKeyPair,
-          bobSignedPreKeySignature,
-        ),
-      );
+        Int64(DateTime.now().millisecondsSinceEpoch),
+        bobSignedPreKeyPair,
+        bobSignedPreKeySignature,
+      ),
+    );
 
     final msgIn = PreKeySignalMessage(msgAliceToBob.serialize());
     expect(

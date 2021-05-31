@@ -190,12 +190,12 @@ void main() {
     assert(outgoingMessage.getType() == CiphertextMessage.prekeyType);
 
     final incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
-    bobStore
-      ..storePreKey(31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair))
-      ..storeSignedPreKey(
-          22,
-          SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
-              bobSignedPreKeyPair, bobSignedPreKeySignature));
+    await bobStore.storePreKey(
+        31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+    await bobStore.storeSignedPreKey(
+        22,
+        SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
+            bobSignedPreKeyPair, bobSignedPreKeySignature));
 
     final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
     var plaintext = await bobSessionCipher.decryptWithCallback(incomingMessage,
@@ -247,12 +247,12 @@ void main() {
             .getIdentityKeyPair()
             .then((value) => value.getPublicKey()));
 
-    bobStore
-      ..storePreKey(31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair))
-      ..storeSignedPreKey(
-          23,
-          SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch),
-              bobSignedPreKeyPair, bobSignedPreKeySignature));
+    await bobStore.storePreKey(
+        31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+    await bobStore.storeSignedPreKey(
+        23,
+        SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch),
+            bobSignedPreKeyPair, bobSignedPreKeySignature));
     await aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
     outgoingMessage = await aliceSessionCipher
