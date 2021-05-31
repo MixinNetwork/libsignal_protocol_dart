@@ -28,7 +28,7 @@ class SenderKeyState {
     _senderKeyStateStructure = senderKeyStateStructure;
   }
 
-  static const int _MAX_MESSAGE_KEYS = 2000;
+  static const int _maxMessageKeys = 2000;
 
   late SenderKeyStateStructure _senderKeyStateStructure;
 
@@ -86,14 +86,14 @@ class SenderKeyState {
           ..iteration = senderMessageKey.iteration
           ..seed = senderMessageKey.seed;
     _senderKeyStateStructure.senderMessageKeys.add(senderMessageKeyStructure);
-    if (_senderKeyStateStructure.senderMessageKeys.length > _MAX_MESSAGE_KEYS) {
+    if (_senderKeyStateStructure.senderMessageKeys.length > _maxMessageKeys) {
       _senderKeyStateStructure.senderMessageKeys.removeAt(0);
     }
   }
 
   SenderMessageKey? removeSenderMessageKey(int iteration) {
     List.from(_senderKeyStateStructure.senderMessageKeys)
-      ..addAll(_senderKeyStateStructure.senderMessageKeys);
+        .addAll(_senderKeyStateStructure.senderMessageKeys);
     final index = _senderKeyStateStructure.senderMessageKeys
         .indexWhere((item) => item.iteration == iteration);
     if (index == -1) return null;

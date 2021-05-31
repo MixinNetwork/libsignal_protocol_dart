@@ -25,7 +25,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   @override
   Future<List<SignedPreKeyRecord>> loadSignedPreKeys() async {
     try {
-      var results = <SignedPreKeyRecord>[];
+      final results = <SignedPreKeyRecord>[];
       for (var serialized in store.values) {
         results.add(SignedPreKeyRecord.fromSerialized(serialized));
       }
@@ -41,9 +41,8 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
   }
 
   @override
-  Future<bool> containsSignedPreKey(int signedPreKeyId) async {
-    return store.containsKey(signedPreKeyId);
-  }
+  Future<bool> containsSignedPreKey(int signedPreKeyId) async =>
+      store.containsKey(signedPreKeyId);
 
   @override
   void removeSignedPreKey(int signedPreKeyId) {

@@ -23,13 +23,13 @@ import 'test_in_memory_identity_key_store.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 void main() {
-  final ALICE_ADDRESS = SignalProtocolAddress('+14151111111', 1);
-  final BOB_ADDRESS = SignalProtocolAddress('+14152222222', 1);
+  final aliceAddress = SignalProtocolAddress('+14151111111', 1);
+  final bobAddress = SignalProtocolAddress('+14152222222', 1);
 
   test('testBasicPreKeyV2', () async {
     final aliceStore = TestInMemorySignalProtocolStore();
     final aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
     final bobStore = TestInMemorySignalProtocolStore();
     final bobPreKeyPair = Curve.generateKeyPair();
@@ -55,14 +55,14 @@ void main() {
 
   Future<void> runInteraction(
       SignalProtocolStore aliceStore, SignalProtocolStore bobStore) async {
-    final aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
-    final bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    final aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
+    final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
 
     const originalMessage = 'smert ze smert';
     final aliceMessage = await aliceSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
-    assert(aliceMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(aliceMessage.getType() == CiphertextMessage.whisperType);
 
     var plaintext = await bobSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(aliceMessage.serialize()));
@@ -71,7 +71,7 @@ void main() {
     final bobMessage = await bobSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
-    assert(bobMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(bobMessage.getType() == CiphertextMessage.whisperType);
 
     plaintext = await aliceSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(bobMessage.serialize()));
@@ -153,7 +153,7 @@ void main() {
   test('testBasicPreKeyV3', () async {
     var aliceStore = TestInMemorySignalProtocolStore();
     var aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
     final bobStore = TestInMemorySignalProtocolStore();
     var bobPreKeyPair = Curve.generateKeyPair();
@@ -177,17 +177,17 @@ void main() {
             .then((value) => value.getPublicKey()));
     await aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
-    assert(await aliceStore.containsSession(BOB_ADDRESS));
+    assert(await aliceStore.containsSession(bobAddress));
     assert(await aliceStore
-            .loadSession(BOB_ADDRESS)
+            .loadSession(bobAddress)
             .then((value) => value.sessionState.getSessionVersion()) ==
         3);
 
     const originalMessage = "L'homme est condamné à être libre";
-    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
     var outgoingMessage = await aliceSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
-    assert(outgoingMessage.getType() == CiphertextMessage.PREKEY_TYPE);
+    assert(outgoingMessage.getType() == CiphertextMessage.prekeyType);
 
     final incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
     bobStore
@@ -197,28 +197,24 @@ void main() {
           SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
               bobSignedPreKeyPair, bobSignedPreKeySignature));
 
-    final bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
     var plaintext = await bobSessionCipher.decryptWithCallback(incomingMessage,
         (plaintext) async {
       final result = utf8.decode(plaintext, allowMalformed: true);
       assert(originalMessage == result);
-      assert(!await bobStore.containsSession(ALICE_ADDRESS));
+      assert(!await bobStore.containsSession(aliceAddress));
     });
 
-    assert(await bobStore.containsSession(ALICE_ADDRESS));
+    assert(await bobStore.containsSession(aliceAddress));
     assert(await bobStore
-            .loadSession(ALICE_ADDRESS)
+            .loadSession(aliceAddress)
             .then((value) => value.sessionState.getSessionVersion()) ==
         3);
-    assert(bobStore
-            .loadSession(ALICE_ADDRESS)
-            .then((value) => value.sessionState.aliceBaseKey) !=
-        null);
     assert(originalMessage == utf8.decode(plaintext, allowMalformed: true));
 
     final bobOutgoingMessage = await bobSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
-    assert(bobOutgoingMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(bobOutgoingMessage.getType() == CiphertextMessage.whisperType);
 
     final alicePlaintext = await aliceSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(bobOutgoingMessage.serialize()));
@@ -229,8 +225,8 @@ void main() {
 
     aliceStore = TestInMemorySignalProtocolStore();
     aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
-    aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
+    aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
 
     bobPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeyPair = Curve.generateKeyPair();
@@ -267,7 +263,7 @@ void main() {
           .decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
       throw AssertionError("shouldn't be trusted!");
     } on UntrustedIdentityException {
-      await bobStore.saveIdentity(ALICE_ADDRESS,
+      await bobStore.saveIdentity(aliceAddress,
           PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey());
     }
 
@@ -298,7 +294,7 @@ void main() {
   test('testBadSignedPreKeySignature', () async {
     final aliceStore = TestInMemorySignalProtocolStore();
     final aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
     final bobIdentityKeyStore = TestInMemoryIdentityKeyStore();
 

@@ -150,6 +150,7 @@ void main() {
       0x30
     ]);
 
+    // ignore: unused_local_variable
     final nextRoot = Uint8List.fromList([
       0xb1,
       0x14,
@@ -185,6 +186,7 @@ void main() {
       0x31
     ]);
 
+    // ignore: unused_local_variable
     final nextChain = Uint8List.fromList([
       0x9d,
       0x7d,
@@ -228,7 +230,9 @@ void main() {
     final rootKey = RootKey(HKDF.createFor(2), rootKeySeed);
 
     final rootKeyChainKeyPair = rootKey.createChain(bobPublicKey, aliceKeyPair);
+    // ignore: unused_local_variable
     final nextRootKey = rootKeyChainKeyPair.item1;
+    // ignore: unused_local_variable
     final nextChainKey = rootKeyChainKeyPair.item2;
 
     expect(rootKey.getKeyBytes(), rootKeySeed);

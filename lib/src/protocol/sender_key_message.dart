@@ -16,7 +16,7 @@ class SenderKeyMessage extends CiphertextMessage {
       ECPrivateKey signatureKey) {
     final version = Uint8List.fromList([
       ByteUtil.intsToByteHighAndLow(
-          CiphertextMessage.CURRENT_VERSION, CiphertextMessage.CURRENT_VERSION)
+          CiphertextMessage.currentVersion, CiphertextMessage.currentVersion)
     ]);
     final message = protocol.SenderKeyMessage.create()
       ..id = keyId
@@ -26,7 +26,7 @@ class SenderKeyMessage extends CiphertextMessage {
     final signature =
         _getSignature(signatureKey, ByteUtil.combine([version, messageList]));
     _serialized = ByteUtil.combine([version, messageList, signature]);
-    _messageVersion = CiphertextMessage.CURRENT_VERSION;
+    _messageVersion = CiphertextMessage.currentVersion;
     _keyId = keyId;
     _iteration = iteration;
     _ciphertext = ciphertext;
@@ -34,9 +34,10 @@ class SenderKeyMessage extends CiphertextMessage {
 
   SenderKeyMessage.fromSerialized(Uint8List serialized) {
     final messageParts = ByteUtil.split(serialized, 1,
-        serialized.length - 1 - SIGNATURE_LENGTH, SIGNATURE_LENGTH);
+        serialized.length - 1 - signatureLength, signatureLength);
     final version = messageParts[0][0];
     final message = messageParts[1];
+    // ignore: unused_local_variable
     final signature = messageParts[2];
 
     if (ByteUtil.highBitsToInt(version) < 3) {
@@ -44,7 +45,7 @@ class SenderKeyMessage extends CiphertextMessage {
           'Legacy message: ${ByteUtil.highBitsToInt(version)}');
     }
 
-    if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
+    if (ByteUtil.highBitsToInt(version) > CiphertextMessage.currentVersion) {
       throw InvalidMessageException(
           'Unknown version: ${ByteUtil.highBitsToInt(version)}');
     }
@@ -64,8 +65,9 @@ class SenderKeyMessage extends CiphertextMessage {
     _ciphertext = Uint8List.fromList(senderKeyMessage.ciphertext);
   }
 
-  static const int SIGNATURE_LENGTH = 64;
+  static const int signatureLength = 64;
 
+  // ignore: unused_field
   late int _messageVersion;
   late int _keyId;
   late int _iteration;
@@ -89,7 +91,7 @@ class SenderKeyMessage extends CiphertextMessage {
   void verifySignature(ECPublicKey signatureKey) {
     try {
       final parts = ByteUtil.splitTwo(
-          _serialized, _serialized.length - SIGNATURE_LENGTH, SIGNATURE_LENGTH);
+          _serialized, _serialized.length - signatureLength, signatureLength);
       if (!Curve.verifySignature(signatureKey, parts[0], parts[1])) {
         throw InvalidMessageException('Invalid signature!');
       }
@@ -99,7 +101,7 @@ class SenderKeyMessage extends CiphertextMessage {
   }
 
   @override
-  int getType() => CiphertextMessage.SENDERKEY_TYPE;
+  int getType() => CiphertextMessage.senderKeyType;
 
   @override
   Uint8List serialize() => _serialized;

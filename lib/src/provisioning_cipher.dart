@@ -13,20 +13,20 @@ import 'kdf/hkdfv3.dart';
 import 'legacy_message_exception.dart';
 import 'util/byte_util.dart';
 
-const String PROVISION = 'Mixin Provisioning Message';
+const String provision = 'Mixin Provisioning Message';
 
 class ProvisionEnvelope {
-  ProvisionEnvelope(this.public_key, this.body);
+  ProvisionEnvelope(this.publicKey, this.body);
 
   ProvisionEnvelope.fromJson(Map<String, dynamic> json)
-      : public_key = base64Decode(json['public_key']),
+      : publicKey = base64Decode(json['public_key']),
         body = base64Decode(json['body']);
 
-  final Uint8List public_key;
+  final Uint8List publicKey;
   final Uint8List body;
 
   Map<String, dynamic> toJson() => {
-        'public_key': base64Encode(public_key),
+        'public_key': base64Encode(publicKey),
         'body': base64Encode(body),
       };
 }
@@ -37,7 +37,7 @@ Uint8List decrypt(String privateKey, String content) {
 
   final map = jsonDecode(String.fromCharCodes(envelopeDecode));
   final provisionEnvelope = ProvisionEnvelope.fromJson(map);
-  final publicKeyable = Curve.decodePoint(provisionEnvelope.public_key, 0);
+  final publicKeyable = Curve.decodePoint(provisionEnvelope.publicKey, 0);
   final message = provisionEnvelope.body;
   if (message[0] != 1) {
     throw LegacyMessageException('Invalid version');
@@ -52,7 +52,7 @@ Uint8List decrypt(String privateKey, String content) {
       publicKeyable, Curve.decodePrivatePoint(ourPrivateKey));
 
   final derivedSecretBytes = HKDFv3().deriveSecrets(sharedSecret,
-      Uint8List.fromList(utf8.encode(PROVISION)), DerivedRootSecrets.SIZE);
+      Uint8List.fromList(utf8.encode(provision)), DerivedRootSecrets.size);
 
   final aesKey =
       Uint8List.fromList(derivedSecretBytes.getRange(0, 32).toList());
@@ -69,6 +69,7 @@ Uint8List decrypt(String privateKey, String content) {
 bool verifyMAC(Uint8List key, Uint8List input, List<int> mac) {
   final hmacSha256 = Hmac(sha256, key);
   final digest = hmacSha256.convert(input);
+  // ignore: avoid_dynamic_calls
   return eq(digest.bytes, mac);
 }
 
@@ -82,7 +83,7 @@ class ProvisioningCipher {
     final sharedSecret =
         Curve.calculateAgreement(_theirPublicKey, ourKeyPair.privateKey);
     final derivedSecret = HKDFv3().deriveSecrets(
-        sharedSecret, Uint8List.fromList(utf8.encode(PROVISION)), 64);
+        sharedSecret, Uint8List.fromList(utf8.encode(provision)), 64);
     final parts = ByteUtil.splitTwo(derivedSecret, 32, 32);
 
     final version = Uint8List.fromList([1]);

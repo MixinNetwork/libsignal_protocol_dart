@@ -16,7 +16,7 @@ class SenderKeyDistributionMessageWrapper extends CiphertextMessage {
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKey) {
     final version = Uint8List.fromList([
       ByteUtil.intsToByteHighAndLow(
-          CiphertextMessage.CURRENT_VERSION, CiphertextMessage.CURRENT_VERSION)
+          CiphertextMessage.currentVersion, CiphertextMessage.currentVersion)
     ]);
     final protobuf = SenderKeyDistributionMessage.create()
       ..id = id
@@ -37,11 +37,11 @@ class SenderKeyDistributionMessageWrapper extends CiphertextMessage {
       final version = messageParts[0][0];
       final message = messageParts[1];
 
-      if (ByteUtil.highBitsToInt(version) < CiphertextMessage.CURRENT_VERSION) {
+      if (ByteUtil.highBitsToInt(version) < CiphertextMessage.currentVersion) {
         throw LegacyMessageException(
             'Legacy message: ${ByteUtil.highBitsToInt(version)}');
       }
-      if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
+      if (ByteUtil.highBitsToInt(version) > CiphertextMessage.currentVersion) {
         throw InvalidMessageException(
             'Unknown version: ${ByteUtil.highBitsToInt(version)}');
       }
@@ -75,7 +75,7 @@ class SenderKeyDistributionMessageWrapper extends CiphertextMessage {
   late Uint8List _serialized;
 
   @override
-  int getType() => CiphertextMessage.SENDERKEY_DISTRIBUTION_TYPE;
+  int getType() => CiphertextMessage.senderKeyDistributionType;
 
   @override
   Uint8List serialize() => _serialized;

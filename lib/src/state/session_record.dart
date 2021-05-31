@@ -25,19 +25,21 @@ class SessionRecord {
     }
   }
 
-  static const int ARCHIVED_STATES_MAX_LENGTH = 40;
+  static const int archivedStatesMaxLength = 40;
   var _sessionState = SessionState();
   final _previousStates = LinkedList<SessionState>();
   bool _fresh = false;
 
   bool hasSessionState(int version, Uint8List aliceBaseKey) {
     if (_sessionState.getSessionVersion() == version &&
+        // ignore: avoid_dynamic_calls
         eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
       return true;
     }
 
     for (var state in _previousStates) {
       if (state.getSessionVersion() == version &&
+          // ignore: avoid_dynamic_calls
           eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
         return true;
       }
@@ -63,12 +65,12 @@ class SessionRecord {
     _previousStates.addFirst(_sessionState);
     _sessionState = promotedState;
 
-    if (_previousStates.length > ARCHIVED_STATES_MAX_LENGTH) {
+    if (_previousStates.length > archivedStatesMaxLength) {
       _previousStates.remove(_previousStates.last);
     }
   }
 
-  void setState(SessionState sessionState) {
+  set state(SessionState sessionState) {
     _sessionState = sessionState;
   }
 

@@ -1,6 +1,6 @@
 class LegacyMessageException implements Exception {
-  final String detailMessage;
   LegacyMessageException(this.detailMessage);
+  final String detailMessage;
 
   @override
   String toString() => '$runtimeType - $detailMessage';

@@ -2,7 +2,7 @@ import '../identity_key.dart';
 import '../identity_key_pair.dart';
 import '../signal_protocol_address.dart';
 
-enum Direction { SENDING, RECEIVING }
+enum Direction { sending, receiving }
 
 abstract class IdentityKeyStore {
   Future<IdentityKeyPair> getIdentityKeyPair();

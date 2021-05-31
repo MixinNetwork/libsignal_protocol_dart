@@ -4,11 +4,10 @@ import 'package:test/test.dart';
 void main() {
   test('should implement interface successfully', () async {
     final store = InMemoryPreKeyStore();
-    var preKeys = generatePreKeys(1, 2);
+    final preKeys = generatePreKeys(1, 2);
 
     // storePreKey
-    store.storePreKey(1, preKeys[0]);
-    store.storePreKey(2, preKeys[1]);
+    store..storePreKey(1, preKeys[0])..storePreKey(2, preKeys[1]);
 
     // containsPreKey
     expect(await store.containsPreKey(1), true);

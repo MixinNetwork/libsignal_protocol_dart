@@ -31,7 +31,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     _sessionStructure = copy.structure;
   }
 
-  static const int MAX_MESSAGE_KEYS = 2000;
+  static const int maxMessageKeys = 2000;
 
   late SessionStructure _sessionStructure;
 
@@ -69,6 +69,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       return IdentityKey.fromBytes(
           Uint8List.fromList(_sessionStructure.remoteIdentityPublic), 0);
     } on InvalidKeyException catch (e) {
+      // ignore: avoid_print
       print(e);
       return null;
     }
@@ -126,11 +127,13 @@ class SessionState extends LinkedListEntry<SessionState> {
         final chainSenderRatchetKey = Curve.decodePoint(
             Uint8List.fromList(receiverChain.senderRatchetKey), 0);
 
+        // ignore: avoid_dynamic_calls
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
           return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
+        // ignore: avoid_print
         print(e);
       }
       index++;
@@ -262,7 +265,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
     chain.messageKeys.add(messageKeyStructure);
 
-    if (chain.messageKeys.length > MAX_MESSAGE_KEYS) {
+    if (chain.messageKeys.length > maxMessageKeys) {
       chain.messageKeys.removeAt(0);
     }
 

@@ -8,16 +8,16 @@ import 'device_consistency_commitment.dart';
 import 'device_consistency_signature.dart';
 
 class DeviceConsistencyCodeGenerator {
-  static const int CODE_VERSION = 0;
+  static const int codeVersion = 0;
 
   static String generateFor(DeviceConsistencyCommitment commitment,
       List<DeviceConsistencySignature> signatures) {
     final sortedSignatures = <DeviceConsistencySignature>[...signatures]
-      ..sort(SignatureComparator());
+      ..sort(compareSignature);
 
     final output = AccumulatorSink<Digest>();
     final input = sha512.startChunkedConversion(output)
-      ..add(ByteUtil.shortToByteArray(CODE_VERSION))
+      ..add(ByteUtil.shortToByteArray(codeVersion))
       ..add(commitment.serialized);
 
     for (var signature in sortedSignatures) {
@@ -36,6 +36,6 @@ class DeviceConsistencyCodeGenerator {
   }
 }
 
-Function SignatureComparator =
-    (DeviceConsistencySignature a, DeviceConsistencySignature b) =>
-        ByteUtil.compare(a.vrfOutput, b.vrfOutput);
+int compareSignature(
+        DeviceConsistencySignature a, DeviceConsistencySignature b) =>
+    ByteUtil.compare(a.vrfOutput, b.vrfOutput);

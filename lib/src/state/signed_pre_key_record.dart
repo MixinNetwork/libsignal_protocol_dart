@@ -7,21 +7,21 @@ import '../invalid_key_exception.dart';
 import 'local_storage_protocol.pb.dart';
 
 class SignedPreKeyRecord {
-  late SignedPreKeyRecordStructure _structure;
-
   SignedPreKeyRecord(
       int id, Int64 timestamp, ECKeyPair keyPair, Uint8List signature) {
-    _structure = SignedPreKeyRecordStructure.create();
-    _structure.id = id;
-    _structure.timestamp = timestamp;
-    _structure.publicKey = keyPair.publicKey.serialize();
-    _structure.privateKey = keyPair.privateKey.serialize();
-    _structure.signature = signature;
+    _structure = SignedPreKeyRecordStructure.create()
+      ..id = id
+      ..timestamp = timestamp
+      ..publicKey = keyPair.publicKey.serialize()
+      ..privateKey = keyPair.privateKey.serialize()
+      ..signature = signature;
   }
 
   SignedPreKeyRecord.fromSerialized(Uint8List serialized) {
     _structure = SignedPreKeyRecordStructure.fromBuffer(serialized);
   }
+
+  late SignedPreKeyRecordStructure _structure;
 
   int get id => _structure.id;
 
@@ -29,8 +29,8 @@ class SignedPreKeyRecord {
 
   ECKeyPair getKeyPair() {
     try {
-      var publicKey = Curve.decodePointList(_structure.publicKey, 0);
-      var privateKey =
+      final publicKey = Curve.decodePointList(_structure.publicKey, 0);
+      final privateKey =
           Curve.decodePrivatePoint(Uint8List.fromList(_structure.privateKey));
 
       return ECKeyPair(publicKey, privateKey);
@@ -41,7 +41,5 @@ class SignedPreKeyRecord {
 
   Uint8List get signature => Uint8List.fromList(_structure.signature);
 
-  Uint8List serialize() {
-    return _structure.writeToBuffer();
-  }
+  Uint8List serialize() => _structure.writeToBuffer();
 }

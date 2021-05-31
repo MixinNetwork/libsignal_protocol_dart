@@ -8,8 +8,9 @@ void main() {
     final signedPreKeyRecord2 = _generateSignedPreKey(2);
 
     // storeSignedPreKey
-    store.storeSignedPreKey(1, signedPreKeyRecord1);
-    store.storeSignedPreKey(2, signedPreKeyRecord2);
+    store
+      ..storeSignedPreKey(1, signedPreKeyRecord1)
+      ..storeSignedPreKey(2, signedPreKeyRecord2);
 
     // containsSignedPreKey
     expect(await store.containsSignedPreKey(1), true);

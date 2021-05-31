@@ -385,6 +385,7 @@ void main() {
       0x88
     ]);
 
+    // ignore: unused_local_variable
     final alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate);
     final alicePublicKey = Curve.decodePoint(aliceIdentityPublic, 0);
     final aliceEphemeral = Curve.decodePoint(aliceEphemeralPublic, 0);
@@ -415,6 +416,7 @@ void main() {
     final justRight = Curve.decodePoint(serializedPublic, 0);
 
     try {
+      // ignore: unused_local_variable
       final tooSmall = Curve.decodePoint(serializedPublic, 1);
       throw AssertionError("Shouldn't decode");
     } on InvalidKeyException {
@@ -422,6 +424,7 @@ void main() {
     }
 
     try {
+      // ignore: unused_local_variable
       final empty = Curve.decodePoint(Uint8List(0), 0);
       throw AssertionError("Shouldn't parse");
     } on InvalidKeyException {

@@ -34,8 +34,7 @@ Future<void> install() async {
   final remoteRegId = generateRegistrationId(false);
   final remoteIdentityKeyPair = generateIdentityKeyPair();
   final remotePreKeys = generatePreKeys(0, 110);
-  final remoteSignedPreKey =
-      generateSignedPreKey(remoteIdentityKeyPair, 0);
+  final remoteSignedPreKey = generateSignedPreKey(remoteIdentityKeyPair, 0);
 
   final retrievedPreKey = PreKeyBundle(
       remoteRegId,
@@ -69,7 +68,7 @@ Future<void> install() async {
   signalProtocolStore.storeSignedPreKey(
       remoteSignedPreKey.id, remoteSignedPreKey);
 
-  if (ciphertext.getType() == CiphertextMessage.PREKEY_TYPE) {
+  if (ciphertext.getType() == CiphertextMessage.prekeyType) {
     remoteSessionCipher.decryptWithCallback(ciphertext as PreKeySignalMessage,
         (plaintext) {
       print(utf8.decode(plaintext));

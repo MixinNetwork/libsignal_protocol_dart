@@ -15,6 +15,10 @@ analyzer:
     # custom
     - 'lib/generated/**'
     - '**.g.dart'
+    - 'lib/src/state/**.pb.dart'
+    - 'lib/src/state/**.pbenum.dart'
+    - 'lib/src/state/**.pbjson.dart'
+    - 'lib/src/state/**.pbserver.dart'
 
 linter:
   rules:
@@ -41,7 +45,6 @@ linter:
     - avoid_classes_with_only_static_members
     - type_annotate_public_apis
     - prefer_const_literals_to_create_immutables
-    - use_named_constants
     - use_string_buffers
     - unnecessary_raw_strings
     - unnecessary_null_checks

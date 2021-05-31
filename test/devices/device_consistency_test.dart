@@ -21,11 +21,11 @@ void main() {
     final deviceTwo = generateIdentityKeyPair();
     final deviceThree = generateIdentityKeyPair();
 
-    final keyList = <IdentityKey>[]
-      ..add(deviceOne.getPublicKey())
-      ..add(deviceTwo.getPublicKey())
-      ..add(deviceThree.getPublicKey())
-      ..shuffle();
+    final keyList = <IdentityKey>[
+      deviceOne.getPublicKey(),
+      deviceTwo.getPublicKey(),
+      deviceThree.getPublicKey()
+    ]..shuffle();
     final deviceOneCommitment = DeviceConsistencyCommitment(1, keyList);
 
     keyList.shuffle();

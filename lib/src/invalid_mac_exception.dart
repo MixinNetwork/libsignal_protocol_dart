@@ -1,6 +1,6 @@
 class InvalidMacException implements Exception {
-  final String detailMessage;
   InvalidMacException(this.detailMessage);
+  final String detailMessage;
 
   @override
   String toString() => '$runtimeType - $detailMessage';

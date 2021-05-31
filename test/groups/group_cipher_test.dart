@@ -16,9 +16,9 @@ import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final SENDER_ADDRESS = SignalProtocolAddress('+14150001111', 1);
-  final GROUP_SENDER =
-      SenderKeyName('nihilist history reading group', SENDER_ADDRESS);
+  final senderAddress = SignalProtocolAddress('+14150001111', 1);
+  final groupSender =
+      SenderKeyName('nihilist history reading group', senderAddress);
 
   const _integerMax = 0x7fffffff;
 
@@ -32,22 +32,25 @@ void main() {
     final bobStore = InMemorySenderKeyStore();
 
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    // ignore: unused_local_variable
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    final bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
     final sentAliceDistributionMessage =
-        await aliceSessionBuilder.create(GROUP_SENDER);
+        await aliceSessionBuilder.create(groupSender);
+    // ignore: unused_local_variable
     final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
 
-//    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+//    bobSessionBuilder.process(groupSender, receivedAliceDistributionMessage);
 
     final ciphertextFromAlice = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
     try {
+      // ignore: unused_local_variable
       final plaintextFromAlice =
           await bobGroupCipher.decrypt(ciphertextFromAlice);
       throw AssertionError('Should be no session!');
@@ -63,16 +66,16 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    final bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
     final sentAliceDistributionMessage =
-        await aliceSessionBuilder.create(GROUP_SENDER);
+        await aliceSessionBuilder.create(groupSender);
     final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
     await bobSessionBuilder.process(
-        GROUP_SENDER, receivedAliceDistributionMessage);
+        groupSender, receivedAliceDistributionMessage);
 
     final ciphertextFromAlice = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
@@ -89,16 +92,16 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    final bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
     final sentAliceDistributionMessage =
-        await aliceSessionBuilder.create(GROUP_SENDER);
+        await aliceSessionBuilder.create(groupSender);
     final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
     await bobSessionBuilder.process(
-        GROUP_SENDER, receivedAliceDistributionMessage);
+        groupSender, receivedAliceDistributionMessage);
 
     final plaintext = generateRandomBytes(1024 * 1024);
 
@@ -106,6 +109,7 @@ void main() {
     final plaintextFromAlice =
         await bobGroupCipher.decrypt(ciphertextFromAlice);
 
+    // ignore: avoid_dynamic_calls
     assert(eq(plaintextFromAlice, plaintext));
   });
 
@@ -116,7 +120,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -163,10 +167,11 @@ void main() {
 
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
 
-    final aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
 
+    // ignore: unused_local_variable
     final aliceDistributionMessage =
         await aliceSessionBuilder.create(aliceName);
     // Send off to some people.
@@ -201,13 +206,14 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
     final sentAliceDistributionMessage =
         await aliceSessionBuilder.create(aliceName);
+    // ignore: unused_local_variable
     final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
@@ -255,7 +261,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -287,7 +293,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);

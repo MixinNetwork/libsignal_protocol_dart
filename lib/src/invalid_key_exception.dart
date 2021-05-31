@@ -1,6 +1,6 @@
 class InvalidKeyException implements Exception {
-  final String detailMessage;
   InvalidKeyException(this.detailMessage);
+  final String detailMessage;
 
   @override
   String toString() => '$runtimeType - $detailMessage';

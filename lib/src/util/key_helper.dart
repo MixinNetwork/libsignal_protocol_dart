@@ -35,10 +35,11 @@ int generateRegistrationId(bool extendedRange) {
 
 List<PreKeyRecord> generatePreKeys(int start, int count) {
   final results = <PreKeyRecord>[];
+  // ignore: parameter_assignments
   start--;
   for (var i = 0; i < count; i++) {
-    results.add(PreKeyRecord(((start + i).remainder(Medium.MAX_VALUE - 1)) + 1,
-        Curve.generateKeyPair()));
+    results.add(PreKeyRecord(
+        ((start + i).remainder(maxValue - 1)) + 1, Curve.generateKeyPair()));
   }
   return results;
 }

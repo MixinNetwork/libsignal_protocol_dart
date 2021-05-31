@@ -2,9 +2,8 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/state/session_record.dart';
-
 import '../../signal_protocol_address.dart';
+import '../session_record.dart';
 import '../session_store.dart';
 
 class InMemorySessionStore extends SessionStore {
@@ -45,10 +44,10 @@ class InMemorySessionStore extends SessionStore {
   }
 
   @override
-  Future<SessionRecord> loadSession(SignalProtocolAddress remoteAddress) async {
+  Future<SessionRecord> loadSession(SignalProtocolAddress address) async {
     try {
-      if (await containsSession(remoteAddress)) {
-        return SessionRecord.fromSerialized(sessions[remoteAddress]!);
+      if (await containsSession(address)) {
+        return SessionRecord.fromSerialized(sessions[address]!);
       } else {
         return SessionRecord();
       }

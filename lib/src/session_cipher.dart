@@ -42,7 +42,7 @@ class SessionCipher {
       SignalProtocolStore store, SignalProtocolAddress remoteAddress)
       : this(store, store, store, store, remoteAddress);
 
-  static final Object SESSION_LOCK = Object();
+  static final Object sessionLock = Object();
 
   SessionStore _sessionStore;
   IdentityKeyStore _identityKeyStore;
@@ -87,7 +87,7 @@ class SessionCipher {
     sessionState.setSenderChainKey(nextChainKey);
 
     if (!await _identityKeyStore.isTrustedIdentity(_remoteAddress,
-        sessionState.getRemoteIdentityKey(), Direction.SENDING)) {
+        sessionState.getRemoteIdentityKey(), Direction.sending)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), sessionState.getRemoteIdentityKey());
     }
@@ -136,7 +136,7 @@ class SessionCipher {
     if (!await _identityKeyStore.isTrustedIdentity(
         _remoteAddress,
         sessionRecord.sessionState.getRemoteIdentityKey(),
-        Direction.RECEIVING)) {
+        Direction.receiving)) {
       throw UntrustedIdentityException(_remoteAddress.getName(),
           sessionRecord.sessionState.getRemoteIdentityKey());
     }
@@ -162,7 +162,7 @@ class SessionCipher {
           SessionState.fromSessionState(sessionRecord.sessionState);
       final plaintext = _decryptFromState(sessionState, cipherText);
 
-      sessionRecord.setState(sessionState);
+      sessionRecord.state = sessionState;
       return plaintext;
     } on InvalidMessageException catch (e) {
       exceptions.add(e);
@@ -262,7 +262,7 @@ class SessionCipher {
         return sessionState.removeMessageKeys(theirEphemeral, counter);
       } else {
         throw DuplicateMessageException(
-            'Received message with old counter: $chainKey.getIndex(), $counter');
+            'Received message with old counter: ${chainKey.index}, $counter');
       }
     }
 
@@ -273,6 +273,7 @@ class SessionCipher {
     while (chainKey.index < counter) {
       final messageKeys = chainKey.getMessageKeys();
       sessionState.setMessageKeys(theirEphemeral, messageKeys);
+      // ignore: parameter_assignments
       chainKey = chainKey.getNextChainKey();
     }
 

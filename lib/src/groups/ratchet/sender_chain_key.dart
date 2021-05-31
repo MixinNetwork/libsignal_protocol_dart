@@ -7,8 +7,8 @@ import 'sender_message_key.dart';
 class SenderChainKey {
   SenderChainKey(this._iteration, this._chainKey);
 
-  static final Uint8List _MESSAGE_KEY_SEED = Uint8List.fromList([0x01]);
-  static final Uint8List _CHAIN_KEY_SEED = Uint8List.fromList([0x02]);
+  static final Uint8List _messageKeySeed = Uint8List.fromList([0x01]);
+  static final Uint8List _chainKeySeed = Uint8List.fromList([0x02]);
 
   final int _iteration;
   final Uint8List _chainKey;
@@ -18,10 +18,10 @@ class SenderChainKey {
   Uint8List get seed => _chainKey;
 
   SenderMessageKey get senderMessageKey =>
-      SenderMessageKey(_iteration, getDerivative(_MESSAGE_KEY_SEED, _chainKey));
+      SenderMessageKey(_iteration, getDerivative(_messageKeySeed, _chainKey));
 
   SenderChainKey get next =>
-      SenderChainKey(_iteration + 1, getDerivative(_CHAIN_KEY_SEED, _chainKey));
+      SenderChainKey(_iteration + 1, getDerivative(_chainKeySeed, _chainKey));
 
   Uint8List getDerivative(Uint8List seed, Uint8List key) {
     final hmacSha256 = Hmac(sha256, key);

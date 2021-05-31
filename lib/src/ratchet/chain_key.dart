@@ -10,8 +10,8 @@ import '../ratchet/message_keys.dart';
 class ChainKey {
   ChainKey(this._kdf, this._key, this._index);
 
-  static final Uint8List MESSAGE_KEY_SEED = Uint8List.fromList([0x01]);
-  static final Uint8List CHAIN_KEY_SEED = Uint8List.fromList([0x02]);
+  static final Uint8List messageKeySeed = Uint8List.fromList([0x01]);
+  static final Uint8List chainKeySeed = Uint8List.fromList([0x02]);
 
   final HKDF _kdf;
   final Uint8List _key;
@@ -22,16 +22,16 @@ class ChainKey {
   int get index => _index;
 
   ChainKey getNextChainKey() {
-    final nextKey = _getBaseMaterial(CHAIN_KEY_SEED);
+    final nextKey = _getBaseMaterial(chainKeySeed);
     return ChainKey(_kdf, nextKey, _index + 1);
   }
 
   MessageKeys getMessageKeys() {
     final bytes = Uint8List.fromList(utf8.encode('WhisperMessageKeys'));
 
-    final inputKeyMaterial = _getBaseMaterial(MESSAGE_KEY_SEED);
+    final inputKeyMaterial = _getBaseMaterial(messageKeySeed);
     final keyMaterialBytes =
-        _kdf.deriveSecrets(inputKeyMaterial, bytes, DerivedMessageSecrets.SIZE);
+        _kdf.deriveSecrets(inputKeyMaterial, bytes, DerivedMessageSecrets.size);
     final keyMaterial = DerivedMessageSecrets(keyMaterialBytes);
 
     return MessageKeys(keyMaterial.getCipherKey(), keyMaterial.getMacKey(),

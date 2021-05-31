@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 
-import 'fingerprint.dart';
-
 import '../identity_key.dart';
+import 'fingerprint.dart';
 
 abstract class FingerprintGenerator {
   Fingerprint createFor(

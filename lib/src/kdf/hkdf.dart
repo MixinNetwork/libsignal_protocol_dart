@@ -8,7 +8,7 @@ import 'hkdfv2.dart';
 import 'hkdfv3.dart';
 
 abstract class HKDF {
-  static const int HASH_OUTPUT_SIZE = 32;
+  static const int hashOutputSize = 32;
 
   static HKDF createFor(int messageVersion) {
     switch (messageVersion) {
@@ -23,7 +23,7 @@ abstract class HKDF {
 
   Uint8List deriveSecrets(
       Uint8List inputKeyMaterial, Uint8List info, int outputLength) {
-    final salt = Uint8List(HASH_OUTPUT_SIZE);
+    final salt = Uint8List(hashOutputSize);
     return deriveSecrets4(inputKeyMaterial, salt, info, outputLength);
   }
 
@@ -42,7 +42,7 @@ abstract class HKDF {
   Uint8List expand(Uint8List prk, Uint8List? info, int outputSize) {
     try {
       final iterations =
-          (outputSize.toDouble() / HASH_OUTPUT_SIZE.toDouble()).ceil();
+          (outputSize.toDouble() / hashOutputSize.toDouble()).ceil();
       var mix = Uint8List(0);
       final results = Uint8List(outputSize);
       var remainingBytes = outputSize;
@@ -56,13 +56,14 @@ abstract class HKDF {
         if (info != null) {
           input.add(info);
         }
-        input.add([i]);
-        input.close();
+        input
+          ..add([i])
+          ..close();
         final stepResult = Uint8List.fromList(output.events.single.bytes);
         final stepSize = min(remainingBytes, stepResult.length);
 
         for (var j = 0; j < stepSize; j++) {
-          final offset = (i - getIterationStartOffset()) * HASH_OUTPUT_SIZE + j;
+          final offset = (i - getIterationStartOffset()) * hashOutputSize + j;
           results[offset] = stepResult[j];
         }
 

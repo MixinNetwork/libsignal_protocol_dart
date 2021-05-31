@@ -14,7 +14,7 @@ class DeviceConsistencyCommitment {
 
     final output = AccumulatorSink<Digest>();
     final input = sha512.startChunkedConversion(output)
-      ..add(utf8.encode(VERSION))
+      ..add(utf8.encode(version))
       ..add(ByteUtil.intToByteArray(generation));
 
     for (var commitment in sortedIdentityKeys) {
@@ -26,7 +26,7 @@ class DeviceConsistencyCommitment {
     _serialized = Uint8List.fromList(output.events.single.bytes);
   }
 
-  static const String VERSION = 'DeviceConsistencyCommitment_V0';
+  static const String version = 'DeviceConsistencyCommitment_V0';
 
   late int _generation;
   late Uint8List _serialized;

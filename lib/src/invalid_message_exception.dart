@@ -1,6 +1,6 @@
 class InvalidMessageException implements Exception {
-  final String detailMessage;
   InvalidMessageException(this.detailMessage);
+  final String detailMessage;
 
   @override
   String toString() => '$runtimeType - $detailMessage';

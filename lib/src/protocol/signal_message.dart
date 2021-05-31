@@ -26,7 +26,7 @@ class SignalMessage extends CiphertextMessage {
       IdentityKey? receiverIdentityKey) {
     final version = Uint8List.fromList([
       ByteUtil.intsToByteHighAndLow(
-          messageVersion, CiphertextMessage.CURRENT_VERSION)
+          messageVersion, CiphertextMessage.currentVersion)
     ]);
 
     final m = signal_protos.SignalMessage.create()
@@ -51,17 +51,18 @@ class SignalMessage extends CiphertextMessage {
   SignalMessage.fromSerialized(Uint8List serialized) {
     try {
       final messageParts = ByteUtil.split(
-          serialized, 1, serialized.length - 1 - MAC_LENGTH, MAC_LENGTH);
+          serialized, 1, serialized.length - 1 - macLength, macLength);
       final version = messageParts[0].first;
       final message = messageParts[1];
+      // ignore: unused_local_variable
       final mac = messageParts[2];
 
-      if (ByteUtil.highBitsToInt(version) < CiphertextMessage.CURRENT_VERSION) {
+      if (ByteUtil.highBitsToInt(version) < CiphertextMessage.currentVersion) {
         throw LegacyMessageException(
             'Legacy message: $ByteUtil.highBitsToInt(version)');
       }
 
-      if (ByteUtil.highBitsToInt(version) > CiphertextMessage.CURRENT_VERSION) {
+      if (ByteUtil.highBitsToInt(version) > CiphertextMessage.currentVersion) {
         throw InvalidMessageException(
             'Unknown version: $ByteUtil.highBitsToInt(version)');
       }
@@ -88,11 +89,12 @@ class SignalMessage extends CiphertextMessage {
     }
   }
 
-  static const int MAC_LENGTH = 8;
+  static const int macLength = 8;
 
   late int _messageVersion;
   late ECPublicKey _senderRatchetKey;
   late int _counter;
+  // ignore: unused_field
   late int _previousCounter;
   late Uint8List _ciphertext;
   late Uint8List _serialized;
@@ -108,7 +110,7 @@ class SignalMessage extends CiphertextMessage {
   void verifyMac(IdentityKey senderIdentityKey, IdentityKey receiverIdentityKey,
       Uint8List macKey) {
     final parts = ByteUtil.splitTwo(
-        _serialized, _serialized.length - MAC_LENGTH, MAC_LENGTH);
+        _serialized, _serialized.length - macLength, macLength);
     final ourMac =
         _getMac(senderIdentityKey, receiverIdentityKey, macKey, parts[0]);
     final theirMac = parts[1];
@@ -129,11 +131,11 @@ class SignalMessage extends CiphertextMessage {
       ..add(serialized)
       ..close();
     final fullMac = Uint8List.fromList(output.events.single.bytes);
-    return ByteUtil.trim(fullMac, MAC_LENGTH);
+    return ByteUtil.trim(fullMac, macLength);
   }
 
   @override
-  int getType() => CiphertextMessage.WHISPER_TYPE;
+  int getType() => CiphertextMessage.whisperType;
 
   @override
   Uint8List serialize() => _serialized;

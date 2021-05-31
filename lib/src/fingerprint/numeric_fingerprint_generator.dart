@@ -14,7 +14,7 @@ import 'scannable_fingerprint.dart';
 class NumericFingerprintGenerator implements FingerprintGenerator {
   NumericFingerprintGenerator(this._iterations);
 
-  static const int FINGERPRINT_VERSION = 0;
+  static const int fingerprintVersion = 0;
 
   final int _iterations;
 
@@ -50,7 +50,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
       List<IdentityKey> unsortedIdentityKeys) {
     final publicKey = _getLogicalKeyBytes(unsortedIdentityKeys);
     var hash = ByteUtil.combine([
-      ByteUtil.shortToByteArray(FINGERPRINT_VERSION),
+      ByteUtil.shortToByteArray(fingerprintVersion),
       publicKey,
       stableIdentifier
     ]);
@@ -67,7 +67,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
   }
 
   Uint8List _getLogicalKeyBytes(List<IdentityKey> identityKeys) {
-    final sortedIdentityKeys = [...identityKeys]..sort(IdentityKeyComparator);
+    final sortedIdentityKeys = [...identityKeys]..sort(identityKeyComparator);
 
     final keys = <int>[];
     sortedIdentityKeys.forEach((IdentityKey key) {

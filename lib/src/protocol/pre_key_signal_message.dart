@@ -63,7 +63,7 @@ class PreKeySignalMessage extends CiphertextMessage {
     }
 
     final versionBytes = [
-      ByteUtil.intsToByteHighAndLow(_version, CiphertextMessage.CURRENT_VERSION)
+      ByteUtil.intsToByteHighAndLow(_version, CiphertextMessage.currentVersion)
     ];
 
     final messageBytes = builder.toBuilder().writeToBuffer();
@@ -95,7 +95,7 @@ class PreKeySignalMessage extends CiphertextMessage {
   SignalMessage getWhisperMessage() => message;
 
   @override
-  int getType() => CiphertextMessage.PREKEY_TYPE;
+  int getType() => CiphertextMessage.prekeyType;
 
   @override
   Uint8List serialize() => serialized;

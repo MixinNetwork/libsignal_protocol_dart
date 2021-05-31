@@ -1,3 +1,1 @@
-class Medium {
-  static int MAX_VALUE = 0xFFFFFF;
-}
+const int maxValue = 0xFFFFFF;

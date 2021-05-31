@@ -31,6 +31,7 @@ class DjbECPublicKey extends ECPublicKey {
   bool operator ==(Object other) {
     if (other is! DjbECPublicKey) return false;
 
+    // ignore: avoid_dynamic_calls
     return eq(_publicKey, other._publicKey);
   }
 

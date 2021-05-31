@@ -55,7 +55,7 @@ class RatchetingSession {
       SessionState sessionState, AliceSignalProtocolParameters parameters) {
     try {
       sessionState
-        ..sessionVersion = CiphertextMessage.CURRENT_VERSION
+        ..sessionVersion = CiphertextMessage.currentVersion
         ..remoteIdentityKey = parameters.getTheirIdentityKey()
         ..localIdentityKey = parameters.getOurIdentityKey().getPublicKey();
 
@@ -95,7 +95,7 @@ class RatchetingSession {
       SessionState sessionState, BobSignalProtocolParameters parameters) {
     try {
       sessionState
-        ..sessionVersion = CiphertextMessage.CURRENT_VERSION
+        ..sessionVersion = CiphertextMessage.currentVersion
         ..remoteIdentityKey = parameters.getTheirIdentityKey()
         ..localIdentityKey = parameters.getOurIdentityKey().getPublicKey();
 

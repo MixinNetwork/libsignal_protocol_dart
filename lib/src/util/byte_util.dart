@@ -41,7 +41,7 @@ class ByteUtil {
         secondLength < 0 ||
         thirdLength < 0 ||
         input.length < firstLength + secondLength + thirdLength) {
-      throw 'Input too small: ${hex.encode(input)}';
+      throw Exception('Input too small: ${hex.encode(input)}');
     }
     final first = input.sublist(0, firstLength);
     final second = input.sublist(firstLength, firstLength + secondLength);

@@ -17,7 +17,7 @@ dependencies:
   pointycastle: ^3.0.1
   ed25519_edwards: ^0.1.0
   x25519: ^0.0.2
-  very_good_analysis: ^2.0.3
+  very_good_analysis: ^2.1.0
 
 
 dev_dependencies:

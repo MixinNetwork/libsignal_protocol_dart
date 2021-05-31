@@ -376,12 +376,14 @@ void main() {
     final bobEphemeralPrivateKey = Curve.decodePrivatePoint(bobPrivate);
     final bobEphemeralKey =
         ECKeyPair(bobEphemeralPublicKey, bobEphemeralPrivateKey);
+    // ignore: unused_local_variable
     final bobBaseKey = bobEphemeralKey;
     final bobSignedPreKey = ECKeyPair(
         Curve.decodePoint(bobSignedPreKeyPublic, 0),
         Curve.decodePrivatePoint(bobSignedPreKeyPrivate));
 
     final aliceBasePublicKey = Curve.decodePoint(aliceBasePublic, 0);
+    // ignore: unused_local_variable
     final aliceEphemeralPublicKey = Curve.decodePoint(aliceEphemeralPublic, 0);
     final aliceIdentityPublicKey =
         IdentityKey.fromBytes(aliceIdentityPublic, 0);

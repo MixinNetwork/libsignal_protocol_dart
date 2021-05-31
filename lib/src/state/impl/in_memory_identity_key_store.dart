@@ -31,6 +31,7 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
     if (identityKey == null) {
       return false;
     }
+    // ignore: avoid_dynamic_calls
     return trusted == null || eq(trusted.serialize(), identityKey.serialize());
   }
 

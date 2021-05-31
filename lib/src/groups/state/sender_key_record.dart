@@ -20,7 +20,7 @@ class SenderKeyRecord {
     }
   }
 
-  static const int _MAX_STATES = 5;
+  static const int _maxStates = 5;
 
   final LinkedList<Entry<SenderKeyState>> _senderKeyStates =
       LinkedList<Entry<SenderKeyState>>();
@@ -48,16 +48,17 @@ class SenderKeyRecord {
       int id, int iteration, Uint8List chainKey, ECPublicKey signatureKey) {
     _senderKeyStates.addFirst(Entry(
         SenderKeyState.fromPublicKey(id, iteration, chainKey, signatureKey)));
-    if (_senderKeyStates.length > _MAX_STATES) {
+    if (_senderKeyStates.length > _maxStates) {
       _senderKeyStates.remove(_senderKeyStates.last);
     }
   }
 
   void setSenderKeyState(
       int id, int iteration, Uint8List chainKey, ECKeyPair signatureKey) {
-    _senderKeyStates.clear();
-    _senderKeyStates.add(Entry(
-        SenderKeyState.fromKeyPair(id, iteration, chainKey, signatureKey)));
+    _senderKeyStates
+      ..clear()
+      ..add(Entry(
+          SenderKeyState.fromKeyPair(id, iteration, chainKey, signatureKey)));
   }
 
   Uint8List serialize() {

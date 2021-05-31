@@ -9,13 +9,11 @@ class TestInMemoryIdentityKeyStore extends InMemoryIdentityKeyStore {
       : super(_generateIdentityKeyPair(), _generateRegistrationId());
 
   static IdentityKeyPair _generateIdentityKeyPair() {
-    var identityKeyPairKeys = Curve.generateKeyPair();
+    final identityKeyPairKeys = Curve.generateKeyPair();
 
     return IdentityKeyPair(IdentityKey(identityKeyPairKeys.publicKey),
         identityKeyPairKeys.privateKey);
   }
 
-  static int _generateRegistrationId() {
-    return generateRegistrationId(false);
-  }
+  static int _generateRegistrationId() => generateRegistrationId(false);
 }

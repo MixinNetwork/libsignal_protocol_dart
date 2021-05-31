@@ -9,7 +9,7 @@ class DerivedRootSecrets {
     _chainKey = keys[1];
   }
 
-  static const int SIZE = 64;
+  static const int size = 64;
 
   late Uint8List _rootKey;
   late Uint8List _chainKey;

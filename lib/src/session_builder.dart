@@ -25,7 +25,7 @@ class SessionBuilder {
       SignalProtocolStore store, SignalProtocolAddress remoteAddress)
       : this(store, store, store, store, remoteAddress);
 
-  static const String TAG = 'SessionBuilder';
+  static const String tag = 'SessionBuilder';
 
   SessionStore _sessionStore;
   PreKeyStore _preKeyStore;
@@ -38,7 +38,7 @@ class SessionBuilder {
     final theirIdentityKey = message.getIdentityKey();
 
     if (!await _identityKeyStore.isTrustedIdentity(
-        _remoteAddress, theirIdentityKey, Direction.RECEIVING)) {
+        _remoteAddress, theirIdentityKey, Direction.receiving)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), theirIdentityKey);
     }
@@ -54,6 +54,7 @@ class SessionBuilder {
       SessionRecord sessionRecord, PreKeySignalMessage message) async {
     if (sessionRecord.hasSessionState(
         message.getMessageVersion(), message.getBaseKey().serialize())) {
+      // ignore: avoid_print
       print(
           "We've already setup a session for this V3 message, letting bundled message fall through...");
       return const Optional.empty();
@@ -100,7 +101,7 @@ class SessionBuilder {
 
   Future<void> processPreKeyBundle(PreKeyBundle preKey) async {
     if (!await _identityKeyStore.isTrustedIdentity(
-        _remoteAddress, preKey.getIdentityKey(), Direction.SENDING)) {
+        _remoteAddress, preKey.getIdentityKey(), Direction.sending)) {
       throw UntrustedIdentityException(
           _remoteAddress.getName(), preKey.getIdentityKey());
     }
