@@ -30,7 +30,7 @@ void main() {
         await store.getSubDeviceSessions(address2a.getName());
     expect(subDeviceSessions2.length, 2);
     expect(
-        SetEquality().equals(
+        const SetEquality().equals(
           subDeviceSessions2.toSet(),
           {123, 456}.toSet(),
         ),

@@ -2,61 +2,63 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/SessionCipher.dart';
-import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECPublicKey.dart';
+import 'package:libsignal_protocol_dart/src/duplicate_message_exception.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/session_cipher.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_public_key.dart';
 import 'package:libsignal_protocol_dart/src/eq.dart';
-import 'package:libsignal_protocol_dart/src/protocol/CiphertextMessage.dart';
-import 'package:libsignal_protocol_dart/src/protocol/SignalMessage.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/AliceSignalProtocolParameters.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/BobSignalProtocolParameters.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/RatchetingSession.dart';
-import 'package:libsignal_protocol_dart/src/state/SessionRecord.dart';
-import 'package:libsignal_protocol_dart/src/state/SessionState.dart';
+import 'package:libsignal_protocol_dart/src/protocol/ciphertext_message.dart';
+import 'package:libsignal_protocol_dart/src/protocol/signal_message.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/alice_signal_protocol_parameters.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/bob_signal_protocol_parameters.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/ratcheting_session.dart';
+import 'package:libsignal_protocol_dart/src/state/session_record.dart';
+import 'package:libsignal_protocol_dart/src/state/session_state.dart';
 import 'package:optional/optional.dart';
 import 'package:test/test.dart';
 
 import 'test_in_memory_signal_protocol_store.dart';
 
-void main() {
-  void runInteraction(
+Future<void> main() async {
+  Future<void> runInteraction(
       SessionRecord aliceSessionRecord, SessionRecord bobSessionRecord) async {
-    var aliceStore = TestInMemorySignalProtocolStore();
-    var bobStore = TestInMemorySignalProtocolStore();
+    final aliceStore = TestInMemorySignalProtocolStore();
+    final bobStore = TestInMemorySignalProtocolStore();
 
     await aliceStore.storeSession(
         SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     await bobStore.storeSession(
         SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
-    var aliceCipher = SessionCipher.fromStore(
+    final aliceCipher = SessionCipher.fromStore(
         aliceStore, SignalProtocolAddress('+14159999999', 1));
-    var bobCipher = SessionCipher.fromStore(
+    final bobCipher = SessionCipher.fromStore(
         bobStore, SignalProtocolAddress('+14158888888', 1));
 
-    var alicePlaintext =
+    final alicePlaintext =
         Uint8List.fromList(utf8.encode('This is a plaintext message.'));
-    var message = await aliceCipher.encrypt(alicePlaintext);
-    var bobPlaintext = await bobCipher
+    final message = await aliceCipher.encrypt(alicePlaintext);
+    final bobPlaintext = await bobCipher
         .decryptFromSignal(SignalMessage.fromSerialized(message.serialize()));
 
+    // ignore: avoid_dynamic_calls
     assert(eq(alicePlaintext, bobPlaintext));
 
-    var bobReply =
+    final bobReply =
         Uint8List.fromList(utf8.encode('This is a message from Bob.'));
-    var reply = await bobCipher.encrypt(bobReply);
-    var receivedReply = await aliceCipher
+    final reply = await bobCipher.encrypt(bobReply);
+    final receivedReply = await aliceCipher
         .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
 
+    // ignore: avoid_dynamic_calls
     assert(eq(bobReply, receivedReply));
 
-    var aliceCiphertextMessages = <CiphertextMessage>[];
-    var alicePlaintextMessages = <Uint8List>[];
+    final aliceCiphertextMessages = <CiphertextMessage>[];
+    final alicePlaintextMessages = <Uint8List>[];
 
     for (var i = 0; i < 50; i++) {
       alicePlaintextMessages
@@ -71,13 +73,14 @@ void main() {
     alicePlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < aliceCiphertextMessages.length / 2; i++) {
-      var receivedPlaintext = bobCipher.decryptFromSignal(
+      final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
+      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
-    var bobCiphertextMessages = <CiphertextMessage>[];
-    var bobPlaintextMessages = <Uint8List>[];
+    final bobCiphertextMessages = <CiphertextMessage>[];
+    final bobPlaintextMessages = <Uint8List>[];
 
     for (var i = 0; i < 20; i++) {
       bobPlaintextMessages
@@ -92,61 +95,67 @@ void main() {
     bobPlaintextMessages.shuffle(Random(seed));
 
     for (var i = 0; i < bobCiphertextMessages.length / 2; i++) {
-      var receivedPlaintext = aliceCipher.decryptFromSignal(
+      final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
+      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
 
     for (var i = aliceCiphertextMessages.length ~/ 2;
         i < aliceCiphertextMessages.length;
         i++) {
-      var receivedPlaintext = bobCipher.decryptFromSignal(
+      final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
+      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
     for (var i = bobCiphertextMessages.length ~/ 2;
         i < bobCiphertextMessages.length;
         i++) {
-      var receivedPlaintext = aliceCipher.decryptFromSignal(
+      final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
+      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
   }
 
-  void initializeSessionsV3(
-      SessionState aliceSessionState, SessionState bobSessionState) {
-    var aliceIdentityKeyPair = Curve.generateKeyPair();
-    var aliceIdentityKey = IdentityKeyPair(
+  Future<void> initializeSessionsV3(
+      SessionState aliceSessionState, SessionState bobSessionState) async {
+    final aliceIdentityKeyPair = Curve.generateKeyPair();
+    final aliceIdentityKey = IdentityKeyPair(
         IdentityKey(aliceIdentityKeyPair.publicKey),
         aliceIdentityKeyPair.privateKey);
-    var aliceBaseKey = Curve.generateKeyPair();
-    var aliceEphemeralKey = Curve.generateKeyPair();
+    final aliceBaseKey = Curve.generateKeyPair();
+    // ignore: unused_local_variable
+    final aliceEphemeralKey = Curve.generateKeyPair();
 
-    var alicePreKey = aliceBaseKey;
+    // ignore: unused_local_variable
+    final alicePreKey = aliceBaseKey;
 
-    var bobIdentityKeyPair = Curve.generateKeyPair();
-    var bobIdentityKey = IdentityKeyPair(
+    final bobIdentityKeyPair = Curve.generateKeyPair();
+    final bobIdentityKey = IdentityKeyPair(
         IdentityKey(bobIdentityKeyPair.publicKey),
         bobIdentityKeyPair.privateKey);
-    var bobBaseKey = Curve.generateKeyPair();
-    var bobEphemeralKey = bobBaseKey;
+    final bobBaseKey = Curve.generateKeyPair();
+    final bobEphemeralKey = bobBaseKey;
 
-    var bobPreKey = Curve.generateKeyPair();
+    // ignore: unused_local_variable
+    final bobPreKey = Curve.generateKeyPair();
 
-    var aliceParameters = AliceSignalProtocolParameters.newBuilder()
+    final aliceParameters = AliceSignalProtocolParameters.newBuilder()
         .setOurBaseKey(aliceBaseKey)
         .setOurIdentityKey(aliceIdentityKey)
-        .setTheirOneTimePreKey(Optional<ECPublicKey>.empty())
+        .setTheirOneTimePreKey(const Optional<ECPublicKey>.empty())
         .setTheirRatchetKey(bobEphemeralKey.publicKey)
         .setTheirSignedPreKey(bobBaseKey.publicKey)
         .setTheirIdentityKey(bobIdentityKey.getPublicKey())
         .create();
 
-    var bobParameters = BobSignalProtocolParameters.newBuilder()
+    final bobParameters = BobSignalProtocolParameters.newBuilder()
         .setOurRatchetKey(bobEphemeralKey)
         .setOurSignedPreKey(bobBaseKey)
-        .setOurOneTimePreKey(Optional<ECKeyPair>.empty())
+        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
         .setOurIdentityKey(bobIdentityKey)
         .setTheirIdentityKey(aliceIdentityKey.getPublicKey())
         .setTheirBaseKey(aliceBaseKey.publicKey)
@@ -157,36 +166,36 @@ void main() {
     RatchetingSession.initializeSessionBob(bobSessionState, bobParameters);
   }
 
-  test('testBasicSessionV3', () {
-    var aliceSessionRecord = SessionRecord();
-    var bobSessionRecord = SessionRecord();
+  test('testBasicSessionV3', () async {
+    final aliceSessionRecord = SessionRecord();
+    final bobSessionRecord = SessionRecord();
 
-    initializeSessionsV3(
+    await initializeSessionsV3(
         aliceSessionRecord.sessionState, bobSessionRecord.sessionState);
-    runInteraction(aliceSessionRecord, bobSessionRecord);
+    await runInteraction(aliceSessionRecord, bobSessionRecord);
   });
 
   test('testMessageKeyLimits', () async {
-    var aliceSessionRecord = SessionRecord();
-    var bobSessionRecord = SessionRecord();
+    final aliceSessionRecord = SessionRecord();
+    final bobSessionRecord = SessionRecord();
 
-    initializeSessionsV3(
+    await initializeSessionsV3(
         aliceSessionRecord.sessionState, bobSessionRecord.sessionState);
 
-    var aliceStore = TestInMemorySignalProtocolStore();
-    var bobStore = TestInMemorySignalProtocolStore();
+    final aliceStore = TestInMemorySignalProtocolStore();
+    final bobStore = TestInMemorySignalProtocolStore();
 
     await aliceStore.storeSession(
         SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     await bobStore.storeSession(
         SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
-    var aliceCipher = SessionCipher.fromStore(
+    final aliceCipher = SessionCipher.fromStore(
         aliceStore, SignalProtocolAddress('+14159999999', 1));
-    var bobCipher = SessionCipher.fromStore(
+    final bobCipher = SessionCipher.fromStore(
         bobStore, SignalProtocolAddress('+14158888888', 1));
 
-    var inflight = <CiphertextMessage>[];
+    final inflight = <CiphertextMessage>[];
 
     for (var i = 0; i < 2010; i++) {
       inflight.add(await aliceCipher.encrypt(Uint8List.fromList(utf8
@@ -202,7 +211,7 @@ void main() {
       await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(inflight[0].serialize()));
       throw AssertionError('Should have failed!');
-    } on DuplicateMessageException catch (dme) {
+    } on DuplicateMessageException {
       // good
     }
   }, skip: 'Failing historical test');

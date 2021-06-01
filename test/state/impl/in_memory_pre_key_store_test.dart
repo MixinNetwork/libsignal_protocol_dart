@@ -4,11 +4,11 @@ import 'package:test/test.dart';
 void main() {
   test('should implement interface successfully', () async {
     final store = InMemoryPreKeyStore();
-    var preKeys = KeyHelper.generatePreKeys(1, 2);
+    final preKeys = generatePreKeys(1, 2);
 
     // storePreKey
-    store.storePreKey(1, preKeys[0]);
-    store.storePreKey(2, preKeys[1]);
+    await store.storePreKey(1, preKeys[0]);
+    await store.storePreKey(2, preKeys[1]);
 
     // containsPreKey
     expect(await store.containsPreKey(1), true);
@@ -20,7 +20,7 @@ void main() {
         preKeys[1].serialize());
 
     // removePreKey & loadPreKey
-    store.removePreKey(2);
+    await store.removePreKey(2);
     expect(() => store.loadPreKey(2), throwsA(isA<InvalidKeyIdException>()));
   });
 }

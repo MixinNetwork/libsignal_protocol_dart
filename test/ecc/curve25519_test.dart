@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/InvalidKeyException.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/invalid_key_exception.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('testAgreement', () {
-    var alicePublic = Uint8List.fromList([
+    final alicePublic = Uint8List.fromList([
       0x05,
       0x1b,
       0xb7,
@@ -42,7 +42,7 @@ void main() {
       0x28
     ]);
 
-    var alicePrivate = Uint8List.fromList([
+    final alicePrivate = Uint8List.fromList([
       0xc8,
       0x06,
       0x43,
@@ -77,7 +77,7 @@ void main() {
       0x59
     ]);
 
-    var bobPublic = Uint8List.fromList([
+    final bobPublic = Uint8List.fromList([
       0x05,
       0x65,
       0x36,
@@ -113,7 +113,7 @@ void main() {
       0x2f
     ]);
 
-    var bobPrivate = Uint8List.fromList([
+    final bobPrivate = Uint8List.fromList([
       0xb0,
       0x3b,
       0x34,
@@ -148,7 +148,7 @@ void main() {
       0x66
     ]);
 
-    var shared = Uint8List.fromList([
+    final shared = Uint8List.fromList([
       0x32,
       0x5f,
       0x23,
@@ -183,14 +183,14 @@ void main() {
       0x29
     ]);
 
-    var alicePublicKey = Curve.decodePoint(alicePublic, 0);
-    var alicePrivateKey = Curve.decodePrivatePoint(alicePrivate);
+    final alicePublicKey = Curve.decodePoint(alicePublic, 0);
+    final alicePrivateKey = Curve.decodePrivatePoint(alicePrivate);
 
-    var bobPublicKey = Curve.decodePoint(bobPublic, 0);
-    var bobPrivateKey = Curve.decodePrivatePoint(bobPrivate);
+    final bobPublicKey = Curve.decodePoint(bobPublic, 0);
+    final bobPrivateKey = Curve.decodePrivatePoint(bobPrivate);
 
-    var sharedOne = Curve.calculateAgreement(alicePublicKey, bobPrivateKey);
-    var sharedTwo = Curve.calculateAgreement(bobPublicKey, alicePrivateKey);
+    final sharedOne = Curve.calculateAgreement(alicePublicKey, bobPrivateKey);
+    final sharedTwo = Curve.calculateAgreement(bobPublicKey, alicePrivateKey);
 
     expect(sharedOne, shared);
     expect(sharedTwo, shared);
@@ -198,19 +198,20 @@ void main() {
 
   test('testRandomAgreements', () {
     for (var i = 0; i < 50; i++) {
-      var alice = Curve.generateKeyPair();
-      var bob = Curve.generateKeyPair();
+      final alice = Curve.generateKeyPair();
+      final bob = Curve.generateKeyPair();
 
-      var sharedAlice =
+      final sharedAlice =
           Curve.calculateAgreement(bob.publicKey, alice.privateKey);
-      var sharedBob = Curve.calculateAgreement(alice.publicKey, bob.privateKey);
+      final sharedBob =
+          Curve.calculateAgreement(alice.publicKey, bob.privateKey);
 
       expect(sharedAlice, sharedBob);
     }
   });
 
   test('testSignature', () {
-    var aliceIdentityPrivate = Uint8List.fromList([
+    final aliceIdentityPrivate = Uint8List.fromList([
       0xc0,
       0x97,
       0x24,
@@ -245,7 +246,7 @@ void main() {
       0x65
     ]);
 
-    var aliceIdentityPublic = Uint8List.fromList([
+    final aliceIdentityPublic = Uint8List.fromList([
       0x05,
       0xab,
       0x7e,
@@ -281,7 +282,7 @@ void main() {
       0x64
     ]);
 
-    var aliceEphemeralPublic = Uint8List.fromList([
+    final aliceEphemeralPublic = Uint8List.fromList([
       0x05,
       0xed,
       0xce,
@@ -317,7 +318,7 @@ void main() {
       0x4a
     ]);
 
-    var aliceSignature = Uint8List.fromList([
+    final aliceSignature = Uint8List.fromList([
       0x5d,
       0xe8,
       0x8c,
@@ -384,9 +385,10 @@ void main() {
       0x88
     ]);
 
-    var alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate);
-    var alicePublicKey = Curve.decodePoint(aliceIdentityPublic, 0);
-    var aliceEphemeral = Curve.decodePoint(aliceEphemeralPublic, 0);
+    // ignore: unused_local_variable
+    final alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate);
+    final alicePublicKey = Curve.decodePoint(aliceIdentityPublic, 0);
+    final aliceEphemeral = Curve.decodePoint(aliceEphemeralPublic, 0);
 
     if (!Curve.verifySignature(
         alicePublicKey, aliceEphemeral.serialize(), aliceSignature)) {
@@ -394,7 +396,7 @@ void main() {
     }
 
     for (var i = 0; i < aliceSignature.length; i++) {
-      var modifiedSignature = Uint8List(aliceSignature.length);
+      final modifiedSignature = Uint8List(aliceSignature.length);
       Curve.arraycopy(
           aliceSignature, 0, modifiedSignature, 0, modifiedSignature.length);
 
@@ -408,45 +410,47 @@ void main() {
   });
 
   test('testDecodeSize', () {
-    var keyPair = Curve.generateKeyPair();
-    var serializedPublic = keyPair.publicKey.serialize();
+    final keyPair = Curve.generateKeyPair();
+    final serializedPublic = keyPair.publicKey.serialize();
 
-    var justRight = Curve.decodePoint(serializedPublic, 0);
+    final justRight = Curve.decodePoint(serializedPublic, 0);
 
     try {
-      var tooSmall = Curve.decodePoint(serializedPublic, 1);
+      // ignore: unused_local_variable
+      final tooSmall = Curve.decodePoint(serializedPublic, 1);
       throw AssertionError("Shouldn't decode");
-    } on InvalidKeyException catch (e) {
+    } on InvalidKeyException {
       // good
     }
 
     try {
-      var empty = Curve.decodePoint(Uint8List(0), 0);
+      // ignore: unused_local_variable
+      final empty = Curve.decodePoint(Uint8List(0), 0);
       throw AssertionError("Shouldn't parse");
-    } on InvalidKeyException catch (e) {
+    } on InvalidKeyException {
       // good
     }
 
     try {
-      var badKeyType = Uint8List(33);
+      final badKeyType = Uint8List(33);
       Curve.arraycopy(
           serializedPublic, 0, badKeyType, 0, serializedPublic.length);
       badKeyType[0] = 0x01;
       Curve.decodePoint(badKeyType, 0);
       throw AssertionError('Should be bad key type');
-    } on InvalidKeyException catch (e) {
+    } on InvalidKeyException {
       // good
     }
 
-    var extraSpace = Uint8List(serializedPublic.length + 1);
+    final extraSpace = Uint8List(serializedPublic.length + 1);
     Curve.arraycopy(
         serializedPublic, 0, extraSpace, 0, serializedPublic.length);
-    var extra = Curve.decodePoint(extraSpace, 0);
+    final extra = Curve.decodePoint(extraSpace, 0);
 
-    var offsetSpace = Uint8List(serializedPublic.length + 1);
+    final offsetSpace = Uint8List(serializedPublic.length + 1);
     Curve.arraycopy(
         serializedPublic, 0, offsetSpace, 1, serializedPublic.length);
-    var offset = Curve.decodePoint(offsetSpace, 1);
+    final offset = Curve.decodePoint(offsetSpace, 1);
 
     expect(serializedPublic, justRight.serialize());
     expect(extra.serialize(), serializedPublic);

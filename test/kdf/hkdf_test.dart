@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/kdf/HKDF.dart';
+import 'package:libsignal_protocol_dart/src/kdf/hkdf.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('testVectorV3', () {
-    var ikm = Uint8List.fromList([
+    final ikm = Uint8List.fromList([
       0x0b,
       0x0b,
       0x0b,
@@ -30,7 +30,7 @@ void main() {
       0x0b
     ]);
 
-    var salt = Uint8List.fromList([
+    final salt = Uint8List.fromList([
       0x00,
       0x01,
       0x02,
@@ -46,10 +46,10 @@ void main() {
       0x0c
     ]);
 
-    var info = Uint8List.fromList(
+    final info = Uint8List.fromList(
         [0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9]);
 
-    var okm = Uint8List.fromList([
+    final okm = Uint8List.fromList([
       0x3c,
       0xb2,
       0x5f,
@@ -94,12 +94,12 @@ void main() {
       0x65
     ]);
 
-    var actualOutput = HKDF.createFor(3).deriveSecrets4(ikm, salt, info, 42);
+    final actualOutput = HKDF.createFor(3).deriveSecrets4(ikm, salt, info, 42);
     expect(okm, actualOutput);
   });
 
   test('testVectorLong3', () {
-    var ikm = Uint8List.fromList([
+    final ikm = Uint8List.fromList([
       0x00,
       0x01,
       0x02,
@@ -182,7 +182,7 @@ void main() {
       0x4f
     ]);
 
-    var salt = Uint8List.fromList([
+    final salt = Uint8List.fromList([
       0x60,
       0x61,
       0x62,
@@ -265,7 +265,7 @@ void main() {
       0xaf
     ]);
 
-    var info = Uint8List.fromList([
+    final info = Uint8List.fromList([
       0xb0,
       0xb1,
       0xb2,
@@ -348,7 +348,7 @@ void main() {
       0xff
     ]);
 
-    var okm = Uint8List.fromList([
+    final okm = Uint8List.fromList([
       0xb1,
       0x1e,
       0x39,
@@ -433,12 +433,12 @@ void main() {
       0x87
     ]);
 
-    var actualOutput = HKDF.createFor(3).deriveSecrets4(ikm, salt, info, 82);
+    final actualOutput = HKDF.createFor(3).deriveSecrets4(ikm, salt, info, 82);
     expect(okm, actualOutput);
   });
 
   test('testVectorV2', () {
-    var ikm = Uint8List.fromList([
+    final ikm = Uint8List.fromList([
       0x0b,
       0x0b,
       0x0b,
@@ -463,7 +463,7 @@ void main() {
       0x0b
     ]);
 
-    var salt = Uint8List.fromList([
+    final salt = Uint8List.fromList([
       0x00,
       0x01,
       0x02,
@@ -479,10 +479,10 @@ void main() {
       0x0c
     ]);
 
-    var info = Uint8List.fromList(
+    final info = Uint8List.fromList(
         [0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9]);
 
-    var okm = Uint8List.fromList([
+    final okm = Uint8List.fromList([
       0x6e,
       0xc2,
       0x55,
@@ -549,7 +549,7 @@ void main() {
       0xec
     ]);
 
-    var actualOutput = HKDF.createFor(2).deriveSecrets4(ikm, salt, info, 64);
+    final actualOutput = HKDF.createFor(2).deriveSecrets4(ikm, salt, info, 64);
     expect(okm, actualOutput);
   });
 }

@@ -1,5 +1,5 @@
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKeyPair.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -7,7 +7,7 @@ void main() {
     final keyPair = Curve.generateKeyPair();
     final identityKey = IdentityKey(keyPair.publicKey);
     final identityKeyPair = IdentityKeyPair(identityKey, keyPair.privateKey);
-    final registrationId = KeyHelper.generateRegistrationId(false);
+    final registrationId = generateRegistrationId(false);
     final store = InMemoryIdentityKeyStore(identityKeyPair, registrationId);
     final address = SignalProtocolAddress('address-1', 123);
 
@@ -32,7 +32,7 @@ void main() {
     // isTrustedIdentity
     expect(await store.isTrustedIdentity(address, identityKey, null), true);
     // expect(store.isTrustedIdentity(null, identityKey, null), true);
-    var newIdentityKey = IdentityKey(Curve.generateKeyPair().publicKey);
+    final newIdentityKey = IdentityKey(Curve.generateKeyPair().publicKey);
     expect(await store.isTrustedIdentity(address, newIdentityKey, null), false);
   });
 }

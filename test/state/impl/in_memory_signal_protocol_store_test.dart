@@ -11,7 +11,7 @@ void main() {
       () async {
     final aliceStore = TestInMemorySignalProtocolStore();
     final bobStore = TestInMemorySignalProtocolStore();
-    final msgOrig = "L'homme est condamné à être libre";
+    const msgOrig = "L'homme est condamné à être libre";
 
     final aliceAddress = SignalProtocolAddress('alice', 1);
     final bobAddress = SignalProtocolAddress('bob', 1);
@@ -45,8 +45,8 @@ void main() {
     await SessionBuilder.fromSignalStore(aliceStore, bobAddress)
         .processPreKeyBundle(bobPreKey);
 
-    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
-    var msgAliceToBob = await aliceSessionCipher
+    final aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
+    final msgAliceToBob = await aliceSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(msgOrig)));
 
     // Pretend that Alice has now sent the message to Bob
@@ -55,11 +55,11 @@ void main() {
     // Bob to decrypt...
     //
 
-    bobStore.storePreKey(
+    await bobStore.storePreKey(
       31337,
       PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair),
     );
-    bobStore.storeSignedPreKey(
+    await bobStore.storeSignedPreKey(
       22,
       SignedPreKeyRecord(
         22,
@@ -69,13 +69,13 @@ void main() {
       ),
     );
 
-    var msgIn = PreKeySignalMessage(msgAliceToBob.serialize());
+    final msgIn = PreKeySignalMessage(msgAliceToBob.serialize());
     expect(
       msgIn.getType(),
-      CiphertextMessage.PREKEY_TYPE,
+      CiphertextMessage.prekeyType,
     );
 
-    var bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
+    final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
     var msgDecrypted = await bobSessionCipher.decrypt(msgIn);
     var msgDecoded = utf8.decode(msgDecrypted, allowMalformed: true);
     expect(msgDecoded, msgOrig);
@@ -84,11 +84,11 @@ void main() {
     // Bob to encrypt and send to Alice...
     //
 
-    var msgBobToAlice = await bobSessionCipher
+    final msgBobToAlice = await bobSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(msgDecoded)));
     expect(
       msgBobToAlice.getType(),
-      CiphertextMessage.WHISPER_TYPE,
+      CiphertextMessage.whisperType,
     );
 
     //

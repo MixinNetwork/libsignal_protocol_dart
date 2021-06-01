@@ -8,8 +8,8 @@ void main() {
     final signedPreKeyRecord2 = _generateSignedPreKey(2);
 
     // storeSignedPreKey
-    store.storeSignedPreKey(1, signedPreKeyRecord1);
-    store.storeSignedPreKey(2, signedPreKeyRecord2);
+    await store.storeSignedPreKey(1, signedPreKeyRecord1);
+    await store.storeSignedPreKey(2, signedPreKeyRecord2);
 
     // containsSignedPreKey
     expect(await store.containsSignedPreKey(1), true);
@@ -31,12 +31,11 @@ void main() {
     expect(signedPreKeys[1].id, 2);
 
     // removeSignedPreKey & containsSignedPreKey
-    store.removeSignedPreKey(1);
+    await store.removeSignedPreKey(1);
     expect(await store.containsSignedPreKey(1), false);
     expect(await store.containsSignedPreKey(2), true);
   });
 }
 
 SignedPreKeyRecord _generateSignedPreKey(int signedPreKeyId) =>
-    KeyHelper.generateSignedPreKey(
-        KeyHelper.generateIdentityKeyPair(), signedPreKeyId);
+    generateSignedPreKey(generateIdentityKeyPair(), signedPreKeyId);

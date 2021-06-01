@@ -2,19 +2,19 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/InvalidKeyException.dart';
-import 'package:libsignal_protocol_dart/src/SessionBuilder.dart';
-import 'package:libsignal_protocol_dart/src/SessionCipher.dart';
-import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
-import 'package:libsignal_protocol_dart/src/UntrustedIdentityException.dart';
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/protocol/CiphertextMessage.dart';
-import 'package:libsignal_protocol_dart/src/protocol/PreKeySignalMessage.dart';
-import 'package:libsignal_protocol_dart/src/protocol/SignalMessage.dart';
-import 'package:libsignal_protocol_dart/src/state/PreKeyBundle.dart';
-import 'package:libsignal_protocol_dart/src/state/PreKeyRecord.dart';
-import 'package:libsignal_protocol_dart/src/state/SignalProtocolStore.dart';
-import 'package:libsignal_protocol_dart/src/state/SignedPreKeyRecord.dart';
+import 'package:libsignal_protocol_dart/src/invalid_key_exception.dart';
+import 'package:libsignal_protocol_dart/src/session_builder.dart';
+import 'package:libsignal_protocol_dart/src/session_cipher.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
+import 'package:libsignal_protocol_dart/src/untrusted_identity_exception.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/protocol/ciphertext_message.dart';
+import 'package:libsignal_protocol_dart/src/protocol/pre_key_signal_message.dart';
+import 'package:libsignal_protocol_dart/src/protocol/signal_message.dart';
+import 'package:libsignal_protocol_dart/src/state/pre_key_bundle.dart';
+import 'package:libsignal_protocol_dart/src/state/pre_key_record.dart';
+import 'package:libsignal_protocol_dart/src/state/signal_protocol_store.dart';
+import 'package:libsignal_protocol_dart/src/state/signed_pre_key_record.dart';
 import 'package:test/test.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:tuple/tuple.dart';
@@ -23,17 +23,17 @@ import 'test_in_memory_identity_key_store.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 void main() {
-  final ALICE_ADDRESS = SignalProtocolAddress('+14151111111', 1);
-  final BOB_ADDRESS = SignalProtocolAddress('+14152222222', 1);
+  final aliceAddress = SignalProtocolAddress('+14151111111', 1);
+  final bobAddress = SignalProtocolAddress('+14152222222', 1);
 
   test('testBasicPreKeyV2', () async {
     final aliceStore = TestInMemorySignalProtocolStore();
     final aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
-    var bobStore = TestInMemorySignalProtocolStore();
-    var bobPreKeyPair = Curve.generateKeyPair();
-    var bobPreKey = PreKeyBundle(
+    final bobStore = TestInMemorySignalProtocolStore();
+    final bobPreKeyPair = Curve.generateKeyPair();
+    final bobPreKey = PreKeyBundle(
         await bobStore.getLocalRegistrationId(),
         1,
         31337,
@@ -55,63 +55,63 @@ void main() {
 
   Future<void> runInteraction(
       SignalProtocolStore aliceStore, SignalProtocolStore bobStore) async {
-    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
-    var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    final aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
+    final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
 
-    var originalMessage = 'smert ze smert';
-    var aliceMessage = await aliceSessionCipher
+    const originalMessage = 'smert ze smert';
+    final aliceMessage = await aliceSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
-    assert(aliceMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(aliceMessage.getType() == CiphertextMessage.whisperType);
 
     var plaintext = await bobSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(aliceMessage.serialize()));
-    assert(String.fromCharCodes(plaintext) == (originalMessage));
+    assert(String.fromCharCodes(plaintext) == originalMessage);
 
-    var bobMessage = await bobSessionCipher
+    final bobMessage = await bobSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
 
-    assert(bobMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(bobMessage.getType() == CiphertextMessage.whisperType);
 
     plaintext = await aliceSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(bobMessage.serialize()));
     assert(String.fromCharCodes(plaintext) == originalMessage);
 
     for (var i = 0; i < 10; i++) {
-      var loopingMessage =
+      final loopingMessage =
           '''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
               surges up in the world--and defines himself aftward. $i''';
-      var aliceLoopingMessage = await aliceSessionCipher
+      final aliceLoopingMessage = await aliceSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
-      var loopingPlaintext = await bobSessionCipher.decryptFromSignal(
+      final loopingPlaintext = await bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
     for (var i = 0; i < 10; i++) {
-      var loopingMessage =
-          ('''What do we mean by saying that existence precedes essence?
+      final loopingMessage =
+          '''What do we mean by saying that existence precedes essence?
           We mean that man first of all exists, encounters himself,
-          surges up in the world--and defines himself aftward. $i''');
-      var bobLoopingMessage = await bobSessionCipher
+          surges up in the world--and defines himself aftward. $i''';
+      final bobLoopingMessage = await bobSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
-      var loopingPlaintext = await aliceSessionCipher.decryptFromSignal(
+      final loopingPlaintext = await aliceSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages =
+    final Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages =
         HashSet<Tuple2<String, CiphertextMessage>>();
 
     for (var i = 0; i < 10; i++) {
-      var loopingMessage =
-          ('''What do we mean by saying that existence precedes essence?
+      final loopingMessage =
+          '''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
-              surges up in the world--and defines himself aftward. $i''');
-      var aliceLoopingMessage = await aliceSessionCipher
+              surges up in the world--and defines himself aftward. $i''';
+      final aliceLoopingMessage = await aliceSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
       aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(
@@ -119,30 +119,30 @@ void main() {
     }
 
     for (var i = 0; i < 10; i++) {
-      var loopingMessage =
-          ('''What do we mean by saying that existence precedes essence?
+      final loopingMessage =
+          '''What do we mean by saying that existence precedes essence?
               We mean that man first of all exists, encounters himself,
-              surges up in the world--and defines himself aftward. $i''');
-      var aliceLoopingMessage = await aliceSessionCipher
+              surges up in the world--and defines himself aftward. $i''';
+      final aliceLoopingMessage = await aliceSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
-      var loopingPlaintext = await bobSessionCipher.decryptFromSignal(
+      final loopingPlaintext = await bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
     for (var i = 0; i < 10; i++) {
-      var loopingMessage = 'You can only desire based on what you know: $i';
-      var bobLoopingMessage = await bobSessionCipher
+      final loopingMessage = 'You can only desire based on what you know: $i';
+      final bobLoopingMessage = await bobSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
-      var loopingPlaintext = await aliceSessionCipher.decryptFromSignal(
+      final loopingPlaintext = await aliceSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobLoopingMessage.serialize()));
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
     for (var aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
-      var outOfOrderPlaintext = await bobSessionCipher.decryptFromSignal(
+      final outOfOrderPlaintext = await bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(
               aliceOutOfOrderMessage.item2.serialize()));
       assert(String.fromCharCodes(outOfOrderPlaintext) ==
@@ -153,7 +153,7 @@ void main() {
   test('testBasicPreKeyV3', () async {
     var aliceStore = TestInMemorySignalProtocolStore();
     var aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
     final bobStore = TestInMemorySignalProtocolStore();
     var bobPreKeyPair = Curve.generateKeyPair();
@@ -177,50 +177,46 @@ void main() {
             .then((value) => value.getPublicKey()));
     await aliceSessionBuilder.processPreKeyBundle(bobPreKey);
 
-    assert(await aliceStore.containsSession(BOB_ADDRESS));
+    assert(await aliceStore.containsSession(bobAddress));
     assert(await aliceStore
-            .loadSession(BOB_ADDRESS)
+            .loadSession(bobAddress)
             .then((value) => value.sessionState.getSessionVersion()) ==
         3);
 
-    final originalMessage = "L'homme est condamné à être libre";
-    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+    const originalMessage = "L'homme est condamné à être libre";
+    var aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
     var outgoingMessage = await aliceSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
-    assert(outgoingMessage.getType() == CiphertextMessage.PREKEY_TYPE);
+    assert(outgoingMessage.getType() == CiphertextMessage.prekeyType);
 
-    var incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
-    bobStore.storePreKey(
+    final incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
+    await bobStore.storePreKey(
         31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
-    bobStore.storeSignedPreKey(
+    await bobStore.storeSignedPreKey(
         22,
         SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
             bobSignedPreKeyPair, bobSignedPreKeySignature));
 
-    var bobSessionCipher = SessionCipher.fromStore(bobStore, ALICE_ADDRESS);
+    final bobSessionCipher = SessionCipher.fromStore(bobStore, aliceAddress);
     var plaintext = await bobSessionCipher.decryptWithCallback(incomingMessage,
         (plaintext) async {
-      var result = utf8.decode(plaintext, allowMalformed: true);
+      final result = utf8.decode(plaintext, allowMalformed: true);
       assert(originalMessage == result);
-      assert(!await bobStore.containsSession(ALICE_ADDRESS));
+      assert(!await bobStore.containsSession(aliceAddress));
     });
 
-    assert(await bobStore.containsSession(ALICE_ADDRESS));
+    assert(await bobStore.containsSession(aliceAddress));
     assert(await bobStore
-            .loadSession(ALICE_ADDRESS)
+            .loadSession(aliceAddress)
             .then((value) => value.sessionState.getSessionVersion()) ==
         3);
-    assert(bobStore
-            .loadSession(ALICE_ADDRESS)
-            .then((value) => value.sessionState.aliceBaseKey) !=
-        null);
     assert(originalMessage == utf8.decode(plaintext, allowMalformed: true));
 
-    var bobOutgoingMessage = await bobSessionCipher
+    final bobOutgoingMessage = await bobSessionCipher
         .encrypt(Uint8List.fromList(utf8.encode(originalMessage)));
-    assert(bobOutgoingMessage.getType() == CiphertextMessage.WHISPER_TYPE);
+    assert(bobOutgoingMessage.getType() == CiphertextMessage.whisperType);
 
-    var alicePlaintext = await aliceSessionCipher.decryptFromSignal(
+    final alicePlaintext = await aliceSessionCipher.decryptFromSignal(
         SignalMessage.fromSerialized(bobOutgoingMessage.serialize()));
     assert(
         utf8.decode(alicePlaintext, allowMalformed: true) == originalMessage);
@@ -229,8 +225,8 @@ void main() {
 
     aliceStore = TestInMemorySignalProtocolStore();
     aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
-    aliceSessionCipher = SessionCipher.fromStore(aliceStore, BOB_ADDRESS);
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
+    aliceSessionCipher = SessionCipher.fromStore(aliceStore, bobAddress);
 
     bobPreKeyPair = Curve.generateKeyPair();
     bobSignedPreKeyPair = Curve.generateKeyPair();
@@ -251,9 +247,9 @@ void main() {
             .getIdentityKeyPair()
             .then((value) => value.getPublicKey()));
 
-    bobStore.storePreKey(
+    await bobStore.storePreKey(
         31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
-    bobStore.storeSignedPreKey(
+    await bobStore.storeSignedPreKey(
         23,
         SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch),
             bobSignedPreKeyPair, bobSignedPreKeySignature));
@@ -266,8 +262,8 @@ void main() {
       plaintext = await bobSessionCipher
           .decrypt(PreKeySignalMessage(outgoingMessage.serialize()));
       throw AssertionError("shouldn't be trusted!");
-    } on UntrustedIdentityException catch (uie) {
-      await bobStore.saveIdentity(ALICE_ADDRESS,
+    } on UntrustedIdentityException {
+      await bobStore.saveIdentity(aliceAddress,
           PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey());
     }
 
@@ -296,28 +292,28 @@ void main() {
   });
 
   test('testBadSignedPreKeySignature', () async {
-    var aliceStore = TestInMemorySignalProtocolStore();
-    var aliceSessionBuilder =
-        SessionBuilder.fromSignalStore(aliceStore, BOB_ADDRESS);
+    final aliceStore = TestInMemorySignalProtocolStore();
+    final aliceSessionBuilder =
+        SessionBuilder.fromSignalStore(aliceStore, bobAddress);
 
-    var bobIdentityKeyStore = TestInMemoryIdentityKeyStore();
+    final bobIdentityKeyStore = TestInMemoryIdentityKeyStore();
 
-    var bobPreKeyPair = Curve.generateKeyPair();
-    var bobSignedPreKeyPair = Curve.generateKeyPair();
-    var bobSignedPreKeySignature = Curve.calculateSignature(
+    final bobPreKeyPair = Curve.generateKeyPair();
+    final bobSignedPreKeyPair = Curve.generateKeyPair();
+    final bobSignedPreKeySignature = Curve.calculateSignature(
         await bobIdentityKeyStore
             .getIdentityKeyPair()
             .then((value) => value.getPrivateKey()),
         bobSignedPreKeyPair.publicKey.serialize());
 
     for (var i = 0; i < bobSignedPreKeySignature.length * 8; i++) {
-      var modifiedSignature = Uint8List(bobSignedPreKeySignature.length);
+      final modifiedSignature = Uint8List(bobSignedPreKeySignature.length);
       Curve.arraycopy(bobSignedPreKeySignature, 0, modifiedSignature, 0,
           modifiedSignature.length);
 
-      modifiedSignature[i ~/ 8] ^= (0x01 << (i % 8));
+      modifiedSignature[i ~/ 8] ^= 0x01 << (i % 8);
 
-      var bobPreKey = PreKeyBundle(
+      final bobPreKey = PreKeyBundle(
           await bobIdentityKeyStore.getLocalRegistrationId(),
           1,
           31337,
@@ -337,7 +333,7 @@ void main() {
       }
     }
 
-    var bobPreKey = PreKeyBundle(
+    final bobPreKey = PreKeyBundle(
         await bobIdentityKeyStore.getLocalRegistrationId(),
         1,
         31337,

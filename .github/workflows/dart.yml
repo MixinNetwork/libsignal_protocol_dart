@@ -17,7 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: pub get
+      run: dart pub get
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+    - name: Analyze project source
+      run: dart analyze
     - name: Run tests
       run: pub run test
     - name: Run publish

@@ -1,18 +1,18 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/IdentityKey.dart';
-import 'package:libsignal_protocol_dart/src/IdentityKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/ecc/Curve.dart';
-import 'package:libsignal_protocol_dart/src/ecc/ECKeyPair.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/BobSignalProtocolParameters.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/RatchetingSession.dart';
-import 'package:libsignal_protocol_dart/src/state/SessionState.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/bob_signal_protocol_parameters.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/ratcheting_session.dart';
+import 'package:libsignal_protocol_dart/src/state/session_state.dart';
 import 'package:optional/optional.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('testRatchetingSessionAsBob', () {
-    var bobPublic = Uint8List.fromList([
+    final bobPublic = Uint8List.fromList([
       0x05,
       0x2c,
       0xb4,
@@ -48,7 +48,7 @@ void main() {
       0x58
     ]);
 
-    var bobPrivate = Uint8List.fromList([
+    final bobPrivate = Uint8List.fromList([
       0xa1,
       0xca,
       0xb4,
@@ -83,7 +83,7 @@ void main() {
       0x5a
     ]);
 
-    var bobIdentityPublic = Uint8List.fromList([
+    final bobIdentityPublic = Uint8List.fromList([
       0x05,
       0xf1,
       0xf4,
@@ -119,7 +119,7 @@ void main() {
       0x26
     ]);
 
-    var bobIdentityPrivate = Uint8List.fromList([
+    final bobIdentityPrivate = Uint8List.fromList([
       0x48,
       0x75,
       0xcc,
@@ -154,7 +154,7 @@ void main() {
       0x5e
     ]);
 
-    var aliceBasePublic = Uint8List.fromList([
+    final aliceBasePublic = Uint8List.fromList([
       0x05,
       0x47,
       0x2d,
@@ -190,7 +190,7 @@ void main() {
       0x50
     ]);
 
-    var aliceEphemeralPublic = Uint8List.fromList([
+    final aliceEphemeralPublic = Uint8List.fromList([
       0x05,
       0x6c,
       0x3e,
@@ -226,7 +226,7 @@ void main() {
       0x4b
     ]);
 
-    var aliceIdentityPublic = Uint8List.fromList([
+    final aliceIdentityPublic = Uint8List.fromList([
       0x05,
       0xb4,
       0xa8,
@@ -262,7 +262,7 @@ void main() {
       0x4a
     ]);
 
-    var bobSignedPreKeyPublic = Uint8List.fromList([
+    final bobSignedPreKeyPublic = Uint8List.fromList([
       0x05,
       0xac,
       0x24,
@@ -298,7 +298,7 @@ void main() {
       0x67
     ]);
 
-    var bobSignedPreKeyPrivate = Uint8List.fromList([
+    final bobSignedPreKeyPrivate = Uint8List.fromList([
       0x58,
       0x39,
       0x00,
@@ -333,7 +333,7 @@ void main() {
       0x53
     ]);
 
-    var senderChain = Uint8List.fromList([
+    final senderChain = Uint8List.fromList([
       0x97,
       0x97,
       0xca,
@@ -368,32 +368,36 @@ void main() {
       0x4d
     ]);
 
-    var bobIdentityKeyPublic = IdentityKey.fromBytes(bobIdentityPublic, 0);
-    var bobIdentityKeyPrivate = Curve.decodePrivatePoint(bobIdentityPrivate);
-    var bobIdentityKey =
+    final bobIdentityKeyPublic = IdentityKey.fromBytes(bobIdentityPublic, 0);
+    final bobIdentityKeyPrivate = Curve.decodePrivatePoint(bobIdentityPrivate);
+    final bobIdentityKey =
         IdentityKeyPair(bobIdentityKeyPublic, bobIdentityKeyPrivate);
-    var bobEphemeralPublicKey = Curve.decodePoint(bobPublic, 0);
-    var bobEphemeralPrivateKey = Curve.decodePrivatePoint(bobPrivate);
-    var bobEphemeralKey =
+    final bobEphemeralPublicKey = Curve.decodePoint(bobPublic, 0);
+    final bobEphemeralPrivateKey = Curve.decodePrivatePoint(bobPrivate);
+    final bobEphemeralKey =
         ECKeyPair(bobEphemeralPublicKey, bobEphemeralPrivateKey);
-    var bobBaseKey = bobEphemeralKey;
-    var bobSignedPreKey = ECKeyPair(Curve.decodePoint(bobSignedPreKeyPublic, 0),
+    // ignore: unused_local_variable
+    final bobBaseKey = bobEphemeralKey;
+    final bobSignedPreKey = ECKeyPair(
+        Curve.decodePoint(bobSignedPreKeyPublic, 0),
         Curve.decodePrivatePoint(bobSignedPreKeyPrivate));
 
-    var aliceBasePublicKey = Curve.decodePoint(aliceBasePublic, 0);
-    var aliceEphemeralPublicKey = Curve.decodePoint(aliceEphemeralPublic, 0);
-    var aliceIdentityPublicKey = IdentityKey.fromBytes(aliceIdentityPublic, 0);
+    final aliceBasePublicKey = Curve.decodePoint(aliceBasePublic, 0);
+    // ignore: unused_local_variable
+    final aliceEphemeralPublicKey = Curve.decodePoint(aliceEphemeralPublic, 0);
+    final aliceIdentityPublicKey =
+        IdentityKey.fromBytes(aliceIdentityPublic, 0);
 
-    var parameters = BobSignalProtocolParameters.newBuilder()
+    final parameters = BobSignalProtocolParameters.newBuilder()
         .setOurIdentityKey(bobIdentityKey)
         .setOurSignedPreKey(bobSignedPreKey)
         .setOurRatchetKey(bobEphemeralKey)
-        .setOurOneTimePreKey(Optional<ECKeyPair>.empty())
+        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
         .setTheirIdentityKey(aliceIdentityPublicKey)
         .setTheirBaseKey(aliceBasePublicKey)
         .create();
 
-    var session = SessionState();
+    final session = SessionState();
 
     RatchetingSession.initializeSessionBob(session, parameters);
 
