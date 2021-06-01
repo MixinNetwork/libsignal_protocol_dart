@@ -20,24 +20,24 @@ For more information on how the Signal Protocol works:
 At install time, a signal client needs to generate its identity keys, registration id, and prekeys.
 
 ```dart
-void install() {
-  var identityKeyPair = KeyHelper.generateIdentityKeyPair();
-  var registrationId = KeyHelper.generateRegistrationId(false);
+Future<void> install() async {
+  final identityKeyPair = generateIdentityKeyPair();
+  final registrationId = generateRegistrationId(false);
 
-  var preKeys = KeyHelper.generatePreKeys(0, 110);
+  final preKeys = generatePreKeys(0, 110);
 
-  var signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0);
+  final signedPreKey = generateSignedPreKey(identityKeyPair, 0);
 
-  var sessionStore = InMemorySessionStore();
-  var preKeyStore = InMemoryPreKeyStore();
-  var signedPreKeyStore = InMemorySignedPreKeyStore();
-  var identityStore =
-      InMemoryIdentityKeyStore(identityKeyPair, registerationId);
+  final sessionStore = InMemorySessionStore();
+  final preKeyStore = InMemoryPreKeyStore();
+  final signedPreKeyStore = InMemorySignedPreKeyStore();
+  final identityStore =
+  InMemoryIdentityKeyStore(identityKeyPair, registrationId);
 
   for (var p in preKeys) {
-    preKeyStore.storePreKey(p.id, p);
+    await preKeyStore.storePreKey(p.id, p);
   }
-  signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
+  await signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
 }
 ```
 
@@ -48,15 +48,15 @@ A signal client needs to implement four interfaces: IdentityKeyStore, PreKeyStor
 Once those are implemented, you can build a session in this way:
 
 ```dart
-  var remoteAddress = SignalProtocolAddress("remote", 1);
-  var sessionBuilder = SessionBuilder(sessionStore, preKeyStore,
+  final remoteAddress = SignalProtocolAddress("remote", 1);
+  final sessionBuilder = SessionBuilder(sessionStore, preKeyStore,
       signedPreKeyStore, identityStore, remoteAddress);
 
   sessionBuilder.processPreKeyBundle(retrievedPreKey);
 
-  var sessionCipher = SessionCipher(sessionStore, preKeyStore,
+  final sessionCipher = SessionCipher(sessionStore, preKeyStore,
       signedPreKeyStore, identityStore, remoteAddress);
-  var ciphertext = sessionCipher.encrypt(utf8.encode("Hello Mixin"));
+  final ciphertext = sessionCipher.encrypt(utf8.encode("Hello Mixin"));
 
   deliver(ciphertext);
 ```
@@ -66,25 +66,25 @@ Once those are implemented, you can build a session in this way:
 If you wanna send message to a group, send a SenderKeyDistributionMessage to all members of the group.
 
 ```dart
-  final SENDER_ADDRESS = SignalProtocolAddress('+00000000001', 1);
-  final GROUP_SENDER =
-      SenderKeyName('Private group', SENDER_ADDRESS);
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  final senderAddress = SignalProtocolAddress('+00000000001', 1);
+  final groupSender =
+      SenderKeyName('Private group', senderAddress);
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    var bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(GROUP_SENDER);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage = aliceSessionBuilder.create(groupSender);
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
-    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+    bobSessionBuilder.process(groupSender, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice = aliceGroupCipher
-        .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
-    var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice)
+    final ciphertextFromAlice = aliceGroupCipher
+        .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+    final plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
 ```
