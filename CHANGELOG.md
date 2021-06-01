@@ -11,3 +11,6 @@
 ## [0.4.0-nullsafety.0] -
 
 ## [0.4.1-nullsafety.0] -
+
+## [0.5.0-nullsafety.0] -
+
