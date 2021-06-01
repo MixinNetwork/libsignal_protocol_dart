@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 
 Future<void> main() async {
-  install();
+  await install();
 }
 
 Future<void> install() async {
@@ -22,9 +22,9 @@ Future<void> install() async {
       InMemoryIdentityKeyStore(identityKeyPair, registrationId);
 
   for (var p in preKeys) {
-    preKeyStore.storePreKey(p.id, p);
+    await preKeyStore.storePreKey(p.id, p);
   }
-  signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
+  await signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
 
   final bobAddress = SignalProtocolAddress('bob', 1);
   final sessionBuilder = SessionBuilder(
@@ -52,32 +52,35 @@ Future<void> install() async {
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
   final ciphertext = await sessionCipher
       .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin🤣')));
+  // ignore: avoid_print
   print(ciphertext);
+  // ignore: avoid_print
   print(ciphertext.serialize());
   //deliver(ciphertext);
 
   final signalProtocolStore =
       InMemorySignalProtocolStore(remoteIdentityKeyPair, 1);
-  final aliceAddress = SignalProtocolAddress("alice", 1);
+  final aliceAddress = SignalProtocolAddress('alice', 1);
   final remoteSessionCipher =
       SessionCipher.fromStore(signalProtocolStore, aliceAddress);
 
   for (var p in remotePreKeys) {
-    signalProtocolStore.storePreKey(p.id, p);
+    await signalProtocolStore.storePreKey(p.id, p);
   }
-  signalProtocolStore.storeSignedPreKey(
+  await signalProtocolStore.storeSignedPreKey(
       remoteSignedPreKey.id, remoteSignedPreKey);
 
   if (ciphertext.getType() == CiphertextMessage.prekeyType) {
-    remoteSessionCipher.decryptWithCallback(ciphertext as PreKeySignalMessage,
-        (plaintext) {
+    await remoteSessionCipher
+        .decryptWithCallback(ciphertext as PreKeySignalMessage, (plaintext) {
+      // ignore: avoid_print
       print(utf8.decode(plaintext));
     });
   }
 }
 
 Future<void> groupSession() async {
-  final senderKeyName = SenderKeyName("", SignalProtocolAddress("sender", 1));
+  final senderKeyName = SenderKeyName('', SignalProtocolAddress('sender', 1));
   final senderKeyStore = InMemorySenderKeyStore();
   final groupSession = GroupCipher(senderKeyStore, senderKeyName);
   await groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
