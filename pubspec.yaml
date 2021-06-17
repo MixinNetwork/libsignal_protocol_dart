@@ -14,7 +14,7 @@ dependencies:
   tuple: ^2.0.0
   fixnum: ^1.0.0
   collection: ^1.15.0
-  pointycastle: ^3.0.1
+  pointycastle: ^3.1.1
   ed25519_edwards: ^0.1.0
   x25519: ^0.0.2
   very_good_analysis: ^2.1.0
