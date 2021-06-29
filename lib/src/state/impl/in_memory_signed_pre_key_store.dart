@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
 import 'dart:typed_data';
 
 import '../../invalid_key_id_exception.dart';
@@ -17,7 +16,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
             'No such signedprekeyrecord! $signedPreKeyId');
       }
       return SignedPreKeyRecord.fromSerialized(store[signedPreKeyId]!);
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }
@@ -30,7 +29,7 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
         results.add(SignedPreKeyRecord.fromSerialized(serialized));
       }
       return results;
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }
