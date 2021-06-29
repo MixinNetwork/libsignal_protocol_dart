@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
 import 'dart:typed_data';
 
 import '../../signal_protocol_address.dart';
@@ -51,7 +50,7 @@ class InMemorySessionStore extends SessionStore {
       } else {
         return SessionRecord();
       }
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }

@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
 
 import '../sender_key_name.dart';
 import 'sender_key_record.dart';
@@ -17,7 +16,7 @@ class InMemorySenderKeyStore extends SenderKeyStore {
       } else {
         return SenderKeyRecord.fromSerialized(record.serialize());
       }
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }

@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
 import 'dart:typed_data';
 
 import '../../invalid_key_id_exception.dart';
@@ -21,7 +20,7 @@ class InMemoryPreKeyStore extends PreKeyStore {
       }
 
       return PreKeyRecord.fromBuffer(store[preKeyId]!);
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }

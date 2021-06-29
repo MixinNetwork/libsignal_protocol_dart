@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:optional/optional.dart';
@@ -86,7 +85,7 @@ class RatchetingSession {
             parameters.getTheirRatchetKey(), derivedKeys.getChainKey())
         ..setSenderChain(sendingRatchetKey, sendingChain.item2)
         ..rootKey = sendingChain.item1;
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }
@@ -119,7 +118,7 @@ class RatchetingSession {
         ..setSenderChain(
             parameters.getOurRatchetKey(), derivedKeys.getChainKey())
         ..rootKey = derivedKeys.getRootKey();
-    } on IOException catch (e) {
+    } on Exception catch (e) {
       throw AssertionError(e);
     }
   }
