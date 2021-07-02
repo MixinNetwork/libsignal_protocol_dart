@@ -15,7 +15,7 @@ dependencies:
   fixnum: ^1.0.0
   collection: ^1.15.0
   pointycastle: ^3.1.1
-  ed25519_edwards: ^0.2.0
+  ed25519_edwards: ^0.2.1
   x25519: ^0.0.2
   very_good_analysis: ^2.1.0
 
@@ -23,3 +23,4 @@ dependencies:
 dev_dependencies:
   test: ^1.16.5 
   pedantic: ^1.11.0
+  benchmark_harness: ^2.0.0
