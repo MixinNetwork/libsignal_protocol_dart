@@ -9,7 +9,7 @@ class SignVerifyBenchmark extends RateBenchmark {
   SignVerifyBenchmark(bool forSigning, [int dataLength = 1024 * 1024])
       : _forSigning = forSigning,
         _data = Uint8List(dataLength),
-        super('Dart - ${forSigning ? 'sign' : 'verify'}');
+        super('${forSigning ? 'sign' : 'verify'}');
 
   final Uint8List _data;
   final bool _forSigning;

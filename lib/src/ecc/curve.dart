@@ -3,13 +3,12 @@ import 'dart:typed_data';
 import 'package:x25519/x25519.dart' as x25519;
 
 import '../invalid_key_exception.dart';
-import '../util/key_helper.dart';
 import 'djb_ec_private_key.dart';
 import 'djb_ec_public_key.dart';
 import 'ec_key_pair.dart';
 import 'ec_private_key.dart';
 import 'ec_public_key.dart';
-import 'ed25519.dart';
+import 'sign_curve25519.dart';
 
 class Curve {
   static const int djbType = 0x05;
@@ -105,7 +104,7 @@ class Curve {
       }
 
       final publicKey = (signingKey as DjbECPublicKey).publicKey;
-      return verifySig(publicKey, message, signature);
+      return verify(publicKey, message, signature);
     } else {
       throw InvalidKeyException(
           'Unknown Signing Key type${signingKey.getType()}');
@@ -120,9 +119,8 @@ class Curve {
 
     if (signingKey.getType() == djbType) {
       final privateKey = signingKey.serialize();
-      final random = generateRandomBytes();
 
-      return sign(privateKey, message, random);
+      return sign(privateKey, message);
     } else {
       throw Exception('Unknown Signing Key type${signingKey.getType()}');
     }
