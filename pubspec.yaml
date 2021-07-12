@@ -14,7 +14,8 @@ dependencies:
   tuple: ^2.0.0
   fixnum: ^1.0.0
   collection: ^1.15.0
-  pointycastle: ^3.0.1
+  // upgrade to pre-release of pointycastle to enable full websupport
+  pointycastle: ^3.2.0-rc0
   ed25519_edwards: ^0.1.0
   x25519: ^0.0.2
 
