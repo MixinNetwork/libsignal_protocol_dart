@@ -10,28 +10,20 @@ class InMemorySignedPreKeyStore extends SignedPreKeyStore {
 
   @override
   Future<SignedPreKeyRecord> loadSignedPreKey(int signedPreKeyId) async {
-    try {
-      if (!store.containsKey(signedPreKeyId)) {
-        throw InvalidKeyIdException(
-            'No such signedprekeyrecord! $signedPreKeyId');
-      }
-      return SignedPreKeyRecord.fromSerialized(store[signedPreKeyId]!);
-    } on Exception catch (e) {
-      throw AssertionError(e);
+    if (!store.containsKey(signedPreKeyId)) {
+      throw InvalidKeyIdException(
+          'No such signedprekeyrecord! $signedPreKeyId');
     }
+    return SignedPreKeyRecord.fromSerialized(store[signedPreKeyId]!);
   }
 
   @override
   Future<List<SignedPreKeyRecord>> loadSignedPreKeys() async {
-    try {
-      final results = <SignedPreKeyRecord>[];
-      for (var serialized in store.values) {
-        results.add(SignedPreKeyRecord.fromSerialized(serialized));
-      }
-      return results;
-    } on Exception catch (e) {
-      throw AssertionError(e);
+    final results = <SignedPreKeyRecord>[];
+    for (var serialized in store.values) {
+      results.add(SignedPreKeyRecord.fromSerialized(serialized));
     }
+    return results;
   }
 
   @override

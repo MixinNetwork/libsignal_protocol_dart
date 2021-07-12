@@ -14,15 +14,10 @@ class InMemoryPreKeyStore extends PreKeyStore {
 
   @override
   Future<PreKeyRecord> loadPreKey(int preKeyId) async {
-    try {
-      if (!store.containsKey(preKeyId)) {
-        throw InvalidKeyIdException('No such prekeyrecord! - $preKeyId');
-      }
-
-      return PreKeyRecord.fromBuffer(store[preKeyId]!);
-    } on Exception catch (e) {
-      throw AssertionError(e);
+    if (!store.containsKey(preKeyId)) {
+      throw InvalidKeyIdException('No such prekeyrecord! - $preKeyId');
     }
+    return PreKeyRecord.fromBuffer(store[preKeyId]!);
   }
 
   @override
