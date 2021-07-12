@@ -2,292 +2,319 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/DuplicateMessageException.dart';
-import 'package:libsignal_protocol_dart/src/InvalidMessageException.dart';
-import 'package:libsignal_protocol_dart/src/NoSessionException.dart';
-import 'package:libsignal_protocol_dart/src/SignalProtocolAddress.dart';
+import 'package:libsignal_protocol_dart/src/duplicate_message_exception.dart';
+import 'package:libsignal_protocol_dart/src/invalid_message_exception.dart';
+import 'package:libsignal_protocol_dart/src/no_session_exception.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/eq.dart';
-import 'package:libsignal_protocol_dart/src/groups/GroupCipher.dart';
-import 'package:libsignal_protocol_dart/src/groups/GroupSessionBuilder.dart';
-import 'package:libsignal_protocol_dart/src/groups/SenderKeyName.dart';
-import 'package:libsignal_protocol_dart/src/groups/state/InMemorySenderKeyStore.dart';
-import 'package:libsignal_protocol_dart/src/protocol/SenderKeyDistributionMessageWrapper.dart';
-import 'package:libsignal_protocol_dart/src/util/KeyHelper.dart';
+import 'package:libsignal_protocol_dart/src/groups/group_cipher.dart';
+import 'package:libsignal_protocol_dart/src/groups/group_session_builder.dart';
+import 'package:libsignal_protocol_dart/src/groups/sender_key_name.dart';
+import 'package:libsignal_protocol_dart/src/groups/state/in_memory_sender_key_store.dart';
+import 'package:libsignal_protocol_dart/src/protocol/sender_key_distribution_message_wrapper.dart';
+import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final SENDER_ADDRESS = SignalProtocolAddress('+14150001111', 1);
-  final GROUP_SENDER =
-      SenderKeyName('nihilist history reading group', SENDER_ADDRESS);
+  final senderAddress = SignalProtocolAddress('+14150001111', 1);
+  final groupSender =
+      SenderKeyName('nihilist history reading group', senderAddress);
 
-  final _integerMax = 0x7fffffff;
+  const _integerMax = 0x7fffffff;
 
   int _randomInt() {
     final secureRandom = Random.secure();
     return secureRandom.nextInt(_integerMax);
   }
 
-  test('testNoSession', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testNoSession', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    // ignore: unused_local_variable
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    var bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(GROUP_SENDER);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage =
+        await aliceSessionBuilder.create(groupSender);
+    // ignore: unused_local_variable
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
 
-//    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+//    bobSessionBuilder.process(groupSender, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice = aliceGroupCipher
+    final ciphertextFromAlice = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
     try {
-      var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
+      // ignore: unused_local_variable
+      final plaintextFromAlice =
+          await bobGroupCipher.decrypt(ciphertextFromAlice);
       throw AssertionError('Should be no session!');
-    } on NoSessionException catch (e) {
+    } on NoSessionException {
       // good
     }
   });
 
-  test('testBasicEncryptDecrypt', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testBasicEncryptDecrypt', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    var bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(GROUP_SENDER);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage =
+        await aliceSessionBuilder.create(groupSender);
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
-    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+    await bobSessionBuilder.process(
+        groupSender, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice = aliceGroupCipher
+    final ciphertextFromAlice = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
-    var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
+    final plaintextFromAlice =
+        await bobGroupCipher.decrypt(ciphertextFromAlice);
 
     assert(utf8.decode(plaintextFromAlice) == 'smert ze smert');
   });
 
-  test('testLargeMessages', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testLargeMessages', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceGroupCipher = GroupCipher(aliceStore, GROUP_SENDER);
-    var bobGroupCipher = GroupCipher(bobStore, GROUP_SENDER);
+    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+    final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(GROUP_SENDER);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage =
+        await aliceSessionBuilder.create(groupSender);
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
-    bobSessionBuilder.process(GROUP_SENDER, receivedAliceDistributionMessage);
+    await bobSessionBuilder.process(
+        groupSender, receivedAliceDistributionMessage);
 
-    var plaintext = KeyHelper.generateRandomBytes(1024 * 1024);
+    final plaintext = generateRandomBytes(1024 * 1024);
 
-    var ciphertextFromAlice = aliceGroupCipher.encrypt(plaintext);
-    var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
+    final ciphertextFromAlice = await aliceGroupCipher.encrypt(plaintext);
+    final plaintextFromAlice =
+        await bobGroupCipher.decrypt(ciphertextFromAlice);
 
+    // ignore: avoid_dynamic_calls
     assert(eq(plaintextFromAlice, plaintext));
   });
 
-  test('testBasicRatchet', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testBasicRatchet', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
-    var aliceGroupCipher = GroupCipher(aliceStore, aliceName);
-    var bobGroupCipher = GroupCipher(bobStore, aliceName);
+    final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
+    final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(aliceName);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
 
-    bobSessionBuilder.process(aliceName, receivedAliceDistributionMessage);
+    await bobSessionBuilder.process(
+        aliceName, receivedAliceDistributionMessage);
 
-    var ciphertextFromAlice = aliceGroupCipher
+    final ciphertextFromAlice = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert')));
-    var ciphertextFromAlice2 = aliceGroupCipher
+    final ciphertextFromAlice2 = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert2')));
-    var ciphertextFromAlice3 = aliceGroupCipher
+    final ciphertextFromAlice3 = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('smert ze smert3')));
 
-    var plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
+    final plaintextFromAlice =
+        await bobGroupCipher.decrypt(ciphertextFromAlice);
 
     try {
-      bobGroupCipher.decrypt(ciphertextFromAlice);
+      await bobGroupCipher.decrypt(ciphertextFromAlice);
       throw AssertionError('Should have ratcheted forward!');
     } on DuplicateMessageException {
       // good
     }
 
-    var plaintextFromAlice2 = bobGroupCipher.decrypt(ciphertextFromAlice2);
-    var plaintextFromAlice3 = bobGroupCipher.decrypt(ciphertextFromAlice3);
+    final plaintextFromAlice2 =
+        await bobGroupCipher.decrypt(ciphertextFromAlice2);
+    final plaintextFromAlice3 =
+        await bobGroupCipher.decrypt(ciphertextFromAlice3);
 
     assert(utf8.decode(plaintextFromAlice) == 'smert ze smert');
     assert(utf8.decode(plaintextFromAlice2) == 'smert ze smert2');
     assert(utf8.decode(plaintextFromAlice3) == 'smert ze smert3');
   });
 
-  test('testLateJoin', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testLateJoin', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
 
-    var aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
-    var aliceGroupCipher = GroupCipher(aliceStore, aliceName);
+    final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
 
-    var aliceDistributionMessage = aliceSessionBuilder.create(aliceName);
+    // ignore: unused_local_variable
+    final aliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
     // Send off to some people.
 
     for (var i = 0; i < 100; i++) {
-      aliceGroupCipher.encrypt(Uint8List.fromList(
+      await aliceGroupCipher.encrypt(Uint8List.fromList(
           utf8.encode('up the punks up the punks up the punks')));
     }
 
     // Now Bob Joins.
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
-    var bobGroupCipher = GroupCipher(bobStore, aliceName);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
-    var distributionMessageToBob = aliceSessionBuilder.create(aliceName);
-    bobSessionBuilder.process(
+    final distributionMessageToBob =
+        await aliceSessionBuilder.create(aliceName);
+    await bobSessionBuilder.process(
         aliceName,
         SenderKeyDistributionMessageWrapper.fromSerialized(
             distributionMessageToBob.serialize()));
 
-    var ciphertext = aliceGroupCipher
+    final ciphertext = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('welcome to the group')));
-    var plaintext = bobGroupCipher.decrypt(ciphertext);
+    final plaintext = await bobGroupCipher.decrypt(ciphertext);
 
     assert(utf8.decode(plaintext) == 'welcome to the group');
   });
 
-  test('testOutOfOrder', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testOutOfOrder', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
-    var aliceGroupCipher = GroupCipher(aliceStore, aliceName);
-    var bobGroupCipher = GroupCipher(bobStore, aliceName);
+    final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
+    final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
-    var sentAliceDistributionMessage = aliceSessionBuilder.create(aliceName);
-    var receivedAliceDistributionMessage =
+    final sentAliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
+    // ignore: unused_local_variable
+    final receivedAliceDistributionMessage =
         SenderKeyDistributionMessageWrapper.fromSerialized(
             sentAliceDistributionMessage.serialize());
 
-    var aliceDistributionMessage = aliceSessionBuilder.create(aliceName);
+    final aliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
 
-    bobSessionBuilder.process(aliceName, aliceDistributionMessage);
+    await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    var ciphertexts = [];
+    final ciphertexts = [];
 
     for (var i = 0; i < 100; i++) {
-      ciphertexts.add(aliceGroupCipher
+      ciphertexts.add(await aliceGroupCipher
           .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
     }
 
     while (ciphertexts.isNotEmpty) {
-      var index = _randomInt() % ciphertexts.length;
-      var ciphertext = ciphertexts.removeAt(index);
-      var plaintext = bobGroupCipher.decrypt(ciphertext);
+      final index = _randomInt() % ciphertexts.length;
+      final ciphertext = ciphertexts.removeAt(index);
+      final plaintext = await bobGroupCipher.decrypt(ciphertext);
 
       assert(utf8.decode(plaintext) == 'up the punks');
     }
   });
 
-  test('testEncryptNoSession', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var aliceGroupCipher = GroupCipher(
+  test('testEncryptNoSession', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final aliceGroupCipher = GroupCipher(
         aliceStore,
         SenderKeyName(
             'coolio groupio', SignalProtocolAddress('+10002223333', 1)));
     try {
-      aliceGroupCipher.encrypt(Uint8List.fromList(utf8.encode('up the punks')));
+      await aliceGroupCipher
+          .encrypt(Uint8List.fromList(utf8.encode('up the punks')));
       throw AssertionError('Should have failed!');
     } on NoSessionException {
       // good
     }
   });
 
-  test('testTooFarInFuture', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testTooFarInFuture', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
-    var aliceGroupCipher = GroupCipher(aliceStore, aliceName);
-    var bobGroupCipher = GroupCipher(bobStore, aliceName);
+    final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
+    final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
-    var aliceDistributionMessage = aliceSessionBuilder.create(aliceName);
+    final aliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
 
-    bobSessionBuilder.process(aliceName, aliceDistributionMessage);
+    await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
     for (var i = 0; i < 2001; i++) {
-      aliceGroupCipher.encrypt(Uint8List.fromList(utf8.encode('up the punks')));
+      await aliceGroupCipher
+          .encrypt(Uint8List.fromList(utf8.encode('up the punks')));
     }
 
-    var tooFarCiphertext = aliceGroupCipher
+    final tooFarCiphertext = await aliceGroupCipher
         .encrypt(Uint8List.fromList(utf8.encode('notta gonna worka')));
     try {
-      bobGroupCipher.decrypt(tooFarCiphertext);
+      await bobGroupCipher.decrypt(tooFarCiphertext);
       throw AssertionError('Should have failed!');
     } on InvalidMessageException {
       // good
     }
   });
 
-  test('testMessageKeyLimit', () {
-    var aliceStore = InMemorySenderKeyStore();
-    var bobStore = InMemorySenderKeyStore();
+  test('testMessageKeyLimit', () async {
+    final aliceStore = InMemorySenderKeyStore();
+    final bobStore = InMemorySenderKeyStore();
 
-    var aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    var bobSessionBuilder = GroupSessionBuilder(bobStore);
+    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+    final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    var aliceName = GROUP_SENDER;
+    final aliceName = groupSender;
 
-    var aliceGroupCipher = GroupCipher(aliceStore, aliceName);
-    var bobGroupCipher = GroupCipher(bobStore, aliceName);
+    final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
+    final bobGroupCipher = GroupCipher(bobStore, aliceName);
 
-    var aliceDistributionMessage = aliceSessionBuilder.create(aliceName);
+    final aliceDistributionMessage =
+        await aliceSessionBuilder.create(aliceName);
 
-    bobSessionBuilder.process(aliceName, aliceDistributionMessage);
+    await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    var inflight = [];
+    final inflight = [];
 
     for (var i = 0; i < 2010; i++) {
-      inflight.add(aliceGroupCipher
+      inflight.add(await aliceGroupCipher
           .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
     }
 
-    bobGroupCipher.decrypt(inflight[1000]);
-    bobGroupCipher.decrypt(inflight[inflight.length - 1]);
+    await bobGroupCipher.decrypt(inflight[1000]);
+    await bobGroupCipher.decrypt(inflight[inflight.length - 1]);
 
     try {
-      bobGroupCipher.decrypt(inflight[0]);
+      await bobGroupCipher.decrypt(inflight[0]);
       throw AssertionError('Should have failed!');
     } on DuplicateMessageException {
       // good

@@ -1,1 +1,54 @@
-include: package:pedantic/analysis_options.yaml
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  errors:
+    public_member_api_docs: ignore
+    lines_longer_than_80_chars: ignore
+    avoid_function_literals_in_foreach_calls: ignore
+    control_flow_in_finally: true
+  exclude:
+    - 'bin/cache/**'
+    # custom
+    - 'lib/generated/**'
+    - '**.g.dart'
+    - 'lib/src/state/**.pb.dart'
+    - 'lib/src/state/**.pbenum.dart'
+    - 'lib/src/state/**.pbjson.dart'
+    - 'lib/src/state/**.pbserver.dart'
+
+linter:
+  rules:
+    - prefer_const_constructors_in_immutables
+    - prefer_relative_imports
+    #    - require_trailing_commas
+    - prefer_final_locals
+    - avoid_void_async
+    #    - use_if_null_to_convert_nulls_to_bools
+    #    - avoid_positional_boolean_parameters
+    #    - always_put_required_named_parameters_first
+    - unnecessary_await_in_return
+    - prefer_expression_function_bodies
+    - avoid_field_initializers_in_const_classes
+    - file_names
+    - unnecessary_parenthesis
+    - prefer_void_to_null
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_returning_null_for_void
+    - prefer_function_declarations_over_variables
+    - empty_statements
+    - prefer_is_not_operator
+    - cast_nullable_to_non_nullable
+    - avoid_classes_with_only_static_members
+    - type_annotate_public_apis
+    - prefer_const_literals_to_create_immutables
+    - use_string_buffers
+    - unnecessary_raw_strings
+    - unnecessary_null_checks
+    - parameter_assignments
+    - prefer_const_declarations
+    - sort_unnamed_constructors_first
+    - use_setters_to_change_properties
+    - curly_braces_in_flow_control_structures
+
+
+#    - avoid_slow_async_io

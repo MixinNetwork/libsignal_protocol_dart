@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/kdf/HKDF.dart';
-import 'package:libsignal_protocol_dart/src/ratchet/ChainKey.dart';
+import 'package:libsignal_protocol_dart/src/kdf/hkdf.dart';
+import 'package:libsignal_protocol_dart/src/ratchet/chain_key.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('testChainKeyDerivationV2', () {
-    var seed = Uint8List.fromList([
+    final seed = Uint8List.fromList([
       0x8a,
       0xb7,
       0x2d,
@@ -41,7 +41,7 @@ void main() {
       0x8f
     ]);
 
-    var messageKey = Uint8List.fromList([
+    final messageKey = Uint8List.fromList([
       0x02,
       0xa9,
       0xaa,
@@ -76,7 +76,7 @@ void main() {
       0xa7
     ]);
 
-    var macKey = Uint8List.fromList([
+    final macKey = Uint8List.fromList([
       0xbf,
       0xbe,
       0x5e,
@@ -111,7 +111,7 @@ void main() {
       0x83
     ]);
 
-    var nextChainKey = Uint8List.fromList([
+    final nextChainKey = Uint8List.fromList([
       0x28,
       0xe8,
       0xf8,
@@ -146,20 +146,20 @@ void main() {
       0x5d
     ]);
 
-    var chainKey = ChainKey(HKDF.createFor(2), seed, 0);
+    final chainKey = ChainKey(HKDF.createFor(2), seed, 0);
 
-    expect(chainKey.getKey(), seed);
+    expect(chainKey.key, seed);
     expect(chainKey.getMessageKeys().getCipherKey(), messageKey);
     expect(chainKey.getMessageKeys().getMacKey(), macKey);
-    expect(chainKey.getNextChainKey().getKey(), nextChainKey);
-    expect(chainKey.getIndex(), 0);
+    expect(chainKey.getNextChainKey().key, nextChainKey);
+    expect(chainKey.index, 0);
     expect(chainKey.getMessageKeys().getCounter(), 0);
-    expect(chainKey.getNextChainKey().getIndex(), 1);
+    expect(chainKey.getNextChainKey().index, 1);
     expect(chainKey.getNextChainKey().getMessageKeys().getCounter(), 1);
   });
 
   test('testChainKeyDerivationV3()', () {
-    var seed = Uint8List.fromList([
+    final seed = Uint8List.fromList([
       0x8a,
       0xb7,
       0x2d,
@@ -194,7 +194,7 @@ void main() {
       0x8f
     ]);
 
-    var messageKey = Uint8List.fromList([
+    final messageKey = Uint8List.fromList([
       /*  0x02*/
       0xbf,
       0x51,
@@ -230,7 +230,7 @@ void main() {
       0x17
     ]);
 
-    var macKey = Uint8List.fromList([
+    final macKey = Uint8List.fromList([
       0xc6,
       0xc7,
       0x7d,
@@ -265,7 +265,7 @@ void main() {
       0x0b
     ]);
 
-    var nextChainKey = Uint8List.fromList([
+    final nextChainKey = Uint8List.fromList([
       0x28,
       0xe8,
       0xf8,
@@ -300,15 +300,15 @@ void main() {
       0x5d
     ]);
 
-    var chainKey = ChainKey(HKDF.createFor(3), seed, 0);
+    final chainKey = ChainKey(HKDF.createFor(3), seed, 0);
 
-    expect(chainKey.getKey(), seed);
+    expect(chainKey.key, seed);
     expect(chainKey.getMessageKeys().getCipherKey(), messageKey);
     expect(chainKey.getMessageKeys().getMacKey(), macKey);
-    expect(chainKey.getNextChainKey().getKey(), nextChainKey);
-    expect(chainKey.getIndex(), 0);
+    expect(chainKey.getNextChainKey().key, nextChainKey);
+    expect(chainKey.index, 0);
     expect(chainKey.getMessageKeys().getCounter(), 0);
-    expect(chainKey.getNextChainKey().getIndex(), 1);
+    expect(chainKey.getNextChainKey().index, 1);
     expect(chainKey.getNextChainKey().getMessageKeys().getCounter(), 1);
   });
 }

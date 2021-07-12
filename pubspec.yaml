@@ -1,6 +1,6 @@
 name: libsignal_protocol_dart
 description: Signal Protocol libray for Dart native and Flutter, pure Dart implementation of the the Signal Protocol
-version: 0.3.0-nullsafety.0
+version: 0.5.2
 homepage: https://github.com/MixinNetwork/libsignal_protocol_dart
 
 environment:
@@ -10,14 +10,15 @@ dependencies:
   protobuf: ^2.0.0
   convert: ^3.0.0
   crypto: ^3.0.1
-  optional: ^6.0.0-nullsafety.0
+  optional: ^6.0.0-nullsafety.2
   tuple: ^2.0.0
   fixnum: ^1.0.0
   collection: ^1.15.0
-  // upgrade to pre-release of pointycastle to enable full websupport
+  # upgrade to pre-release of pointycastle to enable full websupport
   pointycastle: ^3.2.0-rc0
-  ed25519_edwards: ^0.1.0
+  ed25519_edwards: ^0.2.0
   x25519: ^0.0.2
+  very_good_analysis: ^2.1.0
 
 
 dev_dependencies:
