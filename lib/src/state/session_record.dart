@@ -32,14 +32,12 @@ class SessionRecord {
 
   bool hasSessionState(int version, Uint8List aliceBaseKey) {
     if (_sessionState.getSessionVersion() == version &&
-        // ignore: avoid_dynamic_calls
         eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
       return true;
     }
 
     for (var state in _previousStates) {
       if (state.getSessionVersion() == version &&
-          // ignore: avoid_dynamic_calls
           eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
         return true;
       }

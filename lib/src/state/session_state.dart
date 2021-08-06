@@ -127,7 +127,6 @@ class SessionState extends LinkedListEntry<SessionState> {
         final chainSenderRatchetKey = Curve.decodePoint(
             Uint8List.fromList(receiverChain.senderRatchetKey), 0);
 
-        // ignore: avoid_dynamic_calls
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
           return Tuple2<SessionStructure_Chain, int>(receiverChain, index);

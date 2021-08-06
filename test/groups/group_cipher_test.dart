@@ -109,7 +109,6 @@ void main() {
     final plaintextFromAlice =
         await bobGroupCipher.decrypt(ciphertextFromAlice);
 
-    // ignore: avoid_dynamic_calls
     assert(eq(plaintextFromAlice, plaintext));
   });
 

@@ -69,7 +69,6 @@ Uint8List decrypt(String privateKey, String content) {
 bool verifyMAC(Uint8List key, Uint8List input, List<int> mac) {
   final hmacSha256 = Hmac(sha256, key);
   final digest = hmacSha256.convert(input);
-  // ignore: avoid_dynamic_calls
   return eq(digest.bytes, mac);
 }
 

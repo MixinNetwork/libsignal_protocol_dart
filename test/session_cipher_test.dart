@@ -45,7 +45,6 @@ Future<void> main() async {
     final bobPlaintext = await bobCipher
         .decryptFromSignal(SignalMessage.fromSerialized(message.serialize()));
 
-    // ignore: avoid_dynamic_calls
     assert(eq(alicePlaintext, bobPlaintext));
 
     final bobReply =
@@ -54,7 +53,6 @@ Future<void> main() async {
     final receivedReply = await aliceCipher
         .decryptFromSignal(SignalMessage.fromSerialized(reply.serialize()));
 
-    // ignore: avoid_dynamic_calls
     assert(eq(bobReply, receivedReply));
 
     final aliceCiphertextMessages = <CiphertextMessage>[];
@@ -75,7 +73,6 @@ Future<void> main() async {
     for (var i = 0; i < aliceCiphertextMessages.length / 2; i++) {
       final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
-      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
@@ -97,7 +94,6 @@ Future<void> main() async {
     for (var i = 0; i < bobCiphertextMessages.length / 2; i++) {
       final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
-      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
 
@@ -106,7 +102,6 @@ Future<void> main() async {
         i++) {
       final receivedPlaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceCiphertextMessages[i].serialize()));
-      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, alicePlaintextMessages[i]));
     }
 
@@ -115,7 +110,6 @@ Future<void> main() async {
         i++) {
       final receivedPlaintext = await aliceCipher.decryptFromSignal(
           SignalMessage.fromSerialized(bobCiphertextMessages[i].serialize()));
-      // ignore: avoid_dynamic_calls
       assert(eq(receivedPlaintext, bobPlaintextMessages[i]));
     }
   }

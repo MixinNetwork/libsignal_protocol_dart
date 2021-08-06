@@ -1,3 +1,3 @@
 import 'package:collection/collection.dart';
 
-Function eq = const ListEquality().equals;
+bool Function(List, List) eq = const ListEquality().equals;
