@@ -92,8 +92,9 @@ class SenderKeyState {
   }
 
   SenderMessageKey? removeSenderMessageKey(int iteration) {
-    List.from(_senderKeyStateStructure.senderMessageKeys)
-        .addAll(_senderKeyStateStructure.senderMessageKeys);
+    List<SenderKeyStateStructure_SenderMessageKey>.from(
+      _senderKeyStateStructure.senderMessageKeys,
+    ).addAll(_senderKeyStateStructure.senderMessageKeys);
     final index = _senderKeyStateStructure.senderMessageKeys
         .indexWhere((item) => item.iteration == iteration);
     if (index == -1) return null;

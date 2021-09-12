@@ -1,5 +1,5 @@
-import 'package:collection/collection.dart';
 
+import 'package:collection/collection.dart';
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 import 'package:test/test.dart';
 
@@ -30,7 +30,7 @@ void main() {
         await store.getSubDeviceSessions(address2a.getName());
     expect(subDeviceSessions2.length, 2);
     expect(
-        const SetEquality().equals(
+        const SetEquality<int>().equals(
           subDeviceSessions2.toSet(),
           {123, 456}.toSet(),
         ),

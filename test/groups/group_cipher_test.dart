@@ -222,7 +222,7 @@ void main() {
 
     await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    final ciphertexts = [];
+    final ciphertexts = <Uint8List>[];
 
     for (var i = 0; i < 100; i++) {
       ciphertexts.add(await aliceGroupCipher
@@ -302,7 +302,7 @@ void main() {
 
     await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    final inflight = [];
+    final inflight = <Uint8List>[];
 
     for (var i = 0; i < 2010; i++) {
       inflight.add(await aliceGroupCipher

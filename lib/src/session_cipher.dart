@@ -155,7 +155,7 @@ class SessionCipher {
 
   Uint8List _decrypt(SessionRecord sessionRecord, SignalMessage cipherText) {
     final previousStates = sessionRecord.previousSessionStates;
-    final exceptions = [];
+    final exceptions = <Exception>[];
 
     try {
       final sessionState =
