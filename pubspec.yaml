@@ -16,14 +16,8 @@ dependencies:
   collection: ^1.15.0
   # upgrade to pre-release of pointycastle to enable full websupport
   pointycastle: ^3.2.0-rc0
-  ed25519_edwards:
-    git:
-      url: git@github.com:lemoony/ed25519.git
-      ref: feature/web-support
-  x25519:
-    git:
-      url: git@github.com:lemoony/curve25519.git
-      ref: feature/web-support
+  ed25519_edwards: ^0.3.0
+  x25519: ^0.1.0
   very_good_analysis: ^2.1.0
 
 
