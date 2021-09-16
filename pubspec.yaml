@@ -18,6 +18,7 @@ dependencies:
   pointycastle: ^3.2.0-rc0
   ed25519_edwards: ^0.3.0
   x25519: ^0.1.0
+  adaptive_number: ^1.0.0
   very_good_analysis: ^2.1.0
 
 
