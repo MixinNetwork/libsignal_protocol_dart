@@ -388,14 +388,14 @@ void main() {
     final aliceIdentityPublicKey =
         IdentityKey.fromBytes(aliceIdentityPublic, 0);
 
-    final parameters = BobSignalProtocolParameters.newBuilder()
-        .setOurIdentityKey(bobIdentityKey)
-        .setOurSignedPreKey(bobSignedPreKey)
-        .setOurRatchetKey(bobEphemeralKey)
-        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
-        .setTheirIdentityKey(aliceIdentityPublicKey)
-        .setTheirBaseKey(aliceBasePublicKey)
-        .create();
+    final parameters = BobSignalProtocolParameters(
+      ourIdentityKey: bobIdentityKey,
+      ourSignedPreKey: bobSignedPreKey,
+      ourRatchetKey: bobEphemeralKey,
+      ourOneTimePreKey: const Optional<ECKeyPair>.empty(),
+      theirIdentityKey: aliceIdentityPublicKey,
+      theirBaseKey: aliceBasePublicKey,
+    );
 
     final session = SessionState();
 

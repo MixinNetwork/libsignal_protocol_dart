@@ -64,27 +64,28 @@ class SessionBuilder {
         .loadSignedPreKey(message.getSignedPreKeyId())
         .then((value) => value.getKeyPair());
 
-    final parameters = BobSignalProtocolParameters.newBuilder();
-
-    parameters
-        .setTheirBaseKey(message.getBaseKey())
-        .setTheirIdentityKey(message.getIdentityKey())
-        .setOurIdentityKey(await _identityKeyStore.getIdentityKeyPair())
-        .setOurSignedPreKey(await ourSignedPreKey)
-        .setOurRatchetKey(await ourSignedPreKey);
-
+    late final Optional<ECKeyPair> ourOneTimePreKey;
     if (message.getPreKeyId().isPresent) {
-      parameters.setOurOneTimePreKey(Optional.of(await _preKeyStore
+      ourOneTimePreKey = Optional.of(await _preKeyStore
           .loadPreKey(message.getPreKeyId().value)
-          .then((value) => value.getKeyPair())));
+          .then((value) => value.getKeyPair()));
     } else {
-      parameters.setOurOneTimePreKey(const Optional<ECKeyPair>.empty());
+      ourOneTimePreKey = const Optional<ECKeyPair>.empty();
     }
 
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
+    final parameters = BobSignalProtocolParameters(
+      theirBaseKey: message.getBaseKey(),
+      theirIdentityKey: message.getIdentityKey(),
+      ourIdentityKey: await _identityKeyStore.getIdentityKeyPair(),
+      ourSignedPreKey: await ourSignedPreKey,
+      ourRatchetKey: await ourSignedPreKey,
+      ourOneTimePreKey: ourOneTimePreKey,
+    );
+
     RatchetingSession.initializeSessionBob(
-        sessionRecord.sessionState, parameters.create());
+        sessionRecord.sessionState, parameters);
 
     sessionRecord.sessionState.localRegistrationId =
         await _identityKeyStore.getLocalRegistrationId();
@@ -126,19 +127,19 @@ class SessionBuilder {
         ? Optional.of(preKey.getPreKeyId())
         : const Optional<int>.empty();
 
-    final parameters = AliceSignalProtocolParameters.newBuilder();
-    parameters
-        .setOurBaseKey(ourBaseKey)
-        .setOurIdentityKey(await _identityKeyStore.getIdentityKeyPair())
-        .setTheirIdentityKey(preKey.getIdentityKey())
-        .setTheirSignedPreKey(theirSignedPreKey!)
-        .setTheirRatchetKey(theirSignedPreKey)
-        .setTheirOneTimePreKey(theirOneTimePreKey);
+    final parameters = AliceSignalProtocolParameters(
+      ourBaseKey: ourBaseKey,
+      ourIdentityKey: await _identityKeyStore.getIdentityKeyPair(),
+      theirIdentityKey: preKey.getIdentityKey(),
+      theirSignedPreKey: theirSignedPreKey!,
+      theirRatchetKey: theirSignedPreKey,
+      theirOneTimePreKey: theirOneTimePreKey,
+    );
 
     if (!sessionRecord.isFresh()) sessionRecord.archiveCurrentState();
 
     RatchetingSession.initializeSessionAlice(
-        sessionRecord.sessionState, parameters.create());
+        sessionRecord.sessionState, parameters);
 
     sessionRecord.sessionState.setUnacknowledgedPreKeyMessage(
         theirOneTimePreKeyId, preKey.getSignedPreKeyId(), ourBaseKey.publicKey);

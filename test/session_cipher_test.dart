@@ -137,23 +137,23 @@ Future<void> main() async {
     // ignore: unused_local_variable
     final bobPreKey = Curve.generateKeyPair();
 
-    final aliceParameters = AliceSignalProtocolParameters.newBuilder()
-        .setOurBaseKey(aliceBaseKey)
-        .setOurIdentityKey(aliceIdentityKey)
-        .setTheirOneTimePreKey(const Optional<ECPublicKey>.empty())
-        .setTheirRatchetKey(bobEphemeralKey.publicKey)
-        .setTheirSignedPreKey(bobBaseKey.publicKey)
-        .setTheirIdentityKey(bobIdentityKey.getPublicKey())
-        .create();
+    final aliceParameters = AliceSignalProtocolParameters(
+      ourBaseKey: aliceBaseKey,
+      ourIdentityKey: aliceIdentityKey,
+      theirOneTimePreKey: const Optional<ECPublicKey>.empty(),
+      theirRatchetKey: bobEphemeralKey.publicKey,
+      theirSignedPreKey: bobBaseKey.publicKey,
+      theirIdentityKey: bobIdentityKey.getPublicKey(),
+    );
 
-    final bobParameters = BobSignalProtocolParameters.newBuilder()
-        .setOurRatchetKey(bobEphemeralKey)
-        .setOurSignedPreKey(bobBaseKey)
-        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
-        .setOurIdentityKey(bobIdentityKey)
-        .setTheirIdentityKey(aliceIdentityKey.getPublicKey())
-        .setTheirBaseKey(aliceBaseKey.publicKey)
-        .create();
+    final bobParameters = BobSignalProtocolParameters(
+      ourRatchetKey: bobEphemeralKey,
+      ourSignedPreKey: bobBaseKey,
+      ourOneTimePreKey: const Optional<ECKeyPair>.empty(),
+      ourIdentityKey: bobIdentityKey,
+      theirIdentityKey: aliceIdentityKey.getPublicKey(),
+      theirBaseKey: aliceBaseKey.publicKey,
+    );
 
     RatchetingSession.initializeSessionAlice(
         aliceSessionState, aliceParameters);
