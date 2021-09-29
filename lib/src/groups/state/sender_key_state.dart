@@ -37,12 +37,11 @@ class SenderKeyState {
       [Optional<ECPrivateKey>? signatureKeyPrivate]) {
     final seed = Uint8List.fromList(chainKey);
     final senderChainKeyStructure =
-        SenderKeyStateStructure_SenderChainKey.create()
+        SenderKeyStateStructureSenderChainKey.create()
           ..iteration = iteration
           ..seed = seed;
-    final signingKeyStructure =
-        SenderKeyStateStructure_SenderSigningKey.create()
-          ..public = signatureKeyPublic.serialize();
+    final signingKeyStructure = SenderKeyStateStructureSenderSigningKey.create()
+      ..public = signatureKeyPublic.serialize();
     if (signatureKeyPrivate!.isPresent) {
       signingKeyStructure.private = signatureKeyPrivate.value.serialize();
     }
@@ -60,7 +59,7 @@ class SenderKeyState {
 
   set senderChainKey(SenderChainKey senderChainKey) => {
         _senderKeyStateStructure.senderChainKey =
-            SenderKeyStateStructure_SenderChainKey.create()
+            SenderKeyStateStructureSenderChainKey.create()
               ..iteration = senderChainKey.iteration
               ..seed = List.from(senderChainKey.seed)
       };
@@ -72,7 +71,7 @@ class SenderKeyState {
       Uint8List.fromList(_senderKeyStateStructure.senderSigningKey.private));
 
   bool hasSenderMessageKey(int iteration) {
-    for (var senderMessageKey in _senderKeyStateStructure.senderMessageKeys) {
+    for (final senderMessageKey in _senderKeyStateStructure.senderMessageKeys) {
       if (senderMessageKey.iteration == iteration) {
         return true;
       }
@@ -82,7 +81,7 @@ class SenderKeyState {
 
   void addSenderMessageKey(SenderMessageKey senderMessageKey) {
     final senderMessageKeyStructure =
-        SenderKeyStateStructure_SenderMessageKey.create()
+        SenderKeyStateStructureSenderMessageKey.create()
           ..iteration = senderMessageKey.iteration
           ..seed = senderMessageKey.seed;
     _senderKeyStateStructure.senderMessageKeys.add(senderMessageKeyStructure);
@@ -92,7 +91,8 @@ class SenderKeyState {
   }
 
   SenderMessageKey? removeSenderMessageKey(int iteration) {
-    List.from(_senderKeyStateStructure.senderMessageKeys)
+    _senderKeyStateStructure.senderMessageKeys
+        .toList()
         .addAll(_senderKeyStateStructure.senderMessageKeys);
     final index = _senderKeyStateStructure.senderMessageKeys
         .indexWhere((item) => item.iteration == iteration);

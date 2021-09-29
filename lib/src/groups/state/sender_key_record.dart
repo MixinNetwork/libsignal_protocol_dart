@@ -14,7 +14,7 @@ class SenderKeyRecord {
   SenderKeyRecord.fromSerialized(Uint8List serialized) {
     final senderKeyRecordStructure =
         SenderKeyRecordStructure.fromBuffer(serialized);
-    for (var structure in senderKeyRecordStructure.senderKeyStates) {
+    for (final structure in senderKeyRecordStructure.senderKeyStates) {
       _senderKeyStates
           .add(Entry(SenderKeyState.fromSenderKeyStateStructure(structure)));
     }
@@ -36,7 +36,7 @@ class SenderKeyRecord {
   }
 
   SenderKeyState getSenderKeyStateById(int keyId) {
-    for (var state in _senderKeyStates) {
+    for (final state in _senderKeyStates) {
       if (state.value.keyId == keyId) {
         return state.value;
       }

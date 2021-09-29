@@ -17,7 +17,7 @@ class InMemorySessionStore extends SessionStore {
 
   @override
   Future<void> deleteAllSessions(String name) async {
-    for (var k in sessions.keys.toList()) {
+    for (final k in sessions.keys.toList()) {
       if (k.getName() == name) {
         sessions.remove(k);
       }
@@ -33,7 +33,7 @@ class InMemorySessionStore extends SessionStore {
   Future<List<int>> getSubDeviceSessions(String name) async {
     final deviceIds = <int>[];
 
-    for (var key in sessions.keys) {
+    for (final key in sessions.keys) {
       if (key.getName() == name && key.getDeviceId() != 1) {
         deviceIds.add(key.getDeviceId());
       }

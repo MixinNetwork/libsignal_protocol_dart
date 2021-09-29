@@ -2,29 +2,29 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/invalid_key_exception.dart';
-import 'package:libsignal_protocol_dart/src/session_builder.dart';
-import 'package:libsignal_protocol_dart/src/session_cipher.dart';
-import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
-import 'package:libsignal_protocol_dart/src/untrusted_identity_exception.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
+import 'package:libsignal_protocol_dart/src/invalid_key_exception.dart';
 import 'package:libsignal_protocol_dart/src/protocol/ciphertext_message.dart';
 import 'package:libsignal_protocol_dart/src/protocol/pre_key_signal_message.dart';
 import 'package:libsignal_protocol_dart/src/protocol/signal_message.dart';
+import 'package:libsignal_protocol_dart/src/session_builder.dart';
+import 'package:libsignal_protocol_dart/src/session_cipher.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/state/pre_key_bundle.dart';
 import 'package:libsignal_protocol_dart/src/state/pre_key_record.dart';
 import 'package:libsignal_protocol_dart/src/state/signal_protocol_store.dart';
 import 'package:libsignal_protocol_dart/src/state/signed_pre_key_record.dart';
+import 'package:libsignal_protocol_dart/src/untrusted_identity_exception.dart';
 import 'package:test/test.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:tuple/tuple.dart';
 
 import 'test_in_memory_identity_key_store.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 void main() {
-  final aliceAddress = SignalProtocolAddress('+14151111111', 1);
-  final bobAddress = SignalProtocolAddress('+14152222222', 1);
+  const aliceAddress = SignalProtocolAddress('+14151111111', 1);
+  const bobAddress = SignalProtocolAddress('+14152222222', 1);
 
   test('testBasicPreKeyV2', () async {
     final aliceStore = TestInMemorySignalProtocolStore();
@@ -141,7 +141,7 @@ void main() {
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    for (var aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
+    for (final aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
       final outOfOrderPlaintext = await bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(
               aliceOutOfOrderMessage.item2.serialize()));

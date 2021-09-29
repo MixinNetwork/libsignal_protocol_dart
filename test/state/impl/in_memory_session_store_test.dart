@@ -5,9 +5,9 @@ import 'package:test/test.dart';
 
 void main() {
   test('should implement interface successfully', () async {
-    final address1 = SignalProtocolAddress('address-1', 123);
-    final address2a = SignalProtocolAddress('address-2', 123);
-    final address2b = SignalProtocolAddress('address-2', 456);
+    const address1 = SignalProtocolAddress('address-1', 123);
+    const address2a = SignalProtocolAddress('address-2', 123);
+    const address2b = SignalProtocolAddress('address-2', 456);
     final store = InMemorySessionStore();
 
     // containsSession & loadSession

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/identity_key.dart';
 import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
 import 'package:libsignal_protocol_dart/src/fingerprint/numeric_fingerprint_generator.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
 import 'package:test/test.dart';
 
 Uint8List aliceIdentity = Uint8List.fromList([

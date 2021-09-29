@@ -3,21 +3,21 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/duplicate_message_exception.dart';
-import 'package:libsignal_protocol_dart/src/invalid_message_exception.dart';
-import 'package:libsignal_protocol_dart/src/no_session_exception.dart';
-import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/eq.dart';
 import 'package:libsignal_protocol_dart/src/groups/group_cipher.dart';
 import 'package:libsignal_protocol_dart/src/groups/group_session_builder.dart';
 import 'package:libsignal_protocol_dart/src/groups/sender_key_name.dart';
 import 'package:libsignal_protocol_dart/src/groups/state/in_memory_sender_key_store.dart';
+import 'package:libsignal_protocol_dart/src/invalid_message_exception.dart';
+import 'package:libsignal_protocol_dart/src/no_session_exception.dart';
 import 'package:libsignal_protocol_dart/src/protocol/sender_key_distribution_message_wrapper.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final senderAddress = SignalProtocolAddress('+14150001111', 1);
-  final groupSender =
+  const senderAddress = SignalProtocolAddress('+14150001111', 1);
+  const groupSender =
       SenderKeyName('nihilist history reading group', senderAddress);
 
   const _integerMax = 0x7fffffff;
@@ -119,7 +119,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = groupSender;
+    const aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -166,7 +166,7 @@ void main() {
 
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
 
-    final aliceName = groupSender;
+    const aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
 
@@ -205,7 +205,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = groupSender;
+    const aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -222,7 +222,7 @@ void main() {
 
     await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    final ciphertexts = [];
+    final ciphertexts = <Uint8List>[];
 
     for (var i = 0; i < 100; i++) {
       ciphertexts.add(await aliceGroupCipher
@@ -242,7 +242,7 @@ void main() {
     final aliceStore = InMemorySenderKeyStore();
     final aliceGroupCipher = GroupCipher(
         aliceStore,
-        SenderKeyName(
+        const SenderKeyName(
             'coolio groupio', SignalProtocolAddress('+10002223333', 1)));
     try {
       await aliceGroupCipher
@@ -260,7 +260,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = groupSender;
+    const aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -292,7 +292,7 @@ void main() {
     final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
     final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceName = groupSender;
+    const aliceName = groupSender;
 
     final aliceGroupCipher = GroupCipher(aliceStore, aliceName);
     final bobGroupCipher = GroupCipher(bobStore, aliceName);
@@ -302,7 +302,7 @@ void main() {
 
     await bobSessionBuilder.process(aliceName, aliceDistributionMessage);
 
-    final inflight = [];
+    final inflight = <Uint8List>[];
 
     for (var i = 0; i < 2010; i++) {
       inflight.add(await aliceGroupCipher

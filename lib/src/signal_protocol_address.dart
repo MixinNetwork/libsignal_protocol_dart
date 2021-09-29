@@ -1,5 +1,8 @@
+import 'package:meta/meta.dart';
+
+@immutable
 class SignalProtocolAddress {
-  SignalProtocolAddress(this._name, this._deviceId);
+  const SignalProtocolAddress(this._name, this._deviceId);
 
   final String _name;
   final int _deviceId;

@@ -21,12 +21,12 @@ Future<void> install() async {
   final identityStore =
       InMemoryIdentityKeyStore(identityKeyPair, registrationId);
 
-  for (var p in preKeys) {
+  for (final p in preKeys) {
     await preKeyStore.storePreKey(p.id, p);
   }
   await signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
 
-  final bobAddress = SignalProtocolAddress('bob', 1);
+  const bobAddress = SignalProtocolAddress('bob', 1);
   final sessionBuilder = SessionBuilder(
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
 
@@ -60,11 +60,11 @@ Future<void> install() async {
 
   final signalProtocolStore =
       InMemorySignalProtocolStore(remoteIdentityKeyPair, 1);
-  final aliceAddress = SignalProtocolAddress('alice', 1);
+  const aliceAddress = SignalProtocolAddress('alice', 1);
   final remoteSessionCipher =
       SessionCipher.fromStore(signalProtocolStore, aliceAddress);
 
-  for (var p in remotePreKeys) {
+  for (final p in remotePreKeys) {
     await signalProtocolStore.storePreKey(p.id, p);
   }
   await signalProtocolStore.storeSignedPreKey(
@@ -80,7 +80,7 @@ Future<void> install() async {
 }
 
 Future<void> groupSession() async {
-  final senderKeyName = SenderKeyName('', SignalProtocolAddress('sender', 1));
+  const senderKeyName = SenderKeyName('', SignalProtocolAddress('sender', 1));
   final senderKeyStore = InMemorySenderKeyStore();
   final groupSession = GroupCipher(senderKeyStore, senderKeyName);
   await groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));

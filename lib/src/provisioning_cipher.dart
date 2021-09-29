@@ -19,8 +19,8 @@ class ProvisionEnvelope {
   ProvisionEnvelope(this.publicKey, this.body);
 
   ProvisionEnvelope.fromJson(Map<String, dynamic> json)
-      : publicKey = base64Decode(json['public_key']),
-        body = base64Decode(json['body']);
+      : publicKey = base64Decode(json['public_key'] as String),
+        body = base64Decode(json['body'] as String);
 
   final Uint8List publicKey;
   final Uint8List body;
@@ -36,7 +36,8 @@ Uint8List decrypt(String privateKey, String content) {
   final envelopeDecode = base64Decode(content);
 
   final map = jsonDecode(String.fromCharCodes(envelopeDecode));
-  final provisionEnvelope = ProvisionEnvelope.fromJson(map);
+  final provisionEnvelope =
+      ProvisionEnvelope.fromJson(map as Map<String, dynamic>);
   final publicKeyable = Curve.decodePoint(provisionEnvelope.publicKey, 0);
   final message = provisionEnvelope.body;
   if (message[0] != 1) {

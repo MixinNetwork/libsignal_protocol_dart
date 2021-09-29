@@ -1,6 +1,7 @@
 import 'dart:typed_data';
-import 'package:crypto/crypto.dart' as cr;
+
 import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart' as cr;
 import 'package:ed25519_edwards/ed25519_edwards.dart';
 // ignore: implementation_imports
 import 'package:ed25519_edwards/src/edwards25519.dart';

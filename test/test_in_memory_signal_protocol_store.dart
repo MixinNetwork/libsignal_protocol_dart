@@ -1,6 +1,6 @@
+import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
 import 'package:libsignal_protocol_dart/src/identity_key.dart';
 import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
-import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
 import 'package:libsignal_protocol_dart/src/state/impl/in_memory_signal_protocol_store.dart';
 import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 

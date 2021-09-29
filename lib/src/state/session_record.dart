@@ -20,7 +20,7 @@ class SessionRecord {
     _sessionState = SessionState.fromStructure(record.currentSession);
     _fresh = false;
 
-    for (var previousStructure in record.previousSessions) {
+    for (final previousStructure in record.previousSessions) {
       _previousStates.add(SessionState.fromStructure(previousStructure));
     }
   }
@@ -36,7 +36,7 @@ class SessionRecord {
       return true;
     }
 
-    for (var state in _previousStates) {
+    for (final state in _previousStates) {
       if (state.getSessionVersion() == version &&
           eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
         return true;
@@ -74,7 +74,7 @@ class SessionRecord {
 
   Uint8List serialize() {
     final previousStructures = <SessionStructure>[];
-    for (var previousState in _previousStates) {
+    for (final previousState in _previousStates) {
       previousStructures.add(previousState.structure);
     }
     final record = RecordStructure.create()

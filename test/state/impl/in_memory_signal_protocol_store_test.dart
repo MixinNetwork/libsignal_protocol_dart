@@ -13,8 +13,8 @@ void main() {
     final bobStore = TestInMemorySignalProtocolStore();
     const msgOrig = "L'homme est condamné à être libre";
 
-    final aliceAddress = SignalProtocolAddress('alice', 1);
-    final bobAddress = SignalProtocolAddress('bob', 1);
+    const aliceAddress = SignalProtocolAddress('alice', 1);
+    const bobAddress = SignalProtocolAddress('bob', 1);
 
     // Bob creates his keys to store locally and to publish public to cloud
     final bobPreKeyPair = Curve.generateKeyPair();

@@ -17,7 +17,7 @@ class DeviceConsistencyCommitment {
       ..add(utf8.encode(version))
       ..add(ByteUtil.intToByteArray(generation));
 
-    for (var commitment in sortedIdentityKeys) {
+    for (final commitment in sortedIdentityKeys) {
       input.add(commitment.publicKey.serialize());
     }
     input.close();
