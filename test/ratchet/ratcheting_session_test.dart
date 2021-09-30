@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:libsignal_protocol_dart/src/identity_key.dart';
-import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
 import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
 import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/bob_signal_protocol_parameters.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/ratcheting_session.dart';
 import 'package:libsignal_protocol_dart/src/state/session_state.dart';
@@ -388,14 +388,14 @@ void main() {
     final aliceIdentityPublicKey =
         IdentityKey.fromBytes(aliceIdentityPublic, 0);
 
-    final parameters = BobSignalProtocolParameters.newBuilder()
-        .setOurIdentityKey(bobIdentityKey)
-        .setOurSignedPreKey(bobSignedPreKey)
-        .setOurRatchetKey(bobEphemeralKey)
-        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
-        .setTheirIdentityKey(aliceIdentityPublicKey)
-        .setTheirBaseKey(aliceBasePublicKey)
-        .create();
+    final parameters = BobSignalProtocolParameters(
+      ourIdentityKey: bobIdentityKey,
+      ourSignedPreKey: bobSignedPreKey,
+      ourRatchetKey: bobEphemeralKey,
+      ourOneTimePreKey: const Optional<ECKeyPair>.empty(),
+      theirIdentityKey: aliceIdentityPublicKey,
+      theirBaseKey: aliceBasePublicKey,
+    );
 
     final session = SessionState();
 

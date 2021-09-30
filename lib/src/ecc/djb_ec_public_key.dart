@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import '../eq.dart';
 
 import '../util/byte_util.dart';
@@ -7,6 +9,7 @@ import '../util/byte_util.dart';
 import 'curve.dart';
 import 'ec_public_key.dart';
 
+@immutable
 class DjbECPublicKey extends ECPublicKey {
   DjbECPublicKey(this._publicKey);
 

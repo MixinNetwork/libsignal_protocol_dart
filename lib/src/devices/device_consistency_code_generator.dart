@@ -20,7 +20,7 @@ class DeviceConsistencyCodeGenerator {
       ..add(ByteUtil.shortToByteArray(codeVersion))
       ..add(commitment.serialized);
 
-    for (var signature in sortedSignatures) {
+    for (final signature in sortedSignatures) {
       input.add(signature.vrfOutput);
     }
     input.close();

@@ -3,5 +3,5 @@ class InvalidKeyException implements Exception {
   final String detailMessage;
 
   @override
-  String toString() => '$runtimeType - $detailMessage';
+  String toString() => 'InvalidKeyException - $detailMessage';
 }

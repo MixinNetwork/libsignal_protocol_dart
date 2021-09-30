@@ -1,7 +1,10 @@
+import 'package:meta/meta.dart';
+
 import '../signal_protocol_address.dart';
 
+@immutable
 class SenderKeyName {
-  SenderKeyName(this._groupId, this._sender);
+  const SenderKeyName(this._groupId, this._sender);
 
   final String _groupId;
   final SignalProtocolAddress _sender;

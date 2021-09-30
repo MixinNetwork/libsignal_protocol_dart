@@ -3,19 +3,19 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:libsignal_protocol_dart/src/duplicate_message_exception.dart';
-import 'package:libsignal_protocol_dart/src/identity_key.dart';
-import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
-import 'package:libsignal_protocol_dart/src/session_cipher.dart';
-import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/ecc/curve.dart';
 import 'package:libsignal_protocol_dart/src/ecc/ec_key_pair.dart';
 import 'package:libsignal_protocol_dart/src/ecc/ec_public_key.dart';
 import 'package:libsignal_protocol_dart/src/eq.dart';
+import 'package:libsignal_protocol_dart/src/identity_key.dart';
+import 'package:libsignal_protocol_dart/src/identity_key_pair.dart';
 import 'package:libsignal_protocol_dart/src/protocol/ciphertext_message.dart';
 import 'package:libsignal_protocol_dart/src/protocol/signal_message.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/alice_signal_protocol_parameters.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/bob_signal_protocol_parameters.dart';
 import 'package:libsignal_protocol_dart/src/ratchet/ratcheting_session.dart';
+import 'package:libsignal_protocol_dart/src/session_cipher.dart';
+import 'package:libsignal_protocol_dart/src/signal_protocol_address.dart';
 import 'package:libsignal_protocol_dart/src/state/session_record.dart';
 import 'package:libsignal_protocol_dart/src/state/session_state.dart';
 import 'package:optional/optional.dart';
@@ -30,14 +30,14 @@ Future<void> main() async {
     final bobStore = TestInMemorySignalProtocolStore();
 
     await aliceStore.storeSession(
-        SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
+        const SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     await bobStore.storeSession(
-        SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
+        const SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     final aliceCipher = SessionCipher.fromStore(
-        aliceStore, SignalProtocolAddress('+14159999999', 1));
+        aliceStore, const SignalProtocolAddress('+14159999999', 1));
     final bobCipher = SessionCipher.fromStore(
-        bobStore, SignalProtocolAddress('+14158888888', 1));
+        bobStore, const SignalProtocolAddress('+14158888888', 1));
 
     final alicePlaintext =
         Uint8List.fromList(utf8.encode('This is a plaintext message.'));
@@ -137,23 +137,23 @@ Future<void> main() async {
     // ignore: unused_local_variable
     final bobPreKey = Curve.generateKeyPair();
 
-    final aliceParameters = AliceSignalProtocolParameters.newBuilder()
-        .setOurBaseKey(aliceBaseKey)
-        .setOurIdentityKey(aliceIdentityKey)
-        .setTheirOneTimePreKey(const Optional<ECPublicKey>.empty())
-        .setTheirRatchetKey(bobEphemeralKey.publicKey)
-        .setTheirSignedPreKey(bobBaseKey.publicKey)
-        .setTheirIdentityKey(bobIdentityKey.getPublicKey())
-        .create();
+    final aliceParameters = AliceSignalProtocolParameters(
+      ourBaseKey: aliceBaseKey,
+      ourIdentityKey: aliceIdentityKey,
+      theirOneTimePreKey: const Optional<ECPublicKey>.empty(),
+      theirRatchetKey: bobEphemeralKey.publicKey,
+      theirSignedPreKey: bobBaseKey.publicKey,
+      theirIdentityKey: bobIdentityKey.getPublicKey(),
+    );
 
-    final bobParameters = BobSignalProtocolParameters.newBuilder()
-        .setOurRatchetKey(bobEphemeralKey)
-        .setOurSignedPreKey(bobBaseKey)
-        .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
-        .setOurIdentityKey(bobIdentityKey)
-        .setTheirIdentityKey(aliceIdentityKey.getPublicKey())
-        .setTheirBaseKey(aliceBaseKey.publicKey)
-        .create();
+    final bobParameters = BobSignalProtocolParameters(
+      ourRatchetKey: bobEphemeralKey,
+      ourSignedPreKey: bobBaseKey,
+      ourOneTimePreKey: const Optional<ECKeyPair>.empty(),
+      ourIdentityKey: bobIdentityKey,
+      theirIdentityKey: aliceIdentityKey.getPublicKey(),
+      theirBaseKey: aliceBaseKey.publicKey,
+    );
 
     RatchetingSession.initializeSessionAlice(
         aliceSessionState, aliceParameters);
@@ -180,14 +180,14 @@ Future<void> main() async {
     final bobStore = TestInMemorySignalProtocolStore();
 
     await aliceStore.storeSession(
-        SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
+        const SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
     await bobStore.storeSession(
-        SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
+        const SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
 
     final aliceCipher = SessionCipher.fromStore(
-        aliceStore, SignalProtocolAddress('+14159999999', 1));
+        aliceStore, const SignalProtocolAddress('+14159999999', 1));
     final bobCipher = SessionCipher.fromStore(
-        bobStore, SignalProtocolAddress('+14158888888', 1));
+        bobStore, const SignalProtocolAddress('+14158888888', 1));
 
     final inflight = <CiphertextMessage>[];
 
