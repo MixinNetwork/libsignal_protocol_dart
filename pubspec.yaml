@@ -13,7 +13,7 @@ dependencies:
   ed25519_edwards: ^0.3.1
   fixnum: ^1.0.0
   meta: ^1.7.0
-  optional: ^6.0.0-nullsafety.2
+  optional: ^6.1.0+1
   pointycastle: ^3.3.4
   protobuf: ^2.0.0
   tuple: ^2.0.0
