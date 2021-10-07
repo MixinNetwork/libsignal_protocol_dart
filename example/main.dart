@@ -5,6 +5,7 @@ import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 
 Future<void> main() async {
   await install();
+  await groupTest();
 }
 
 Future<void> install() async {
@@ -77,6 +78,33 @@ Future<void> install() async {
       print(utf8.decode(plaintext));
     });
   }
+}
+
+Future<void> groupTest() async {
+  const alice = SignalProtocolAddress('+00000000001', 1);
+  const groupSender = SenderKeyName('Private group', alice);
+  final aliceStore = InMemorySenderKeyStore();
+  final bobStore = InMemorySenderKeyStore();
+
+  final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+  final bobSessionBuilder = GroupSessionBuilder(bobStore);
+
+  final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+  final bobGroupCipher = GroupCipher(bobStore, groupSender);
+
+  final sentAliceDistributionMessage =
+      await aliceSessionBuilder.create(groupSender);
+  final receivedAliceDistributionMessage =
+      SenderKeyDistributionMessageWrapper.fromSerialized(
+          sentAliceDistributionMessage.serialize());
+  await bobSessionBuilder.process(
+      groupSender, receivedAliceDistributionMessage);
+
+  final ciphertextFromAlice = await aliceGroupCipher
+      .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  final plaintextFromAlice = await bobGroupCipher.decrypt(ciphertextFromAlice);
+  // ignore: avoid_print
+  print(utf8.decode(plaintextFromAlice));
 }
 
 Future<void> groupSession() async {
