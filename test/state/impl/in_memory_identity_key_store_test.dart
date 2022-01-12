@@ -28,7 +28,7 @@ void main() {
     // saveIdentity & getIdentity
     expect(await store.saveIdentity(address, identityKey), true);
     expect(
-      await store.getIdentity(address).then((value) => value.getFingerprint()),
+      await store.getIdentity(address).then((value) => value?.getFingerprint()),
       identityKey.getFingerprint(),
     );
     expect(await store.saveIdentity(address, identityKey), false);
