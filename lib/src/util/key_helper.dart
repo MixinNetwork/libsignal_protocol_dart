@@ -25,6 +25,7 @@ IdentityKeyPair generateIdentityKeyPairFromPrivate(List<int> private) {
 
 int integerMax = 0x7fffffff;
 
+// ignore: avoid_positional_boolean_parameters
 int generateRegistrationId(bool extendedRange) {
   if (extendedRange) {
     return _random.nextInt(integerMax - 1) + 1;
