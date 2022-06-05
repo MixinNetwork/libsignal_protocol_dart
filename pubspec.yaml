@@ -24,4 +24,3 @@ dependencies:
 
 dev_dependencies:
   test: ^1.17.12
-
