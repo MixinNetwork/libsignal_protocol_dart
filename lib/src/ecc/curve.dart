@@ -157,7 +157,6 @@ class Curve {
     }
   }
 
-  // ignore: missing_return
   static Uint8List calculateVrfSignature(
       ECPrivateKey? signingKey, Uint8List? message) {
     if (signingKey == null || message == null) {

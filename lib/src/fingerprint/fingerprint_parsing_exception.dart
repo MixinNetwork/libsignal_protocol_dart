@@ -4,5 +4,5 @@ class FingerprintParsingException implements Exception {
   final Exception _message;
 
   @override
-  String toString() => '$runtimeType - $_message';
+  String toString() => 'FingerprintParsingException - $_message';
 }

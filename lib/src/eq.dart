@@ -1,4 +1,4 @@
 import 'package:collection/collection.dart';
 
-bool Function(List<dynamic> list1, List<dynamic> list2) eq =
-    const ListEquality<dynamic>().equals;
+bool eq<E>(List<E>? list1, List<E>? list2) =>
+    ListEquality<E>().equals(list1, list2);

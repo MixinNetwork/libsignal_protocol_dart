@@ -1,18 +1,19 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
+import 'package:meta/meta.dart';
 
 import 'ecc/curve.dart';
 import 'ecc/ec_public_key.dart';
 
+@immutable
 class IdentityKey {
-  IdentityKey(this._publicKey);
+  const IdentityKey(this._publicKey);
 
-  IdentityKey.fromBytes(Uint8List bytes, int offset) {
-    _publicKey = Curve.decodePoint(bytes, offset);
-  }
+  factory IdentityKey.fromBytes(Uint8List bytes, int offset) =>
+      IdentityKey(Curve.decodePoint(bytes, offset));
 
-  late ECPublicKey _publicKey;
+  final ECPublicKey _publicKey;
 
   ECPublicKey get publicKey => _publicKey;
 

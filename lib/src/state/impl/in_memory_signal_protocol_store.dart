@@ -45,7 +45,7 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       _identityKeyStore.isTrustedIdentity(address, identityKey, direction);
 
   @override
-  Future<IdentityKey> getIdentity(SignalProtocolAddress address) async =>
+  Future<IdentityKey?> getIdentity(SignalProtocolAddress address) async =>
       _identityKeyStore.getIdentity(address);
 
   @override

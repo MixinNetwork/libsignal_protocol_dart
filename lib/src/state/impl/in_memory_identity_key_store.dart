@@ -15,7 +15,7 @@ class InMemoryIdentityKeyStore extends IdentityKeyStore {
   final int localRegistrationId;
 
   @override
-  Future<IdentityKey> getIdentity(SignalProtocolAddress address) async =>
+  Future<IdentityKey?> getIdentity(SignalProtocolAddress address) async =>
       trustedKeys[address]!;
 
   @override

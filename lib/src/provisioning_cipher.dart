@@ -35,8 +35,9 @@ Uint8List decrypt(String privateKey, String content) {
   final ourPrivateKey = base64Decode(privateKey);
   final envelopeDecode = base64Decode(content);
 
-  final map = jsonDecode(String.fromCharCodes(envelopeDecode)) as Map <String,dynamic>;
-  final provisionEnvelope = ProvisionEnvelope.fromJson(map);
+  final map = jsonDecode(String.fromCharCodes(envelopeDecode));
+  final provisionEnvelope =
+      ProvisionEnvelope.fromJson(map as Map<String, dynamic>);
   final publicKeyable = Curve.decodePoint(provisionEnvelope.publicKey, 0);
   final message = provisionEnvelope.body;
   if (message[0] != 1) {

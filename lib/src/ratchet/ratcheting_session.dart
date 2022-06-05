@@ -20,33 +20,27 @@ import '../util/byte_util.dart';
 class RatchetingSession {
   static void initializeSession(
       SessionState sessionState, SymmetricSignalProtocolParameters parameters) {
-    if (isAlice(
-        parameters.getOurBaseKey().publicKey, parameters.getTheirBaseKey())) {
-      final aliceParameters = AliceSignalProtocolParameters.newBuilder();
-
-      aliceParameters
-          .setOurBaseKey(parameters.getOurBaseKey())
-          .setOurIdentityKey(parameters.getOurIdentityKey())
-          .setTheirRatchetKey(parameters.getTheirRatchetKey())
-          .setTheirIdentityKey(parameters.getTheirIdentityKey())
-          .setTheirSignedPreKey(parameters.getTheirBaseKey())
-          .setTheirOneTimePreKey(const Optional<ECPublicKey>.empty());
-
-      RatchetingSession.initializeSessionAlice(
-          sessionState, aliceParameters.create());
+    if (isAlice(parameters.ourBaseKey.publicKey, parameters.theirBaseKey)) {
+      final aliceParameters = AliceSignalProtocolParameters(
+        ourBaseKey: parameters.ourBaseKey,
+        ourIdentityKey: parameters.ourIdentityKey,
+        theirRatchetKey: parameters.theirRatchetKey,
+        theirIdentityKey: parameters.theirIdentityKey,
+        theirSignedPreKey: parameters.theirBaseKey,
+        theirOneTimePreKey: const Optional<ECPublicKey>.empty(),
+      );
+      RatchetingSession.initializeSessionAlice(sessionState, aliceParameters);
     } else {
-      final bobParameters = BobSignalProtocolParameters.newBuilder();
+      final bobParameters = BobSignalProtocolParameters(
+        ourIdentityKey: parameters.ourIdentityKey,
+        ourRatchetKey: parameters.ourRatchetKey,
+        ourSignedPreKey: parameters.ourBaseKey,
+        ourOneTimePreKey: const Optional<ECKeyPair>.empty(),
+        theirBaseKey: parameters.theirBaseKey,
+        theirIdentityKey: parameters.theirIdentityKey,
+      );
 
-      bobParameters
-          .setOurIdentityKey(parameters.getOurIdentityKey())
-          .setOurRatchetKey(parameters.getOurRatchetKey())
-          .setOurSignedPreKey(parameters.getOurBaseKey())
-          .setOurOneTimePreKey(const Optional<ECKeyPair>.empty())
-          .setTheirBaseKey(parameters.getTheirBaseKey())
-          .setTheirIdentityKey(parameters.getTheirIdentityKey());
-
-      RatchetingSession.initializeSessionBob(
-          sessionState, bobParameters.create());
+      RatchetingSession.initializeSessionBob(sessionState, bobParameters);
     }
   }
 
@@ -55,34 +49,34 @@ class RatchetingSession {
     try {
       sessionState
         ..sessionVersion = CiphertextMessage.currentVersion
-        ..remoteIdentityKey = parameters.getTheirIdentityKey()
-        ..localIdentityKey = parameters.getOurIdentityKey().getPublicKey();
+        ..remoteIdentityKey = parameters.theirIdentityKey
+        ..localIdentityKey = parameters.ourIdentityKey.getPublicKey();
 
       final sendingRatchetKey = Curve.generateKeyPair();
       final secrets = <int>[
         ...getDiscontinuityBytes(),
-        ...Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
-            parameters.getOurIdentityKey().getPrivateKey()),
-        ...Curve.calculateAgreement(parameters.getTheirIdentityKey().publicKey,
-            parameters.getOurBaseKey().privateKey),
-        ...Curve.calculateAgreement(parameters.getTheirSignedPreKey(),
-            parameters.getOurBaseKey().privateKey)
+        ...Curve.calculateAgreement(parameters.theirSignedPreKey,
+            parameters.ourIdentityKey.getPrivateKey()),
+        ...Curve.calculateAgreement(parameters.theirIdentityKey.publicKey,
+            parameters.ourBaseKey.privateKey),
+        ...Curve.calculateAgreement(
+            parameters.theirSignedPreKey, parameters.ourBaseKey.privateKey)
       ];
 
-      if (parameters.getTheirOneTimePreKey().isPresent) {
+      if (parameters.theirOneTimePreKey.isPresent) {
         secrets.addAll(Curve.calculateAgreement(
-            parameters.getTheirOneTimePreKey().value,
-            parameters.getOurBaseKey().privateKey));
+            parameters.theirOneTimePreKey.value,
+            parameters.ourBaseKey.privateKey));
       }
 
       final derivedKeys = calculateDerivedKeys(Uint8List.fromList(secrets));
       final sendingChain = derivedKeys
           .getRootKey()
-          .createChain(parameters.getTheirRatchetKey(), sendingRatchetKey);
+          .createChain(parameters.theirRatchetKey, sendingRatchetKey);
 
       sessionState
         ..addReceiverChain(
-            parameters.getTheirRatchetKey(), derivedKeys.getChainKey())
+            parameters.theirRatchetKey, derivedKeys.getChainKey())
         ..setSenderChain(sendingRatchetKey, sendingChain.item2)
         ..rootKey = sendingChain.item1;
     } on Exception catch (e) {
@@ -95,28 +89,27 @@ class RatchetingSession {
     try {
       sessionState
         ..sessionVersion = CiphertextMessage.currentVersion
-        ..remoteIdentityKey = parameters.getTheirIdentityKey()
-        ..localIdentityKey = parameters.getOurIdentityKey().getPublicKey();
+        ..remoteIdentityKey = parameters.theirIdentityKey
+        ..localIdentityKey = parameters.ourIdentityKey.getPublicKey();
 
       final secrets = <int>[
         ...getDiscontinuityBytes(),
-        ...Curve.calculateAgreement(parameters.getTheirIdentityKey().publicKey,
-            parameters.getOurSignedPreKey().privateKey),
-        ...Curve.calculateAgreement(parameters.getTheirBaseKey(),
-            parameters.getOurIdentityKey().getPrivateKey()),
-        ...Curve.calculateAgreement(parameters.getTheirBaseKey(),
-            parameters.getOurSignedPreKey().privateKey)
+        ...Curve.calculateAgreement(parameters.theirIdentityKey.publicKey,
+            parameters.ourSignedPreKey.privateKey),
+        ...Curve.calculateAgreement(
+            parameters.theirBaseKey, parameters.ourIdentityKey.getPrivateKey()),
+        ...Curve.calculateAgreement(
+            parameters.theirBaseKey, parameters.ourSignedPreKey.privateKey)
       ];
-      if (parameters.getOurOneTimePreKey().isPresent) {
-        secrets.addAll(Curve.calculateAgreement(parameters.getTheirBaseKey(),
-            parameters.getOurOneTimePreKey().value.privateKey));
+      if (parameters.ourOneTimePreKey.isPresent) {
+        secrets.addAll(Curve.calculateAgreement(parameters.theirBaseKey,
+            parameters.ourOneTimePreKey.value.privateKey));
       }
 
       final derivedKeys = calculateDerivedKeys(Uint8List.fromList(secrets));
 
       sessionState
-        ..setSenderChain(
-            parameters.getOurRatchetKey(), derivedKeys.getChainKey())
+        ..setSenderChain(parameters.ourRatchetKey, derivedKeys.getChainKey())
         ..rootKey = derivedKeys.getRootKey();
     } on Exception catch (e) {
       throw AssertionError(e);

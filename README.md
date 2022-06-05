@@ -66,25 +66,28 @@ Once those are implemented, you can build a session in this way:
 If you wanna send message to a group, send a SenderKeyDistributionMessage to all members of the group.
 
 ```dart
-  final senderAddress = SignalProtocolAddress('+00000000001', 1);
-  final groupSender =
-      SenderKeyName('Private group', senderAddress);
-    final aliceStore = InMemorySenderKeyStore();
-    final bobStore = InMemorySenderKeyStore();
+  const alice = SignalProtocolAddress('+00000000001', 1);
+  const groupSender = SenderKeyName('Private group', alice);
+  final aliceStore = InMemorySenderKeyStore();
+  final bobStore = InMemorySenderKeyStore();
 
-    final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
-    final bobSessionBuilder = GroupSessionBuilder(bobStore);
+  final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+  final bobSessionBuilder = GroupSessionBuilder(bobStore);
 
-    final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
-    final bobGroupCipher = GroupCipher(bobStore, groupSender);
+  final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+  final bobGroupCipher = GroupCipher(bobStore, groupSender);
 
-    final sentAliceDistributionMessage = aliceSessionBuilder.create(groupSender);
-    final receivedAliceDistributionMessage =
-        SenderKeyDistributionMessageWrapper.fromSerialized(
-            sentAliceDistributionMessage.serialize());
-    bobSessionBuilder.process(groupSender, receivedAliceDistributionMessage);
+  final sentAliceDistributionMessage =
+      await aliceSessionBuilder.create(groupSender);
+  final receivedAliceDistributionMessage =
+      SenderKeyDistributionMessageWrapper.fromSerialized(
+          sentAliceDistributionMessage.serialize());
+  await bobSessionBuilder.process(
+      groupSender, receivedAliceDistributionMessage);
 
-    final ciphertextFromAlice = aliceGroupCipher
-        .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
-    final plaintextFromAlice = bobGroupCipher.decrypt(ciphertextFromAlice);
+  final ciphertextFromAlice = await aliceGroupCipher
+      .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  final plaintextFromAlice = await bobGroupCipher.decrypt(ciphertextFromAlice);
+  // ignore: avoid_print
+  print(utf8.decode(plaintextFromAlice));
 ```

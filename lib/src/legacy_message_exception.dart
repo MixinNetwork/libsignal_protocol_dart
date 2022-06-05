@@ -3,5 +3,5 @@ class LegacyMessageException implements Exception {
   final String detailMessage;
 
   @override
-  String toString() => '$runtimeType - $detailMessage';
+  String toString() => 'LegacyMessageException - $detailMessage';
 }

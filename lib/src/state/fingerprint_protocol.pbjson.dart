@@ -1,19 +1,13 @@
 ///
-//  Generated code. Do not modify.
-//  source: FingerprintProtocol.proto
-//
-// @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields,deprecated_member_use_from_same_package
-
-import 'dart:core' as $core;
 import 'dart:convert' as $convert;
+import 'dart:core' as $core;
 import 'dart:typed_data' as $typed_data;
 
 @$core.Deprecated('Use logicalFingerprintDescriptor instead')
-const LogicalFingerprint$json = const {
+const logicalFingerprint$json = {
   '1': 'LogicalFingerprint',
-  '2': const [
-    const {'1': 'content', '3': 1, '4': 1, '5': 12, '10': 'content'},
+  '2': [
+    {'1': 'content', '3': 1, '4': 1, '5': 12, '10': 'content'},
   ],
 };
 
@@ -22,11 +16,11 @@ final $typed_data.Uint8List logicalFingerprintDescriptor =
     $convert.base64Decode(
         'ChJMb2dpY2FsRmluZ2VycHJpbnQSGAoHY29udGVudBgBIAEoDFIHY29udGVudA==');
 @$core.Deprecated('Use combinedFingerprintsDescriptor instead')
-const CombinedFingerprints$json = const {
+const sombinedFingerprints$json = {
   '1': 'CombinedFingerprints',
-  '2': const [
-    const {'1': 'version', '3': 1, '4': 1, '5': 13, '10': 'version'},
-    const {
+  '2': [
+    {'1': 'version', '3': 1, '4': 1, '5': 13, '10': 'version'},
+    {
       '1': 'localFingerprint',
       '3': 2,
       '4': 1,
@@ -34,7 +28,7 @@ const CombinedFingerprints$json = const {
       '6': '.textsecure.LogicalFingerprint',
       '10': 'localFingerprint'
     },
-    const {
+    {
       '1': 'remoteFingerprint',
       '3': 3,
       '4': 1,

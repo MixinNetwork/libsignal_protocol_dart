@@ -2,53 +2,63 @@ include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   errors:
+    avoid_classes_with_only_static_members: ignore
+    leading_newlines_in_multiline_strings: ignore
+    always_use_package_imports: ignore
     public_member_api_docs: ignore
     lines_longer_than_80_chars: ignore
     avoid_function_literals_in_foreach_calls: ignore
-    control_flow_in_finally: true
+    implicit_dynamic_parameter: ignore
+    implicit_dynamic_type: ignore
+    implicit_dynamic_map_literal: ignore
+    implicit_dynamic_method: ignore
+    implicit_dynamic_list_literal: ignore
+    implicit_dynamic_variable: ignore
+    implicit_dynamic_function: ignore
+    avoid_setters_without_getters: ignore
+    #    experimental lint
+    use_build_context_synchronously: ignore
   exclude:
     - 'bin/cache/**'
+    # the following two are relative to the stocks example and the flutter package respectively
+    # see https://github.com/dart-lang/sdk/issues/28463
+    - 'lib/i18n/messages_*.dart'
+    - 'lib/src/http/**'
     # custom
     - 'lib/generated/**'
     - '**.g.dart'
     - 'lib/src/state/**.pb.dart'
-    - 'lib/src/state/**.pbenum.dart'
-    - 'lib/src/state/**.pbjson.dart'
-    - 'lib/src/state/**.pbserver.dart'
 
 linter:
   rules:
-    - prefer_const_constructors_in_immutables
-    - prefer_relative_imports
-    #    - require_trailing_commas
-    - prefer_final_locals
-    - avoid_void_async
-    #    - use_if_null_to_convert_nulls_to_bools
-    #    - avoid_positional_boolean_parameters
-    #    - always_put_required_named_parameters_first
-    - unnecessary_await_in_return
-    - prefer_expression_function_bodies
-    - avoid_field_initializers_in_const_classes
-    - file_names
-    - unnecessary_parenthesis
-    - prefer_void_to_null
-    - avoid_bool_literals_in_conditional_expressions
-    - avoid_returning_null_for_void
-    - prefer_function_declarations_over_variables
-    - empty_statements
-    - prefer_is_not_operator
-    - cast_nullable_to_non_nullable
-    - avoid_classes_with_only_static_members
-    - type_annotate_public_apis
-    - prefer_const_literals_to_create_immutables
-    - use_string_buffers
-    - unnecessary_raw_strings
-    - unnecessary_null_checks
-    - parameter_assignments
-    - prefer_const_declarations
-    - sort_unnamed_constructors_first
-    - use_setters_to_change_properties
-    - curly_braces_in_flow_control_structures
-
-
-#    - avoid_slow_async_io
+    prefer_const_constructors_in_immutables: true
+    prefer_relative_imports: true
+    prefer_final_locals: true
+    avoid_void_async: true
+    unnecessary_await_in_return: true
+    prefer_expression_function_bodies: true
+    avoid_field_initializers_in_const_classes: true
+    file_names: true
+    unnecessary_parenthesis: true
+    prefer_void_to_null: true
+    avoid_bool_literals_in_conditional_expressions: true
+    avoid_returning_null_for_void: true
+    prefer_function_declarations_over_variables: true
+    empty_statements: true
+    prefer_is_not_operator: true
+    cast_nullable_to_non_nullable: true
+    avoid_classes_with_only_static_members: true
+    type_annotate_public_apis: true
+    prefer_const_literals_to_create_immutables: true
+    use_named_constants: true
+    use_string_buffers: true
+    unnecessary_raw_strings: true
+    unnecessary_null_checks: true
+    parameter_assignments: true
+    prefer_const_declarations: true
+    sort_unnamed_constructors_first: true
+    use_setters_to_change_properties: true
+    curly_braces_in_flow_control_structures: true
+    require_trailing_commas: false
+    prefer_asserts_with_message: false
+    flutter_style_todos: false

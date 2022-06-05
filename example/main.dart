@@ -5,6 +5,7 @@ import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 
 Future<void> main() async {
   await install();
+  await groupTest();
 }
 
 Future<void> install() async {
@@ -21,12 +22,12 @@ Future<void> install() async {
   final identityStore =
       InMemoryIdentityKeyStore(identityKeyPair, registrationId);
 
-  for (var p in preKeys) {
+  for (final p in preKeys) {
     await preKeyStore.storePreKey(p.id, p);
   }
   await signedPreKeyStore.storeSignedPreKey(signedPreKey.id, signedPreKey);
 
-  final bobAddress = SignalProtocolAddress('bob', 1);
+  const bobAddress = SignalProtocolAddress('bob', 1);
   final sessionBuilder = SessionBuilder(
       sessionStore, preKeyStore, signedPreKeyStore, identityStore, bobAddress);
 
@@ -60,11 +61,11 @@ Future<void> install() async {
 
   final signalProtocolStore =
       InMemorySignalProtocolStore(remoteIdentityKeyPair, 1);
-  final aliceAddress = SignalProtocolAddress('alice', 1);
+  const aliceAddress = SignalProtocolAddress('alice', 1);
   final remoteSessionCipher =
       SessionCipher.fromStore(signalProtocolStore, aliceAddress);
 
-  for (var p in remotePreKeys) {
+  for (final p in remotePreKeys) {
     await signalProtocolStore.storePreKey(p.id, p);
   }
   await signalProtocolStore.storeSignedPreKey(
@@ -79,8 +80,35 @@ Future<void> install() async {
   }
 }
 
+Future<void> groupTest() async {
+  const alice = SignalProtocolAddress('+00000000001', 1);
+  const groupSender = SenderKeyName('Private group', alice);
+  final aliceStore = InMemorySenderKeyStore();
+  final bobStore = InMemorySenderKeyStore();
+
+  final aliceSessionBuilder = GroupSessionBuilder(aliceStore);
+  final bobSessionBuilder = GroupSessionBuilder(bobStore);
+
+  final aliceGroupCipher = GroupCipher(aliceStore, groupSender);
+  final bobGroupCipher = GroupCipher(bobStore, groupSender);
+
+  final sentAliceDistributionMessage =
+      await aliceSessionBuilder.create(groupSender);
+  final receivedAliceDistributionMessage =
+      SenderKeyDistributionMessageWrapper.fromSerialized(
+          sentAliceDistributionMessage.serialize());
+  await bobSessionBuilder.process(
+      groupSender, receivedAliceDistributionMessage);
+
+  final ciphertextFromAlice = await aliceGroupCipher
+      .encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
+  final plaintextFromAlice = await bobGroupCipher.decrypt(ciphertextFromAlice);
+  // ignore: avoid_print
+  print(utf8.decode(plaintextFromAlice));
+}
+
 Future<void> groupSession() async {
-  final senderKeyName = SenderKeyName('', SignalProtocolAddress('sender', 1));
+  const senderKeyName = SenderKeyName('', SignalProtocolAddress('sender', 1));
   final senderKeyStore = InMemorySenderKeyStore();
   final groupSession = GroupCipher(senderKeyStore, senderKeyName);
   await groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));

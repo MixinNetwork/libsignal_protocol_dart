@@ -6,13 +6,14 @@ import '../identity_key.dart';
 import '../identity_key_pair.dart';
 
 class BobSignalProtocolParameters {
-  BobSignalProtocolParameters(
-      this.ourIdentityKey,
-      this.ourSignedPreKey,
-      this.ourRatchetKey,
-      this.ourOneTimePreKey,
-      this.theirIdentityKey,
-      this.theirBaseKey);
+  BobSignalProtocolParameters({
+    required this.ourIdentityKey,
+    required this.ourSignedPreKey,
+    required this.ourRatchetKey,
+    required this.ourOneTimePreKey,
+    required this.theirIdentityKey,
+    required this.theirBaseKey,
+  });
 
   final IdentityKeyPair ourIdentityKey;
   final ECKeyPair ourSignedPreKey;
@@ -32,55 +33,5 @@ class BobSignalProtocolParameters {
 
   ECPublicKey getTheirBaseKey() => theirBaseKey;
 
-  static Builder newBuilder() => Builder();
-
   ECKeyPair getOurRatchetKey() => ourRatchetKey;
-}
-
-class Builder {
-  late IdentityKeyPair ourIdentityKey;
-  late ECKeyPair ourSignedPreKey;
-  late Optional<ECKeyPair> ourOneTimePreKey;
-  late ECKeyPair ourRatchetKey;
-
-  late IdentityKey theirIdentityKey;
-  late ECPublicKey theirBaseKey;
-
-  Builder setOurIdentityKey(IdentityKeyPair ourIdentityKey) {
-    this.ourIdentityKey = ourIdentityKey;
-    return this;
-  }
-
-  Builder setOurSignedPreKey(ECKeyPair ourSignedPreKey) {
-    this.ourSignedPreKey = ourSignedPreKey;
-    return this;
-  }
-
-  Builder setOurOneTimePreKey(Optional<ECKeyPair> ourOneTimePreKey) {
-    this.ourOneTimePreKey = ourOneTimePreKey;
-    return this;
-  }
-
-  Builder setTheirIdentityKey(IdentityKey theirIdentityKey) {
-    this.theirIdentityKey = theirIdentityKey;
-    return this;
-  }
-
-  Builder setTheirBaseKey(ECPublicKey theirBaseKey) {
-    this.theirBaseKey = theirBaseKey;
-    return this;
-  }
-
-  Builder setOurRatchetKey(ECKeyPair ourRatchetKey) {
-    this.ourRatchetKey = ourRatchetKey;
-    return this;
-  }
-
-  BobSignalProtocolParameters create() => BobSignalProtocolParameters(
-      ourIdentityKey,
-      ourSignedPreKey,
-      ourRatchetKey,
-      ourOneTimePreKey,
-      theirIdentityKey,
-      theirBaseKey);
 }

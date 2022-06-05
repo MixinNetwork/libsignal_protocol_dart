@@ -117,19 +117,19 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   bool hasSenderChain() => _sessionStructure.hasSenderChain();
 
-  Tuple2<SessionStructure_Chain, int>? _getReceiverChain(
+  Tuple2<SessionStructureChain, int>? _getReceiverChain(
       ECPublicKey senderEphemeral) {
     final receiverChains = _sessionStructure.receiverChains;
     var index = 0;
 
-    for (var receiverChain in receiverChains) {
+    for (final receiverChain in receiverChains) {
       try {
         final chainSenderRatchetKey = Curve.decodePoint(
             Uint8List.fromList(receiverChain.senderRatchetKey), 0);
 
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
-          return Tuple2<SessionStructure_Chain, int>(receiverChain, index);
+          return Tuple2<SessionStructureChain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
         // ignore: avoid_print
@@ -156,10 +156,10 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   void addReceiverChain(ECPublicKey senderRatchetKey, ChainKey chainKey) {
-    final chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+    final chainKeyStructure = SessionStructureChainChainKey.create()
       ..key = chainKey.key;
 
-    final chain = SessionStructure_Chain.create()
+    final chain = SessionStructureChain.create()
       ..chainKey = chainKeyStructure
       ..senderRatchetKey = senderRatchetKey.serialize();
 
@@ -171,11 +171,11 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   void setSenderChain(ECKeyPair senderRatchetKeyPair, ChainKey chainKey) {
-    final chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+    final chainKeyStructure = SessionStructureChainChainKey.create()
       ..key = chainKey.key
       ..index = chainKey.index;
 
-    final senderChain = SessionStructure_Chain.create()
+    final senderChain = SessionStructureChain.create()
       ..senderRatchetKey = senderRatchetKeyPair.publicKey.serialize()
       ..senderRatchetKeyPrivate = senderRatchetKeyPair.privateKey.serialize()
       ..chainKey = chainKeyStructure;
@@ -189,7 +189,7 @@ class SessionState extends LinkedListEntry<SessionState> {
   }
 
   void setSenderChainKey(ChainKey nextChainKey) {
-    final chainKey = SessionStructure_Chain_ChainKey.create()
+    final chainKey = SessionStructureChainChainKey.create()
       ..key = nextChainKey.key
       ..index = nextChainKey.index;
 
@@ -204,7 +204,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     final chain = chainAndIndex.item1;
 
     final messageKeyList = chain.messageKeys;
-    for (var messageKey in messageKeyList) {
+    for (final messageKey in messageKeyList) {
       if (messageKey.index == counter) {
         return true;
       }
@@ -219,8 +219,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     }
     final chain = chainAndIndex.item1;
 
-    final messageKeyList =
-        LinkedList<Entry<SessionStructure_Chain_MessageKey>>();
+    final messageKeyList = LinkedList<Entry<SessionStructureChainMessageKey>>();
     chain.messageKeys.forEach((element) {
       messageKeyList.add(Entry(element));
     });
@@ -256,7 +255,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       return;
     }
     final chain = chainAndIndex.item1;
-    final messageKeyStructure = SessionStructure_Chain_MessageKey.create()
+    final messageKeyStructure = SessionStructureChainMessageKey.create()
       ..cipherKey = Uint8List.fromList(messageKeys.getCipherKey())
       ..macKey = Uint8List.fromList(messageKeys.getMacKey())
       ..index = messageKeys.getCounter()
@@ -268,7 +267,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.removeAt(0);
     }
 
-    final receiveChains = <SessionStructure_Chain>[chain];
+    final receiveChains = <SessionStructureChain>[chain];
     _sessionStructure.receiverChains.addAll(receiveChains);
   }
 
@@ -276,7 +275,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     final chainAndIndex = _getReceiverChain(senderEphemeral);
     final chain = chainAndIndex!.item1;
 
-    final chainKeyStructure = SessionStructure_Chain_ChainKey.create()
+    final chainKeyStructure = SessionStructureChainChainKey.create()
       ..key = chainKey.key
       ..index = chainKey.index;
 
@@ -286,7 +285,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,
       ECKeyPair ourRatchetKey, IdentityKeyPair ourIdentityKey) {
-    final structure = SessionStructure_PendingKeyExchange.create()
+    final structure = SessionStructurePendingKeyExchange.create()
       ..sequence = sequence
       ..localBaseKey = ourBaseKey.publicKey.serialize()
       ..localBaseKeyPrivate = ourBaseKey.privateKey.serialize()
@@ -336,7 +335,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   void setUnacknowledgedPreKeyMessage(
       Optional<int> preKeyId, int signedPreKeyId, ECPublicKey baseKey) {
-    final pending = SessionStructure_PendingPreKey.create()
+    final pending = SessionStructurePendingPreKey.create()
       ..signedPreKeyId = signedPreKeyId
       ..baseKey = baseKey.serialize();
 
