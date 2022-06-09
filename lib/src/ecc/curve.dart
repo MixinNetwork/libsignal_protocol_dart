@@ -29,7 +29,7 @@ class Curve {
 
   static ECKeyPair generateKeyPair() {
     final x25519.KeyPair keyPair;
-    final KeyPairGenerator? generator = keyPairGenerator;
+    final generator = keyPairGenerator;
     if (generator != null) {
       final kp = generator();
       keyPair = x25519.KeyPair(privateKey: kp.private, publicKey: kp.public);
