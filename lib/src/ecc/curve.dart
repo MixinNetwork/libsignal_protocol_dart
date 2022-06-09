@@ -11,11 +11,32 @@ import 'ec_private_key.dart';
 import 'ec_public_key.dart';
 import 'ed25519.dart';
 
+typedef KeyPairGenerator = GeneratedKeyPair Function();
+typedef AgreementCalculator = Uint8List Function(Uint8List, Uint8List);
+
+class GeneratedKeyPair {
+  GeneratedKeyPair(this.private, this.public);
+
+  final Uint8List private;
+  final Uint8List public;
+}
+
 class Curve {
   static const int djbType = 0x05;
 
+  static KeyPairGenerator? keyPairGenerator;
+  static AgreementCalculator? agreementCalculator;
+
   static ECKeyPair generateKeyPair() {
-    final keyPair = x25519.generateKeyPair();
+    final x25519.KeyPair keyPair;
+    final KeyPairGenerator? generator = keyPairGenerator;
+    if (generator != null) {
+      final kp = generator();
+      keyPair = x25519.KeyPair(privateKey: kp.private, publicKey: kp.public);
+    } else {
+      keyPair = x25519.generateKeyPair();
+    }
+
     return ECKeyPair(DjbECPublicKey(Uint8List.fromList(keyPair.publicKey)),
         DjbECPrivateKey(Uint8List.fromList(keyPair.privateKey)));
   }
@@ -83,6 +104,14 @@ class Curve {
     }
 
     if (publicKey.getType() == djbType) {
+      final calculator = agreementCalculator;
+      if (calculator != null) {
+        return calculator(
+          (privateKey as DjbECPrivateKey).privateKey,
+          (publicKey as DjbECPublicKey).publicKey,
+        );
+      }
+
       final secretKey = x25519.X25519(
         List<int>.from((privateKey as DjbECPrivateKey).privateKey),
         List<int>.from((publicKey as DjbECPublicKey).publicKey),

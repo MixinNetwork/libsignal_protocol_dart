@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:adaptive_number/adaptive_number.dart';
 import 'package:convert/convert.dart';
 
 class ByteUtil {
@@ -61,12 +62,14 @@ class ByteUtil {
 
   static int lowBitsToMedium(int value) => value & 0xFFF;
 
-  static int byteArray5ToLong(Uint8List bytes, int offset) =>
-      ((bytes[offset] & 0xff) << 32) |
-      ((bytes[offset + 1] & 0xff) << 24) |
-      ((bytes[offset + 2] & 0xff) << 16) |
-      ((bytes[offset + 3] & 0xff) << 8) |
-      (bytes[offset + 4] & 0xff);
+  static int byteArray5ToLong(Uint8List bytes, int offset) {
+    final v1 = (Number(bytes[offset]) & Number(0xff)) << 32;
+    final v2 = (Number(bytes[offset + 1]) & Number(0xff)) << 24;
+    final v3 = (Number(bytes[offset + 2]) & Number(0xff)) << 16;
+    final v4 = (Number(bytes[offset + 3]) & Number(0xff)) << 8;
+    final v5 = Number(bytes[offset + 4]) & Number(0xff);
+    return (v1 | v2 | v3 | v4 | v5).intValue;
+  }
 
   static int compare(Uint8List left, Uint8List right) {
     for (var i = 0, j = 0; i < left.length && j < right.length; i++, j++) {

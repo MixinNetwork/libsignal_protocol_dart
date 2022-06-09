@@ -25,7 +25,7 @@ class ProvisionEnvelope {
   final Uint8List publicKey;
   final Uint8List body;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'public_key': base64Encode(publicKey),
         'body': base64Encode(body),
       };
