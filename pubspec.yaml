@@ -7,6 +7,7 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
+  adaptive_number: ^1.0.0
   collection: ^1.15.0
   convert: ^3.0.1
   crypto: ^3.0.1
@@ -20,7 +21,6 @@ dependencies:
   very_good_analysis: ^3.0.0
   # upgrade to pre-release of pointycastle to enable full websupport
   x25519: ^0.1.1
-  adaptive_number: ^1.0.0
 
 
 dev_dependencies:
