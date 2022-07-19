@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
 import 'package:test/test.dart';

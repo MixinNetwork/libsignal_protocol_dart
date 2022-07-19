@@ -24,6 +24,13 @@ import 'package:test/test.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 Future<void> main() async {
+  const _integerMax = 0x7fffffff;
+
+  int _randomInt() {
+    final secureRandom = Random.secure();
+    return secureRandom.nextInt(_integerMax);
+  }
+
   Future<void> runInteraction(
       SessionRecord aliceSessionRecord, SessionRecord bobSessionRecord) async {
     final aliceStore = TestInMemorySignalProtocolStore();
@@ -209,4 +216,41 @@ Future<void> main() async {
       // good
     }
   }, skip: 'Failing historical test');
+
+  test('testOutOfOrder', () async {
+    final aliceSessionRecord = SessionRecord();
+    final bobSessionRecord = SessionRecord();
+
+    await initializeSessionsV3(
+        aliceSessionRecord.sessionState, bobSessionRecord.sessionState);
+
+    final aliceStore = TestInMemorySignalProtocolStore();
+    final bobStore = TestInMemorySignalProtocolStore();
+
+    await aliceStore.storeSession(
+        const SignalProtocolAddress('+14159999999', 1), aliceSessionRecord);
+    await bobStore.storeSession(
+        const SignalProtocolAddress('+14158888888', 1), bobSessionRecord);
+
+    final aliceCipher = SessionCipher.fromStore(
+        aliceStore, const SignalProtocolAddress('+14159999999', 1));
+    final bobCipher = SessionCipher.fromStore(
+        bobStore, const SignalProtocolAddress('+14158888888', 1));
+
+    final inflight = <CiphertextMessage>[];
+
+    for (var i = 0; i < 100; i++) {
+      inflight.add(await aliceCipher
+          .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
+    }
+
+    while (inflight.isNotEmpty) {
+      final index = _randomInt() % inflight.length;
+      final ciphertext = inflight.removeAt(index);
+      final plaintext = await bobCipher.decryptFromSignal(
+          SignalMessage.fromSerialized(ciphertext.serialize()));
+
+      assert(utf8.decode(plaintext) == 'up the punks');
+    }
+  });
 }
