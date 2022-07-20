@@ -215,7 +215,7 @@ Future<void> main() async {
     } on DuplicateMessageException {
       // good
     }
-  }, skip: 'Failing historical test');
+  });
 
   test('testOutOfOrder', () async {
     final aliceSessionRecord = SessionRecord();

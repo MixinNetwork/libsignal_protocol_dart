@@ -268,7 +268,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     }
 
     final receiveChains = <SessionStructureChain>[chain];
-    _sessionStructure.receiverChains.addAll(receiveChains);
+    _sessionStructure.receiverChains.setAll(chainAndIndex.item2, receiveChains);
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
