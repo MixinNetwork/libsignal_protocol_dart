@@ -67,8 +67,7 @@ class PreKeySignalMessage extends CiphertextMessage {
     ];
 
     final messageBytes = builder.toBuilder().writeToBuffer();
-    serialized =
-        ByteUtil.combine([Uint8List.fromList(versionBytes), messageBytes]);
+    serialized = Uint8List.fromList(versionBytes + messageBytes);
   }
 
   late int _version;

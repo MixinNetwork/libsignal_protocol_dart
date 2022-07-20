@@ -4,8 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../eq.dart';
 
-import '../util/byte_util.dart';
-
 import 'curve.dart';
 import 'ec_public_key.dart';
 
@@ -19,10 +17,7 @@ class DjbECPublicKey extends ECPublicKey {
   int getType() => Curve.djbType;
 
   @override
-  Uint8List serialize() => ByteUtil.combine([
-        Uint8List.fromList([Curve.djbType]),
-        _publicKey
-      ]);
+  Uint8List serialize() => Uint8List.fromList([Curve.djbType] + _publicKey);
 
   Uint8List get publicKey => _publicKey;
 

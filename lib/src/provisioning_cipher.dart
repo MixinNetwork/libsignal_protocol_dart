@@ -98,7 +98,7 @@ class ProvisioningCipher {
   Uint8List getCiphertext(Uint8List key, Uint8List message) {
     final iv = Uint8List(16);
     final m = aesCbcEncrypt(key, iv, message);
-    return ByteUtil.combine([iv, m]);
+    return Uint8List.fromList(iv + m);
   }
 
   Uint8List _getMac(Uint8List key, Uint8List message) {
