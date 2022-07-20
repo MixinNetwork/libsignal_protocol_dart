@@ -75,7 +75,7 @@ class InMemorySignalProtocolStore implements SignalProtocolStore {
       sessionStore.getSubDeviceSessions(name);
 
   @override
-  Future storeSession(
+  Future<void> storeSession(
       SignalProtocolAddress address, SessionRecord record) async {
     await sessionStore.storeSession(address, record);
   }

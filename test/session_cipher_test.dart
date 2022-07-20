@@ -239,7 +239,7 @@ Future<void> main() async {
 
     final inflight = <CiphertextMessage>[];
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 2000; i++) {
       inflight.add(await aliceCipher
           .encrypt(Uint8List.fromList(utf8.encode('up the punks'))));
     }

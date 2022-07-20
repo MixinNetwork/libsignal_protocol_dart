@@ -245,7 +245,8 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.add(entry.value);
     });
 
-    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
+    _sessionStructure.receiverChains
+        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
     return result;
   }
 
@@ -267,8 +268,8 @@ class SessionState extends LinkedListEntry<SessionState> {
       chain.messageKeys.removeAt(0);
     }
 
-    final receiveChains = <SessionStructureChain>[chain];
-    _sessionStructure.receiverChains.setAll(chainAndIndex.item2, receiveChains);
+    _sessionStructure.receiverChains
+        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
@@ -280,7 +281,8 @@ class SessionState extends LinkedListEntry<SessionState> {
       ..index = chainKey.index;
 
     chain.chainKey = chainKeyStructure;
-    _sessionStructure.receiverChains.insert(chainAndIndex.item2, chain);
+    _sessionStructure.receiverChains
+        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
   }
 
   void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,
