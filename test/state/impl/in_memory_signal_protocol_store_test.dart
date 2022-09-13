@@ -57,7 +57,7 @@ void main() {
 
     await bobStore.storePreKey(
       31337,
-      PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair),
+      PreKeyRecord(bobPreKey.getPreKeyId()!, bobPreKeyPair),
     );
     await bobStore.storeSignedPreKey(
       22,
