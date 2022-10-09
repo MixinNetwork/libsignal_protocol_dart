@@ -18,8 +18,8 @@ class PreKeyBundle {
 
   final int _deviceId;
 
-  final int _preKeyId;
-  final ECPublicKey _preKeyPublic;
+  final int? _preKeyId;
+  final ECPublicKey? _preKeyPublic;
 
   final int _signedPreKeyId;
   final ECPublicKey? _signedPreKeyPublic;
@@ -29,9 +29,9 @@ class PreKeyBundle {
 
   int getDeviceId() => _deviceId;
 
-  int getPreKeyId() => _preKeyId;
+  int? getPreKeyId() => _preKeyId;
 
-  ECPublicKey getPreKey() => _preKeyPublic;
+  ECPublicKey? getPreKey() => _preKeyPublic;
 
   int getSignedPreKeyId() => _signedPreKeyId;
 

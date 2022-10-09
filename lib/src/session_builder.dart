@@ -124,7 +124,7 @@ class SessionBuilder {
     final theirSignedPreKey = preKey.getSignedPreKey();
     final theirOneTimePreKey = Optional.ofNullable(preKey.getPreKey());
     final theirOneTimePreKeyId = theirOneTimePreKey.isPresent
-        ? Optional.of(preKey.getPreKeyId())
+        ? Optional.ofNullable(preKey.getPreKeyId())
         : const Optional<int>.empty();
 
     final parameters = AliceSignalProtocolParameters(

@@ -191,7 +191,7 @@ void main() {
 
     final incomingMessage = PreKeySignalMessage(outgoingMessage.serialize());
     await bobStore.storePreKey(
-        31337, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+        31337, PreKeyRecord(bobPreKey.getPreKeyId()!, bobPreKeyPair));
     await bobStore.storeSignedPreKey(
         22,
         SignedPreKeyRecord(22, Int64(DateTime.now().millisecondsSinceEpoch),
@@ -248,7 +248,7 @@ void main() {
             .then((value) => value.getPublicKey()));
 
     await bobStore.storePreKey(
-        31338, PreKeyRecord(bobPreKey.getPreKeyId(), bobPreKeyPair));
+        31338, PreKeyRecord(bobPreKey.getPreKeyId()!, bobPreKeyPair));
     await bobStore.storeSignedPreKey(
         23,
         SignedPreKeyRecord(23, Int64(DateTime.now().millisecondsSinceEpoch),
