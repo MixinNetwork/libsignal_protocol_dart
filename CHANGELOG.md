@@ -34,3 +34,5 @@
 
 ## [0.6.3] -
  * Exported fingerprint classes
+
+## [0.6.5] -
