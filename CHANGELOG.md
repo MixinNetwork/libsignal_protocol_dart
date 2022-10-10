@@ -33,7 +33,7 @@
 ## [0.6.2] -
 
 ## [0.6.3] -
- * Exported fingerprint classes
+ * Improved example project
 
 ## [0.6.5] -
 
