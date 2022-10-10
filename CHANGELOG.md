@@ -32,10 +32,10 @@
 
 ## [0.6.2] -
 
-## [0.6.3] -
- * Improved example project
-
 ## [0.6.5] -
+
+## [0.6.6] -
+* Improved example project
 
 ## [0.7.0] -
 
