@@ -37,5 +37,5 @@
 
 ## [0.6.5] -
 
-## [0.6.3] -
+## [0.6.6] -
  * Improved example project
