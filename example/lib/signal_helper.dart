@@ -14,6 +14,19 @@ class SignalDataModel {
     required this.senderKeyStore,
     required this.signalStore,
   });
+
+  //
+  String get getPreKeyBundleFromServer {
+    // Server deletes a pre key it sends
+    Map<String, dynamic> data = Map.from(serverKeyBundle);
+    data.remove('preKeys');
+    if (serverKeyBundle['preKeys'].isNotEmpty) {
+      data['preKey'] = serverKeyBundle['preKeys'].first;
+      serverKeyBundle['preKeys'].removeAt(0);
+    }
+    return jsonEncode(data);
+  }
+
   // Session validation
   Future<Fingerprint?> generateSessionFingerPrint(String target) async {
     try {
@@ -107,7 +120,7 @@ class SignalDataModel {
 // one to one implementation
   Future<void> buildSession(
     String target,
-    Map<String, dynamic> remoteBundle,
+    String remoteBundle,
   ) async {
     SignalProtocolAddress targetAddress =
         SignalProtocolAddress(target, SignalHelper.defaultDeviceId);
@@ -117,16 +130,17 @@ class SignalDataModel {
     await sessionBuilder.processPreKeyBundle(temp);
   }
 
-  PreKeyBundle preKeyBundleFromJson(Map<String, dynamic> remoteBundle) {
+  PreKeyBundle preKeyBundleFromJson(String json) {
+    Map<String, dynamic> remoteBundle = jsonDecode(json);
     // One time pre key calculation
-    List tempPreKeys = remoteBundle["preKeys"];
     ECPublicKey? tempPrePublicKey;
     int? tempPreKeyId;
-    if (tempPreKeys.isNotEmpty) {
+    if (remoteBundle["preKey"] != null) {
       tempPrePublicKey = Curve.decodePoint(
-          DjbECPublicKey(base64Decode(tempPreKeys.first['key'])).serialize(),
+          DjbECPublicKey(base64Decode(remoteBundle["preKey"]['key']))
+              .serialize(),
           1);
-      tempPreKeyId = remoteBundle["preKeys"].first['id'];
+      tempPreKeyId = remoteBundle["preKey"]['id'];
     }
     // Signed pre key calculation
     int tempSignedPreKeyId = remoteBundle["signedPreKey"]['id'];

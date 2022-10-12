@@ -43,7 +43,7 @@ class _SignalTestScreenState extends State<SignalTestScreen> {
     aliceModel = await SignalHelper.getSignalModel(alice);
     bobModel = await SignalHelper.getSignalModel(bob);
     // receiverKeyBundle contains the bundle that server will send to sender
-    Map<String, dynamic> receiverKeyBundle = bobModel!.serverKeyBundle;
+    String receiverKeyBundle = bobModel!.getPreKeyBundleFromServer;
     log("$bob key bundle bundle that server will send to sender \n $receiverKeyBundle");
     await aliceModel!.buildSession(bob,
         receiverKeyBundle); // Building session can create fingerprint for this session. Fingerprint can be generated for both user when both users have created as session.
