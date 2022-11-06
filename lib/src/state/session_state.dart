@@ -16,6 +16,7 @@ import '../kdf/hkdf.dart';
 import '../ratchet/chain_key.dart';
 import '../ratchet/message_keys.dart';
 import '../ratchet/root_key.dart';
+import '../util/log.dart' as $log;
 import 'local_storage_protocol.pb.dart';
 
 class SessionState extends LinkedListEntry<SessionState> {
@@ -69,8 +70,7 @@ class SessionState extends LinkedListEntry<SessionState> {
       return IdentityKey.fromBytes(
           Uint8List.fromList(_sessionStructure.remoteIdentityPublic), 0);
     } on InvalidKeyException catch (e) {
-      // ignore: avoid_print
-      print(e);
+      $log.log(e);
       return null;
     }
   }
@@ -132,8 +132,7 @@ class SessionState extends LinkedListEntry<SessionState> {
           return Tuple2<SessionStructureChain, int>(receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
-        // ignore: avoid_print
-        print(e);
+        $log.log(e);
       }
       index++;
     }

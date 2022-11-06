@@ -16,6 +16,7 @@ import 'state/session_store.dart';
 import 'state/signal_protocol_store.dart';
 import 'state/signed_pre_key_store.dart';
 import 'untrusted_identity_exception.dart';
+import 'util/log.dart' as $log;
 
 class SessionBuilder {
   SessionBuilder(this._sessionStore, this._preKeyStore, this._signedPreKeyStore,
@@ -54,8 +55,7 @@ class SessionBuilder {
       SessionRecord sessionRecord, PreKeySignalMessage message) async {
     if (sessionRecord.hasSessionState(
         message.getMessageVersion(), message.getBaseKey().serialize())) {
-      // ignore: avoid_print
-      print(
+      $log.log(
           "We've already setup a session for this V3 message, letting bundled message fall through...");
       return const Optional.empty();
     }
