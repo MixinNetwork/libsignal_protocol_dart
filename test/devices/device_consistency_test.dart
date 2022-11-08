@@ -7,7 +7,7 @@ import 'package:libsignal_protocol_dart/src/util/key_helper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  String _generateCode(DeviceConsistencyCommitment commitment,
+  String generateCode(DeviceConsistencyCommitment commitment,
       List<DeviceConsistencyMessage> messages) {
     final signatures = <DeviceConsistencySignature>[];
     for (final message in messages) {
@@ -64,17 +64,17 @@ void main() {
     expect(deviceThreeMessage.signature.vrfOutput,
         receivedDeviceThreeMessage.signature.vrfOutput);
 
-    final codeOne = _generateCode(deviceOneCommitment, [
+    final codeOne = generateCode(deviceOneCommitment, [
       deviceOneMessage,
       receivedDeviceTwoMessage,
       receivedDeviceThreeMessage
     ]);
-    final codeTwo = _generateCode(deviceTwoCommitment, [
+    final codeTwo = generateCode(deviceTwoCommitment, [
       deviceTwoMessage,
       receivedDeviceThreeMessage,
       receivedDeviceOneMessage
     ]);
-    final codeThree = _generateCode(deviceThreeCommitment, [
+    final codeThree = generateCode(deviceThreeCommitment, [
       deviceThreeMessage,
       receivedDeviceTwoMessage,
       receivedDeviceOneMessage

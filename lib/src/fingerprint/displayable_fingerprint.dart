@@ -9,7 +9,8 @@ class DisplayableFingerprint {
     remoteFingerprintNumbers = _getDisplayStringFor(remoteFingerprint);
   }
 
-  late String localFingerprintNumbers, remoteFingerprintNumbers;
+  late String localFingerprintNumbers;
+  late String remoteFingerprintNumbers;
 
   String getDisplayText() {
     if (localFingerprintNumbers.compareTo(remoteFingerprintNumbers) <= 0) {

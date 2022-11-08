@@ -167,11 +167,10 @@ class SessionCipher {
     } on InvalidMessageException catch (e) {
       exceptions.add(e);
     }
-    final _previousStates = HasNextIterator(previousStates.iterator);
-    while (_previousStates.hasNext) {
+    final pStates = HasNextIterator(previousStates.iterator);
+    while (pStates.hasNext) {
       try {
-        final promotedState =
-            SessionState.fromSessionState(_previousStates.next());
+        final promotedState = SessionState.fromSessionState(pStates.next());
         final plaintext = _decryptFromState(promotedState, cipherText);
 
         previousStates.remove(promotedState);

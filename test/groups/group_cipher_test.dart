@@ -20,11 +20,11 @@ void main() {
   const groupSender =
       SenderKeyName('nihilist history reading group', senderAddress);
 
-  const _integerMax = 0x7fffffff;
+  const integerMax = 0x7fffffff;
 
-  int _randomInt() {
+  int randomInt() {
     final secureRandom = Random.secure();
-    return secureRandom.nextInt(_integerMax);
+    return secureRandom.nextInt(integerMax);
   }
 
   test('testNoSession', () async {
@@ -230,7 +230,7 @@ void main() {
     }
 
     while (ciphertexts.isNotEmpty) {
-      final index = _randomInt() % ciphertexts.length;
+      final index = randomInt() % ciphertexts.length;
       final ciphertext = ciphertexts.removeAt(index);
       final plaintext = await bobGroupCipher.decrypt(ciphertext);
 

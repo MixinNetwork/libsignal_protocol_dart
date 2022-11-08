@@ -24,11 +24,11 @@ import 'package:test/test.dart';
 import 'test_in_memory_signal_protocol_store.dart';
 
 Future<void> main() async {
-  const _integerMax = 0x7fffffff;
+  const integerMax = 0x7fffffff;
 
-  int _randomInt() {
+  int randomInt() {
     final secureRandom = Random.secure();
-    return secureRandom.nextInt(_integerMax);
+    return secureRandom.nextInt(integerMax);
   }
 
   Future<void> runInteraction(
@@ -245,7 +245,7 @@ Future<void> main() async {
     }
 
     while (inflight.isNotEmpty) {
-      final index = _randomInt() % inflight.length;
+      final index = randomInt() % inflight.length;
       final ciphertext = inflight.removeAt(index);
       final plaintext = await bobCipher.decryptFromSignal(
           SignalMessage.fromSerialized(ciphertext.serialize()));
