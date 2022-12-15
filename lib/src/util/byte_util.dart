@@ -72,7 +72,7 @@ class ByteUtil {
   }
 
   static int compare(Uint8List left, Uint8List right) {
-    // ignore: parameter_assignments
+    // ignore: parameter_assignments, avoid_multiple_declarations_per_line
     for (var i = 0, j = 0; i < left.length && j < right.length; i++, j++) {
       final a = left[i] & 0xff;
       final b = right[j] & 0xff;
