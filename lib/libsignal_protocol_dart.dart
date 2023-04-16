@@ -1,3 +1,4 @@
+// ignore: unnecessary_library_directive
 library libsignal_protocol_dart;
 
 export 'src/decryption_callback.dart';
