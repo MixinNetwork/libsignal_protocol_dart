@@ -36,7 +36,6 @@ class SignalMessage extends CiphertextMessage {
       ..ciphertext = ciphertext;
     final message = m.writeToBuffer();
 
-    // TODO
     final mac = _getMac(senderIdentityKey, receiverIdentityKey!, macKey,
         ByteUtil.combine([version, message]));
 

@@ -18,7 +18,7 @@ dependencies:
   pointycastle: ^3.3.4
   protobuf: ^2.0.0
   tuple: ^2.0.0
-  very_good_analysis: ^3.0.0
+  very_good_analysis: ^4.0.0+1
   x25519: ^0.1.1
 
 
