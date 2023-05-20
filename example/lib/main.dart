@@ -1,12 +1,27 @@
-import 'dart:convert';
-import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'homepage.dart';
 
-import 'package:libsignal_protocol_dart/libsignal_protocol_dart.dart';
-
-Future<void> main() async {
-  await install();
-  await groupTest();
+void main() {
+  runApp(const MyApp());
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Signal Protocol',
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        primaryColor: Colors.indigo,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
+
+/*
+OLD EXAMPLE
 
 Future<void> install() async {
   final identityKeyPair = generateIdentityKeyPair();
@@ -113,3 +128,5 @@ Future<void> groupSession() async {
   final groupSession = GroupCipher(senderKeyStore, senderKeyName);
   await groupSession.encrypt(Uint8List.fromList(utf8.encode('Hello Mixin')));
 }
+
+*/
