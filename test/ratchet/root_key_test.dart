@@ -231,9 +231,9 @@ void main() {
 
     final rootKeyChainKeyPair = rootKey.createChain(bobPublicKey, aliceKeyPair);
     // ignore: unused_local_variable
-    final nextRootKey = rootKeyChainKeyPair.item1;
+    final nextRootKey = rootKeyChainKeyPair.$1;
     // ignore: unused_local_variable
-    final nextChainKey = rootKeyChainKeyPair.item2;
+    final nextChainKey = rootKeyChainKeyPair.$2;
 
     expect(rootKey.getKeyBytes(), rootKeySeed);
     // TODO

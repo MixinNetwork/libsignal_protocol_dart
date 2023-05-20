@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:tuple/tuple.dart';
-
 import '../ecc/curve.dart';
 import '../ecc/ec_key_pair.dart';
 import '../ecc/ec_public_key.dart';
@@ -18,7 +16,7 @@ class RootKey {
 
   Uint8List getKeyBytes() => _key;
 
-  Tuple2<RootKey, ChainKey> createChain(
+  (RootKey, ChainKey) createChain(
       ECPublicKey theirRatchetKey, ECKeyPair ourRatchetKey) {
     final sharedSecret =
         Curve.calculateAgreement(theirRatchetKey, ourRatchetKey.privateKey);
@@ -30,6 +28,6 @@ class RootKey {
     final newRootKey = RootKey(_kdf, derivedSecrets.getRootKey());
     final newChainKey = ChainKey(_kdf, derivedSecrets.getChainKey(), 0);
 
-    return Tuple2<RootKey, ChainKey>(newRootKey, newChainKey);
+    return (newRootKey, newChainKey);
   }
 }

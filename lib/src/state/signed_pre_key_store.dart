@@ -1,6 +1,6 @@
 import 'signed_pre_key_record.dart';
 
-abstract class SignedPreKeyStore {
+abstract mixin class SignedPreKeyStore {
   Future<SignedPreKeyRecord> loadSignedPreKey(
     int signedPreKeyId,
   ); //throws InvalidKeyIdException;

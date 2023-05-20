@@ -4,7 +4,8 @@ version: 0.6.5
 homepage: https://github.com/MixinNetwork/libsignal_protocol_dart
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
+
 
 dependencies:
   adaptive_number: ^1.0.0
@@ -17,7 +18,6 @@ dependencies:
   optional: ^6.1.0+1
   pointycastle: ^3.3.4
   protobuf: ^2.0.0
-  tuple: ^2.0.0
   very_good_analysis: ^4.0.0+1
   x25519: ^0.1.1
 

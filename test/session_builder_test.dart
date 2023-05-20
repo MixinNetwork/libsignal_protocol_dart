@@ -17,7 +17,6 @@ import 'package:libsignal_protocol_dart/src/state/signal_protocol_store.dart';
 import 'package:libsignal_protocol_dart/src/state/signed_pre_key_record.dart';
 import 'package:libsignal_protocol_dart/src/untrusted_identity_exception.dart';
 import 'package:test/test.dart';
-import 'package:tuple/tuple.dart';
 
 import 'test_in_memory_identity_key_store.dart';
 import 'test_in_memory_signal_protocol_store.dart';
@@ -103,8 +102,8 @@ void main() {
       assert(String.fromCharCodes(loopingPlaintext) == loopingMessage);
     }
 
-    final Set<Tuple2<String, CiphertextMessage>> aliceOutOfOrderMessages =
-        HashSet<Tuple2<String, CiphertextMessage>>();
+    final Set<(String, CiphertextMessage)> aliceOutOfOrderMessages =
+        HashSet<(String, CiphertextMessage)>();
 
     for (var i = 0; i < 10; i++) {
       final loopingMessage =
@@ -114,8 +113,7 @@ void main() {
       final aliceLoopingMessage = await aliceSessionCipher
           .encrypt(Uint8List.fromList(utf8.encode(loopingMessage)));
 
-      aliceOutOfOrderMessages.add(Tuple2<String, CiphertextMessage>(
-          loopingMessage, aliceLoopingMessage));
+      aliceOutOfOrderMessages.add((loopingMessage, aliceLoopingMessage));
     }
 
     for (var i = 0; i < 10; i++) {
@@ -142,11 +140,11 @@ void main() {
     }
 
     for (final aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
+      ;
       final outOfOrderPlaintext = await bobSessionCipher.decryptFromSignal(
-          SignalMessage.fromSerialized(
-              aliceOutOfOrderMessage.item2.serialize()));
+          SignalMessage.fromSerialized(aliceOutOfOrderMessage.$2.serialize()));
       assert(String.fromCharCodes(outOfOrderPlaintext) ==
-          (aliceOutOfOrderMessage.item1));
+          (aliceOutOfOrderMessage.$1));
     }
   }
 

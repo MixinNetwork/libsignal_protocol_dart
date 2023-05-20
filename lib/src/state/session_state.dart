@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:optional/optional.dart';
-import 'package:tuple/tuple.dart';
 
 import '../ecc/curve.dart';
 import '../ecc/ec_key_pair.dart';
@@ -19,7 +18,7 @@ import '../ratchet/root_key.dart';
 import '../util/log.dart' as $log;
 import 'local_storage_protocol.pb.dart';
 
-class SessionState extends LinkedListEntry<SessionState> {
+base class SessionState extends LinkedListEntry<SessionState> {
   SessionState() {
     _sessionStructure = SessionStructure.create();
   }
@@ -117,8 +116,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   bool hasSenderChain() => _sessionStructure.hasSenderChain();
 
-  Tuple2<SessionStructureChain, int>? _getReceiverChain(
-      ECPublicKey senderEphemeral) {
+  (SessionStructureChain, int)? _getReceiverChain(ECPublicKey senderEphemeral) {
     final receiverChains = _sessionStructure.receiverChains;
     var index = 0;
 
@@ -129,7 +127,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
         if (eq(
             chainSenderRatchetKey.serialize(), senderEphemeral.serialize())) {
-          return Tuple2<SessionStructureChain, int>(receiverChain, index);
+          return (receiverChain, index);
         }
       } on InvalidKeyException catch (e) {
         $log.log(e);
@@ -142,7 +140,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
   ChainKey? getReceiverChainKey(ECPublicKey senderEphemeral) {
     final receiverChainAndIndex = _getReceiverChain(senderEphemeral);
-    final receiverChain = receiverChainAndIndex?.item1;
+    final receiverChain = receiverChainAndIndex?.$1;
 
     if (receiverChain == null) {
       return null;
@@ -200,7 +198,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     if (chainAndIndex == null) {
       return false;
     }
-    final chain = chainAndIndex.item1;
+    final chain = chainAndIndex.$1;
 
     final messageKeyList = chain.messageKeys;
     for (final messageKey in messageKeyList) {
@@ -216,7 +214,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     if (chainAndIndex == null) {
       return null;
     }
-    final chain = chainAndIndex.item1;
+    final chain = chainAndIndex.$1;
 
     final messageKeyList = LinkedList<Entry<SessionStructureChainMessageKey>>();
     chain.messageKeys.forEach((element) {
@@ -245,7 +243,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     });
 
     _sessionStructure.receiverChains
-        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
+        .setAll(chainAndIndex.$2, <SessionStructureChain>[chain]);
     return result;
   }
 
@@ -254,7 +252,7 @@ class SessionState extends LinkedListEntry<SessionState> {
     if (chainAndIndex == null) {
       return;
     }
-    final chain = chainAndIndex.item1;
+    final chain = chainAndIndex.$1;
     final messageKeyStructure = SessionStructureChainMessageKey.create()
       ..cipherKey = Uint8List.fromList(messageKeys.getCipherKey())
       ..macKey = Uint8List.fromList(messageKeys.getMacKey())
@@ -268,12 +266,12 @@ class SessionState extends LinkedListEntry<SessionState> {
     }
 
     _sessionStructure.receiverChains
-        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
+        .setAll(chainAndIndex.$2, <SessionStructureChain>[chain]);
   }
 
   void setReceiverChainKey(ECPublicKey senderEphemeral, ChainKey chainKey) {
     final chainAndIndex = _getReceiverChain(senderEphemeral);
-    final chain = chainAndIndex!.item1;
+    final chain = chainAndIndex!.$1;
 
     final chainKeyStructure = SessionStructureChainChainKey.create()
       ..key = chainKey.key
@@ -281,7 +279,7 @@ class SessionState extends LinkedListEntry<SessionState> {
 
     chain.chainKey = chainKeyStructure;
     _sessionStructure.receiverChains
-        .setAll(chainAndIndex.item2, <SessionStructureChain>[chain]);
+        .setAll(chainAndIndex.$2, <SessionStructureChain>[chain]);
   }
 
   void setPendingKeyExchange(int sequence, ECKeyPair ourBaseKey,

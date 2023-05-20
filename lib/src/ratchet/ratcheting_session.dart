@@ -77,8 +77,8 @@ class RatchetingSession {
       sessionState
         ..addReceiverChain(
             parameters.theirRatchetKey, derivedKeys.getChainKey())
-        ..setSenderChain(sendingRatchetKey, sendingChain.item2)
-        ..rootKey = sendingChain.item1;
+        ..setSenderChain(sendingRatchetKey, sendingChain.$2)
+        ..rootKey = sendingChain.$1;
     } on Exception catch (e) {
       throw AssertionError(e);
     }

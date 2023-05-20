@@ -238,15 +238,15 @@ class SessionCipher {
         final receiverChain = rootKey.createChain(theirEphemeral, ourEphemeral);
         final ourNewEphemeral = Curve.generateKeyPair();
         final senderChain =
-            receiverChain.item1.createChain(theirEphemeral, ourNewEphemeral);
+            receiverChain.$1.createChain(theirEphemeral, ourNewEphemeral);
 
         sessionState
-          ..rootKey = senderChain.item1
-          ..addReceiverChain(theirEphemeral, receiverChain.item2)
+          ..rootKey = senderChain.$1
+          ..addReceiverChain(theirEphemeral, receiverChain.$2)
           ..previousCounter = max(sessionState.getSenderChainKey().index - 1, 0)
-          ..setSenderChain(ourNewEphemeral, senderChain.item2);
+          ..setSenderChain(ourNewEphemeral, senderChain.$2);
 
-        return receiverChain.item2;
+        return receiverChain.$2;
       }
     } on InvalidKeyException {
       rethrow;
