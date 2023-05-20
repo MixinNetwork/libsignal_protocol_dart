@@ -140,7 +140,6 @@ void main() {
     }
 
     for (final aliceOutOfOrderMessage in aliceOutOfOrderMessages) {
-      ;
       final outOfOrderPlaintext = await bobSessionCipher.decryptFromSignal(
           SignalMessage.fromSerialized(aliceOutOfOrderMessage.$2.serialize()));
       assert(String.fromCharCodes(outOfOrderPlaintext) ==

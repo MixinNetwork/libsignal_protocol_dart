@@ -167,6 +167,7 @@ class SessionCipher {
     } on InvalidMessageException catch (e) {
       exceptions.add(e);
     }
+    // ignore: deprecated_member_use
     final pStates = HasNextIterator(previousStates.iterator);
     while (pStates.hasNext) {
       try {
