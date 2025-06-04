@@ -1,6 +1,3 @@
-// ignore: unnecessary_library_directive
-library libsignal_protocol_dart;
-
 export 'src/decryption_callback.dart';
 export 'src/duplicate_message_exception.dart';
 export 'src/ecc/curve.dart';

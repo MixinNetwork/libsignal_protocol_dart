@@ -55,5 +55,6 @@ linter:
     require_trailing_commas: false
     prefer_asserts_with_message: false
     flutter_style_todos: false
-    document_ignores: true
+    document_ignores: false
+    specify_nonobvious_property_types: false
 
