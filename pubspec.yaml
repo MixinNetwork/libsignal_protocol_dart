@@ -19,10 +19,10 @@ dependencies:
   meta: ^1.16.0
   optional: ^6.1.0+1
   pointycastle: ^4.0.0
-  protobuf: ^4.0.0
+  protobuf: ^6.0.0
   x25519: ^0.1.1
 
 
 dev_dependencies:
   test: ^1.25.8
-  very_good_analysis: ^8.0.0
+  very_good_analysis: ^10.2.0

@@ -95,9 +95,6 @@ class SignalMessage extends $pb.GeneratedMessage {
   @override
   SignalMessage createEmptyInstance() => create();
 
-  static $pb.PbList<SignalMessage> createRepeated() =>
-      $pb.PbList<SignalMessage>();
-
   @$core.pragma('dart2js:noInline')
   static SignalMessage getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SignalMessage>(create);
@@ -274,9 +271,6 @@ class PreKeySignalMessage extends $pb.GeneratedMessage {
 
   @override
   PreKeySignalMessage createEmptyInstance() => create();
-
-  static $pb.PbList<PreKeySignalMessage> createRepeated() =>
-      $pb.PbList<PreKeySignalMessage>();
 
   @$core.pragma('dart2js:noInline')
   static PreKeySignalMessage getDefault() => _defaultInstance ??=
@@ -473,9 +467,6 @@ class KeyExchangeMessage extends $pb.GeneratedMessage {
   @override
   KeyExchangeMessage createEmptyInstance() => create();
 
-  static $pb.PbList<KeyExchangeMessage> createRepeated() =>
-      $pb.PbList<KeyExchangeMessage>();
-
   @$core.pragma('dart2js:noInline')
   static KeyExchangeMessage getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<KeyExchangeMessage>(create);
@@ -632,9 +623,6 @@ class SenderKeyMessage extends $pb.GeneratedMessage {
   @override
   SenderKeyMessage createEmptyInstance() => create();
 
-  static $pb.PbList<SenderKeyMessage> createRepeated() =>
-      $pb.PbList<SenderKeyMessage>();
-
   @$core.pragma('dart2js:noInline')
   static SenderKeyMessage getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SenderKeyMessage>(create);
@@ -779,9 +767,6 @@ class SenderKeyDistributionMessage extends $pb.GeneratedMessage {
   @override
   SenderKeyDistributionMessage createEmptyInstance() => create();
 
-  static $pb.PbList<SenderKeyDistributionMessage> createRepeated() =>
-      $pb.PbList<SenderKeyDistributionMessage>();
-
   @$core.pragma('dart2js:noInline')
   static SenderKeyDistributionMessage getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SenderKeyDistributionMessage>(create);
@@ -917,9 +902,6 @@ class DeviceConsistencyCodeMessage extends $pb.GeneratedMessage {
 
   @override
   DeviceConsistencyCodeMessage createEmptyInstance() => create();
-
-  static $pb.PbList<DeviceConsistencyCodeMessage> createRepeated() =>
-      $pb.PbList<DeviceConsistencyCodeMessage>();
 
   @$core.pragma('dart2js:noInline')
   static DeviceConsistencyCodeMessage getDefault() => _defaultInstance ??=

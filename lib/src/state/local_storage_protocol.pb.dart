@@ -80,9 +80,6 @@ class SessionStructureChainChainKey extends $pb.GeneratedMessage {
   @override
   SessionStructureChainChainKey createEmptyInstance() => create();
 
-  static $pb.PbList<SessionStructureChainChainKey> createRepeated() =>
-      $pb.PbList<SessionStructureChainChainKey>();
-
   @$core.pragma('dart2js:noInline')
   static SessionStructureChainChainKey getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SessionStructureChainChainKey>(create);
@@ -213,9 +210,6 @@ class SessionStructureChainMessageKey extends $pb.GeneratedMessage {
 
   @override
   SessionStructureChainMessageKey createEmptyInstance() => create();
-
-  static $pb.PbList<SessionStructureChainMessageKey> createRepeated() =>
-      $pb.PbList<SessionStructureChainMessageKey>();
 
   @$core.pragma('dart2js:noInline')
   static SessionStructureChainMessageKey getDefault() => _defaultInstance ??=
@@ -377,9 +371,6 @@ class SessionStructureChain extends $pb.GeneratedMessage {
 
   @override
   SessionStructureChain createEmptyInstance() => create();
-
-  static $pb.PbList<SessionStructureChain> createRepeated() =>
-      $pb.PbList<SessionStructureChain>();
 
   @$core.pragma('dart2js:noInline')
   static SessionStructureChain getDefault() => _defaultInstance ??=
@@ -564,9 +555,6 @@ class SessionStructurePendingKeyExchange extends $pb.GeneratedMessage {
 
   @override
   SessionStructurePendingKeyExchange createEmptyInstance() => create();
-
-  static $pb.PbList<SessionStructurePendingKeyExchange> createRepeated() =>
-      $pb.PbList<SessionStructurePendingKeyExchange>();
 
   @$core.pragma('dart2js:noInline')
   static SessionStructurePendingKeyExchange getDefault() => _defaultInstance ??=
@@ -759,9 +747,6 @@ class SessionStructurePendingPreKey extends $pb.GeneratedMessage {
 
   @override
   SessionStructurePendingPreKey createEmptyInstance() => create();
-
-  static $pb.PbList<SessionStructurePendingPreKey> createRepeated() =>
-      $pb.PbList<SessionStructurePendingPreKey>();
 
   @$core.pragma('dart2js:noInline')
   static SessionStructurePendingPreKey getDefault() => _defaultInstance ??=
@@ -1003,9 +988,6 @@ class SessionStructure extends $pb.GeneratedMessage {
 
   @override
   SessionStructure createEmptyInstance() => create();
-
-  static $pb.PbList<SessionStructure> createRepeated() =>
-      $pb.PbList<SessionStructure>();
 
   @$core.pragma('dart2js:noInline')
   static SessionStructure getDefault() => _defaultInstance ??=
@@ -1266,9 +1248,6 @@ class RecordStructure extends $pb.GeneratedMessage {
   @override
   RecordStructure createEmptyInstance() => create();
 
-  static $pb.PbList<RecordStructure> createRepeated() =>
-      $pb.PbList<RecordStructure>();
-
   @$core.pragma('dart2js:noInline')
   static RecordStructure getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<RecordStructure>(create);
@@ -1378,9 +1357,6 @@ class PreKeyRecordStructure extends $pb.GeneratedMessage {
 
   @override
   PreKeyRecordStructure createEmptyInstance() => create();
-
-  static $pb.PbList<PreKeyRecordStructure> createRepeated() =>
-      $pb.PbList<PreKeyRecordStructure>();
 
   @$core.pragma('dart2js:noInline')
   static PreKeyRecordStructure getDefault() => _defaultInstance ??=
@@ -1537,9 +1513,6 @@ class SignedPreKeyRecordStructure extends $pb.GeneratedMessage {
   @override
   SignedPreKeyRecordStructure createEmptyInstance() => create();
 
-  static $pb.PbList<SignedPreKeyRecordStructure> createRepeated() =>
-      $pb.PbList<SignedPreKeyRecordStructure>();
-
   @$core.pragma('dart2js:noInline')
   static SignedPreKeyRecordStructure getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SignedPreKeyRecordStructure>(create);
@@ -1690,9 +1663,6 @@ class IdentityKeyPairStructure extends $pb.GeneratedMessage {
   @override
   IdentityKeyPairStructure createEmptyInstance() => create();
 
-  static $pb.PbList<IdentityKeyPairStructure> createRepeated() =>
-      $pb.PbList<IdentityKeyPairStructure>();
-
   @$core.pragma('dart2js:noInline')
   static IdentityKeyPairStructure getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<IdentityKeyPairStructure>(create);
@@ -1801,9 +1771,6 @@ class SenderKeyStateStructureSenderChainKey extends $pb.GeneratedMessage {
 
   @override
   SenderKeyStateStructureSenderChainKey createEmptyInstance() => create();
-
-  static $pb.PbList<SenderKeyStateStructureSenderChainKey> createRepeated() =>
-      $pb.PbList<SenderKeyStateStructureSenderChainKey>();
 
   @$core.pragma('dart2js:noInline')
   static SenderKeyStateStructureSenderChainKey getDefault() =>
@@ -1915,9 +1882,6 @@ class SenderKeyStateStructureSenderMessageKey extends $pb.GeneratedMessage {
   @override
   SenderKeyStateStructureSenderMessageKey createEmptyInstance() => create();
 
-  static $pb.PbList<SenderKeyStateStructureSenderMessageKey> createRepeated() =>
-      $pb.PbList<SenderKeyStateStructureSenderMessageKey>();
-
   @$core.pragma('dart2js:noInline')
   static SenderKeyStateStructureSenderMessageKey getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<
@@ -2026,9 +1990,6 @@ class SenderKeyStateStructureSenderSigningKey extends $pb.GeneratedMessage {
 
   @override
   SenderKeyStateStructureSenderSigningKey createEmptyInstance() => create();
-
-  static $pb.PbList<SenderKeyStateStructureSenderSigningKey> createRepeated() =>
-      $pb.PbList<SenderKeyStateStructureSenderSigningKey>();
 
   @$core.pragma('dart2js:noInline')
   static SenderKeyStateStructureSenderSigningKey getDefault() =>
@@ -2162,9 +2123,6 @@ class SenderKeyStateStructure extends $pb.GeneratedMessage {
   @override
   SenderKeyStateStructure createEmptyInstance() => create();
 
-  static $pb.PbList<SenderKeyStateStructure> createRepeated() =>
-      $pb.PbList<SenderKeyStateStructure>();
-
   @$core.pragma('dart2js:noInline')
   static SenderKeyStateStructure getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<SenderKeyStateStructure>(create);
@@ -2287,9 +2245,6 @@ class SenderKeyRecordStructure extends $pb.GeneratedMessage {
 
   @override
   SenderKeyRecordStructure createEmptyInstance() => create();
-
-  static $pb.PbList<SenderKeyRecordStructure> createRepeated() =>
-      $pb.PbList<SenderKeyRecordStructure>();
 
   @$core.pragma('dart2js:noInline')
   static SenderKeyRecordStructure getDefault() => _defaultInstance ??=

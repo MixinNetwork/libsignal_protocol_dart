@@ -24,8 +24,10 @@ analyzer:
 
 linter:
   rules:
+    always_use_package_imports: false
     prefer_const_constructors_in_immutables: true
     prefer_relative_imports: true
+    unreachable_from_main: false
     prefer_final_locals: true
     avoid_void_async: true
     unnecessary_await_in_return: true
@@ -57,4 +59,3 @@ linter:
     flutter_style_todos: false
     document_ignores: false
     specify_nonobvious_property_types: false
-
