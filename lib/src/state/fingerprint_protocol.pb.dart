@@ -62,9 +62,6 @@ class LogicalFingerprint extends $pb.GeneratedMessage {
   @override
   LogicalFingerprint createEmptyInstance() => create();
 
-  static $pb.PbList<LogicalFingerprint> createRepeated() =>
-      $pb.PbList<LogicalFingerprint>();
-
   @$core.pragma('dart2js:noInline')
   static LogicalFingerprint getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<LogicalFingerprint>(create);
@@ -166,9 +163,6 @@ class CombinedFingerprints extends $pb.GeneratedMessage {
 
   @override
   CombinedFingerprints createEmptyInstance() => create();
-
-  static $pb.PbList<CombinedFingerprints> createRepeated() =>
-      $pb.PbList<CombinedFingerprints>();
 
   @$core.pragma('dart2js:noInline')
   static CombinedFingerprints getDefault() => _defaultInstance ??=

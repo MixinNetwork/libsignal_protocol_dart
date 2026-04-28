@@ -70,7 +70,7 @@ class NumericFingerprintGenerator implements FingerprintGenerator {
     final sortedIdentityKeys = [...identityKeys]..sort(identityKeyComparator);
 
     final keys = <int>[];
-    sortedIdentityKeys.forEach((IdentityKey key) {
+    sortedIdentityKeys.forEach((key) {
       final publicKeyBytes = key.publicKey.serialize();
       keys.addAll(publicKeyBytes.toList());
     });
