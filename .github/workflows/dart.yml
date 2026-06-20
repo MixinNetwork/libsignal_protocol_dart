@@ -4,6 +4,8 @@
 # documentation.
 
 name: Dart
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
