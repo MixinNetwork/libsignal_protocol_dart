@@ -21,6 +21,7 @@ analyzer:
     - 'lib/generated/**'
     - '**.g.dart'
     - 'lib/src/state/**.pb.dart'
+    - 'lib/src/state/**.pbjson.dart'
 
 linter:
   rules:
