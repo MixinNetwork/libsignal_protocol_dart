@@ -38,7 +38,7 @@ class SessionRecord {
 
     for (final state in _previousStates) {
       if (state.getSessionVersion() == version &&
-          eq(aliceBaseKey, _sessionState.aliceBaseKey)) {
+          eq(aliceBaseKey, state.aliceBaseKey)) {
         return true;
       }
     }
