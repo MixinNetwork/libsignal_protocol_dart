@@ -9,13 +9,13 @@ import '../ecc/ec_public_key.dart';
 import '../kdf/hkdf.dart';
 import '../kdf/hkdfv3.dart';
 import '../protocol/ciphertext_message.dart';
-import '../ratchet/alice_signal_protocol_parameters.dart';
-import '../ratchet/bob_signal_protocol_parameters.dart';
-import '../ratchet/chain_key.dart';
-import '../ratchet/root_key.dart';
-import '../ratchet/symmetric_signal_protocol_parameters.dart';
 import '../state/session_state.dart';
 import '../util/byte_util.dart';
+import 'alice_signal_protocol_parameters.dart';
+import 'bob_signal_protocol_parameters.dart';
+import 'chain_key.dart';
+import 'root_key.dart';
+import 'symmetric_signal_protocol_parameters.dart';
 
 class RatchetingSession {
   static void initializeSession(

@@ -10,9 +10,9 @@ import '../identity_key.dart';
 import '../invalid_key_exception.dart';
 import '../invalid_message_exception.dart';
 import '../legacy_message_exception.dart';
-import '../protocol/ciphertext_message.dart';
 import '../state/whisper_text_protocol.pb.dart' as signal_protos;
 import '../util/byte_util.dart';
+import 'ciphertext_message.dart';
 
 class SignalMessage extends CiphertextMessage {
   SignalMessage(

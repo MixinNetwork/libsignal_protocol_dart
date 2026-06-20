@@ -6,7 +6,7 @@ import '../ecc/ec_key_pair.dart';
 import '../ecc/ec_public_key.dart';
 import '../kdf/derived_root_secrets.dart';
 import '../kdf/hkdf.dart';
-import '../ratchet/chain_key.dart';
+import 'chain_key.dart';
 
 class RootKey {
   RootKey(this._kdf, this._key);

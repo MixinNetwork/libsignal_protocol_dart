@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import '../kdf/derived_message_secrets.dart';
 import '../kdf/hkdf.dart';
-import '../ratchet/message_keys.dart';
+import 'message_keys.dart';
 
 class ChainKey {
   ChainKey(this._kdf, this._key, this._index);
