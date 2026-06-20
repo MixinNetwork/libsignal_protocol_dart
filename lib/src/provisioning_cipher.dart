@@ -6,12 +6,12 @@ import 'package:crypto/crypto.dart';
 import 'cbc.dart';
 import 'ecc/curve.dart';
 import 'ecc/ec_public_key.dart';
-import 'eq.dart';
 import 'invalid_mac_exception.dart';
 import 'kdf/derived_root_secrets.dart';
 import 'kdf/hkdfv3.dart';
 import 'legacy_message_exception.dart';
 import 'util/byte_util.dart';
+import 'util/key_helper.dart';
 
 const String provision = 'Mixin Provisioning Message';
 
@@ -70,7 +70,14 @@ Uint8List decrypt(String privateKey, String content) {
 bool verifyMAC(Uint8List key, Uint8List input, List<int> mac) {
   final hmacSha256 = Hmac(sha256, key);
   final digest = hmacSha256.convert(input);
-  return eq(digest.bytes, mac);
+  final a = digest.bytes;
+  final b = mac;
+  if (a.length != b.length) return false;
+  var result = 0;
+  for (var i = 0; i < a.length; i++) {
+    result |= a[i] ^ b[i];
+  }
+  return result == 0;
 }
 
 class ProvisioningCipher {
@@ -96,7 +103,7 @@ class ProvisioningCipher {
   }
 
   Uint8List getCiphertext(Uint8List key, Uint8List message) {
-    final iv = Uint8List(16);
+    final iv = generateRandomBytes(16);
     final m = aesCbcEncrypt(key, iv, message);
     return Uint8List.fromList(iv + m);
   }
