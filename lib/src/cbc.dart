@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:pointycastle/export.dart';
 
+import 'invalid_message_exception.dart';
+
 Uint8List aesCbcEncrypt(Uint8List key, Uint8List iv, Uint8List plaintext) {
   final paddedPlaintext = pad(plaintext, 16);
   final cbc = CBCBlockCipher(AESEngine())
@@ -17,6 +19,15 @@ Uint8List aesCbcEncrypt(Uint8List key, Uint8List iv, Uint8List plaintext) {
 }
 
 Uint8List aesCbcDecrypt(Uint8List key, Uint8List iv, Uint8List cipherText) {
+  // Reject malformed ciphertext up front: it must be a non-zero multiple of the
+  // AES block size, otherwise processBlock would read past the buffer or the
+  // length assert would be silently stripped in release builds.
+  if (cipherText.isEmpty || cipherText.length % 16 != 0) {
+    throw InvalidMessageException(
+        'Ciphertext length is not a non-zero multiple of the block size: '
+        '${cipherText.length}');
+  }
+
   final cbc = CBCBlockCipher(AESEngine())
     ..init(false, ParametersWithIV(KeyParameter(key), iv)); // false=decrypt
 
@@ -26,7 +37,14 @@ Uint8List aesCbcDecrypt(Uint8List key, Uint8List iv, Uint8List cipherText) {
     offset += cbc.processBlock(cipherText, offset, paddedPlainText, offset);
   }
   assert(offset == cipherText.length);
-  return unpad(paddedPlainText);
+  try {
+    return unpad(paddedPlainText);
+    // ignore: avoid_catching_errors
+  } on ArgumentError catch (e) {
+    // PKCS7Padding.padCount throws ArgumentError on corrupted padding; surface
+    // it as a typed protocol exception like the canonical implementation does.
+    throw InvalidMessageException('Invalid padding: ${e.message}');
+  }
 }
 
 Uint8List pad(Uint8List bytes, int blockSize) {

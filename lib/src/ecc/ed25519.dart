@@ -91,6 +91,12 @@ Uint8List sign(Uint8List privateKey, Uint8List message, Uint8List random) {
 
 // verify checks whether the message has a valid signature.
 bool verifySig(Uint8List publicKey, Uint8List message, Uint8List signature) {
+  // Operate on copies so we never mutate the caller's buffers (the public key
+  // is returned by reference from DjbECPublicKey, and the signature is owned by
+  // the caller). Mutating them in place corrupts stored keys and makes
+  // verification non-idempotent.
+  publicKey = Uint8List.fromList(publicKey);
+  signature = Uint8List.fromList(signature);
   publicKey[31] &= 0x7F;
 
   final edY = FieldElement();

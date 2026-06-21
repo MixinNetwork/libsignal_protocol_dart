@@ -48,6 +48,8 @@ class Curve {
     }
     final public = List<int>.filled(32, 0);
 
+    // Clamp a copy so we never mutate the caller's private key buffer.
+    private = List<int>.from(private);
     private[0] &= 248;
     private[31] &= 127;
     private[31] |= 64;
