@@ -95,16 +95,16 @@ bool verifySig(Uint8List publicKey, Uint8List message, Uint8List signature) {
   // is returned by reference from DjbECPublicKey, and the signature is owned by
   // the caller). Mutating them in place corrupts stored keys and makes
   // verification non-idempotent.
-  publicKey = Uint8List.fromList(publicKey);
-  signature = Uint8List.fromList(signature);
-  publicKey[31] &= 0x7F;
+  final publicKeyCopy = Uint8List.fromList(publicKey);
+  final signatureCopy = Uint8List.fromList(signature);
+  publicKeyCopy[31] &= 0x7F;
 
   final edY = FieldElement();
   final one = FieldElement();
   final montX = FieldElement();
   final montXMinusOne = FieldElement();
   final montXPlusOne = FieldElement();
-  FeFromBytes(montX, publicKey);
+  FeFromBytes(montX, publicKeyCopy);
   FeOne(one);
   FeSub(montXMinusOne, montX, one);
   FeAdd(montXPlusOne, montX, one);
@@ -115,9 +115,9 @@ bool verifySig(Uint8List publicKey, Uint8List message, Uint8List signature) {
   final A_ed = Uint8List(32);
   FeToBytes(A_ed, edY);
 
-  A_ed[31] |= signature[63] & 0x80;
-  signature[63] &= 0x7F;
+  A_ed[31] |= signatureCopy[63] & 0x80;
+  signatureCopy[63] &= 0x7F;
 
 // bool verify(PublicKey publicKey, Uint8List message, Uint8List sig) {
-  return verify(PublicKey(A_ed.toList()), message, signature);
+  return verify(PublicKey(A_ed.toList()), message, signatureCopy);
 }
